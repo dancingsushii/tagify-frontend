@@ -28,7 +28,7 @@ import SaveIcon from "@material-ui/icons/Save";
 
 const useStyles = makeStyles((theme) => ({
   main: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(8),
     width: "300px",
     height: "400px",
   },
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Settings(props: object) {
+export function Settings(props: object) {
   //let settings = props;
 
   const [password, setPassword] = useState({ password1: "", password2: "" });
@@ -139,7 +139,7 @@ export default function Settings(props: object) {
             <CardActions>
               <Box display="block">
                 <Button
-                  color="secondary"
+                  color="primary"
                   variant="outlined"
                   type="submit"
                   className={classes.btn1}
@@ -184,7 +184,7 @@ export default function Settings(props: object) {
             </div>
             <CardActions>
               <Button
-                color="secondary"
+                color="primary"
                 variant="outlined"
                 type="submit"
                 className={classes.btn1}
