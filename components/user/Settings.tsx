@@ -27,8 +27,10 @@ import EditIcon from "@material-ui/icons/Edit";
 import SaveIcon from "@material-ui/icons/Save";
 
 const useStyles = makeStyles((theme) => ({
-  main: {
+  root: {
     marginTop: theme.spacing(8),
+  }
+  main: {
     width: "300px",
     height: "400px",
   },
@@ -92,7 +94,8 @@ export function Settings(props: object) {
       direction="row"
       justify="center"
       alignItems="center"
-      spacing={4}
+      spacing={3}
+      className={classes.root}
     >
       <Grid item>
         <Card className={classes.main} variant="outlined">
