@@ -1,98 +1,61 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import {
-  CssBaseline,
-  createMuiTheme,
-  AppBar,
-  Tabs,
-  Tab, Collapse
-} from "@material-ui/core";
-import {
-  ThemeProvider,
-  Theme,
-  makeStyles,
-  createStyles
-} from "@material-ui/core/styles"; //IMPORTANT: do not use @material-ui/styles !!
-import { Impressum, ImpressumToggle } from "./Impressum";
-import AddIcon from "@material-ui/icons/Add";
-import ListIcon from "@material-ui/icons/List";
-import EditIcon from "@material-ui/icons/Edit";
-import { red, grey } from "@material-ui/core/colors";
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter, Link } from 'react-router-dom';
 
-const myTheme = createMuiTheme({
+import {
+    AppBar, Button, Collapse, createMuiTheme, CssBaseline, FormControlLabel, Slide, Switch,
+    ThemeProvider, Toolbar, Typography
+} from '@material-ui/core';
+import { blue } from '@material-ui/core/colors';
+
+import { App as GuestApp } from './components/guest/App';
+import { App as UserApp } from './components/user/App';
+
+const theme = createMuiTheme({
   palette: {
-    type: "dark",
-    primary: red,
-    secondary: grey
-  }
+    type: "light",
+    primary: blue,
+  },
 });
 
-const useStyles = makeStyles((_theme: Theme) =>
-  createStyles({
-    main: {
-      display: "flex",
-      justifyContent: "center",
-      overflow: "auto",
-    },
-    spacerDiv: {
-      height: "100%",
-    }
-  })
-);
-
-enum RenderPage {
-  LIST,
-  ADD,
-  EDIT
-}
-
 function App() {
-  const classes = useStyles(myTheme);
-
-  const [renderPage, setRenderPage] = React.useState<RenderPage>(
-    RenderPage.ADD
-  );
-  const [impressum, setImpressum] = React.useState<boolean>(false);
-
-  const handleChange = (
-    _event: React.ChangeEvent<{}>,
-    newValue: RenderPage
-  ) => {
-    setRenderPage(newValue);
-  };
-
-  const handleImpressum = () => setImpressum((prevState => !prevState));
-
-  function Content() {
-    switch (renderPage) {
-      case RenderPage.LIST:
-        return null;
-      case RenderPage.ADD:
-        return null;
-      case RenderPage.EDIT:
-        return null;
-      default:
-        console.error("Default case reached");
-        return null;
-    }
-  }
+  // this value gets defined by an api call
+  // to the backend.
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [dev, setDev] = useState<boolean>(true);
 
   return (
-    <div>
-      <ThemeProvider theme={myTheme}>
-        <Collapse in={!impressum}>
-          <CssBaseline />
-          <main className={classes.main}>
-            <Content />
-          </main>
-        </Collapse>
-        {ImpressumToggle(handleImpressum)}
-        <Collapse in={impressum}>
-          <Impressum />
-        </Collapse>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {!isLoggedIn && <GuestApp />}
+        {isLoggedIn && <UserApp />}
+        {dev && (
+          <AppBar style={{ top: "auto", bottom: 0 }}>
+            <Toolbar>
+              <Typography variant="h6" style={{ flexGrow: 1 }}>
+                Dev Controls
+              </Typography>
+              <Slide direction="up" in={isLoggedIn}>
+                <Button component={Link} to={"/settings"}>
+                  Settings
+                </Button>
+              </Slide>
+              <FormControlLabel
+                label="login"
+                control={
+                  <Switch
+                    checked={isLoggedIn}
+                    onChange={(event) => setIsLoggedIn(event.target.checked)}
+                  />
+                }
+              />
+            </Toolbar>
+          </AppBar>
+        )}
       </ThemeProvider>
-    </div>
+    </BrowserRouter>
   );
 }
 
-ReactDOM.render(<App />, document.querySelector("#app"));
+ReactDOM.render(<App />, document.getElementById("app"));
