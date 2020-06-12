@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     elevation: 0,
     maxWidth: '100%',
-    height: 1620,
+    height: 1700,
   },
   image: {
     width: 600,
@@ -90,7 +90,7 @@ export const Welcome = () => {
         </Grid>
         <Grid
           container
-          spacing={0}
+          spacing={1}
           direction="column"
           alignItems="center"
           justify="center"
@@ -133,7 +133,7 @@ export const Welcome = () => {
           direction="column"
           alignItems="center"
           justify="center"
-          style={{ minHeight: '17vh' }}>
+          style={{ minHeight: '27vh' }}>
           <Button variant="outlined">Submit</Button>
         </Grid>
       </Paper>
