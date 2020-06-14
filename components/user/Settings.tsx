@@ -29,7 +29,7 @@ import SaveIcon from "@material-ui/icons/Save";
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(8),
-  }
+  },
   main: {
     width: "300px",
     height: "400px",

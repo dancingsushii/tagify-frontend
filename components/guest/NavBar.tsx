@@ -14,7 +14,7 @@ export function NavBar() {
       path="/"
       render={() => (
         <Tabs value={mapRoute(location.pathname, { prefix: routes })}>
-          <Tab label="Login" value="/login" component={Link} to={"/login"} />
+          <Tab label="Login" value="/login" component={Link} to={"/login"}/>
         </Tabs>
       )}
     />
@@ -22,8 +22,8 @@ export function NavBar() {
 
   return (
     <TagifyAppBar hideOnScroll={true}>
-      <Title style={{ flexGrow: 1 }} />
-      <TabBar />
+      <Title style={{ flexGrow: 1 }}/>
+      <TabBar/>
     </TagifyAppBar>
   );
 }

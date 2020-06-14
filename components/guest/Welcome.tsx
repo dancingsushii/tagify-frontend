@@ -1,148 +1,149 @@
 import React from 'react';
-import welcome from '../../assets/welcome.jpg';
-import taggedPicture from '../../assets/taggedPicture.png';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import placeholder from '../../assets/Placeholder.svg';
-import { TextField, FormControl, Input, InputLabel, Toolbar, Button, Box } from '@material-ui/core';
+import background from '../../assets/background.jpg';
+import { Box, Card, CardContent, FormControl, InputLabel, Input, TextField} from '@material-ui/core';
+import Tab from '@material-ui/core/Tab';
+import {Helmet} from 'react-helmet';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
+    backgroundImage: `url(${background})`,
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    margin: 0,
+    marginTop: -85,
+    height: "100vh",
+    width: "100vw",
+    backgroundBlendMode: "inherit",
+    opacity: 1
+  },
+  color: {
+    height: '100%',
+    width: '100%',
+  },
+  grid: {
+    alignItems: "center",
+    justifyContent: "center",
     flexGrow: 1,
+    justify: "center",
+
+  },
+  textContainer: {
+    //display: "flex",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-15%, -50%)",
+    maxWidth: "sm",
+    position: "absolute",
+    alignSelf: "center",
+    justifySelf: "center",
+    justifyContent: "center",
+    alignItems: 'center'
+  },
+  maintext: {
+    align: "center",
+    alignContent: "center",
+  },
+  card: {
+    width: "400px",
+    height: "400px",
+  },
+  cardContent: {
+    alignContent: "center",
+    justifyContent: "center",
+    flex: '1 0 auto',
+  },
+  cardText: {
+    textAlign: "center",
   },
   paper: {
-    padding: theme.spacing(2),
-    elevation: 0,
-    maxWidth: '100%',
-    height: 1700,
-  },
-  image: {
-    width: 600,
-    height: 400,
-  },
-  img: {
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-  },
-  typography: {
-    align: "center",
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-  },
-  textfield: {
-    width: 300,
-    height: 100,
+    textAlign: 'center',
   },
   formControl: {
-    margin: theme.spacing(1),
-    width: 300,
+    width: 350,
   },
-  footer: {
-    minHeight: 128,
-    background: "#9FC4BF",
-    color: "black"
-  }
-}));
+  textfield: {
+    width: 350,
+    height: 100,
+  },
+});
 
 export const Welcome = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Grid container spacing={0}>
-          <Grid item xs={12} sm={6} container>
-            <Grid item xs container direction="column" spacing={2}>
-              <Grid item xs>
-                <Typography className={classes.typography} variant="h1">
-                  <img src={placeholder} width="75" />
-                  Tagify
-                </Typography>
-                <Box p={2} bgcolor="background.paper"></Box>
-                <Typography className={classes.typography} variant="body1" align="justify">
-                  Labeling makes life simplier!
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Grid className={classes.image}>
-              <img className={classes.img} src={welcome} />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <img src={taggedPicture} width="1200" height="700" />
-        </Grid>
-        <Grid
-          container
-          spacing={1}
+
+  <Box className={classes.root}>
+    <Helmet>
+      <style>{'body { background-color: #e7dabe;  }'}</style>
+    </Helmet>
+        <Grid container 
           direction="column"
+          spacing={3}
           alignItems="center"
           justify="center"
-          style={{ minHeight: '20vh' }}>
-          <Typography className={classes.typography} variant="h2">
-            Contact Us
-          </Typography>
-          <Grid item xs={12} sm={6} >
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="my-input">First Name</InputLabel>
-              <Input id="my-name" aria-describedby="my-helper-text" />
-            </FormControl>
+          style={{ minHeight: '80vh' }}>
+          <Grid item xs={6} >
+            <Typography className={classes.maintext} variant="h1">
+                Tagify
+            </Typography>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="my-input">Last Name</InputLabel>
-              <Input id="my-surname" aria-describedby="my-helper-text" />
-            </FormControl>
+          <Grid item xs={6}>
+            <Typography className={classes.maintext} variant="h6">
+                  Labeling is easy!
+            </Typography>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="my-input">Email Address</InputLabel>
-              <Input id="my-email" aria-describedby="my-helper-text"/>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              className={classes.textfield}
-              id="outlined-textarea"
-              placeholder="Message"
-              multiline
-              rows={7}
-              variant="outlined"
-            />
+          <Grid item xs={6}>
+            <Tab label="More information"/>
           </Grid>
         </Grid>
-        <Grid           
-          container
-          spacing={0}
+        <Grid container
           direction="column"
+          spacing={2}
           alignItems="center"
           justify="center"
-          style={{ minHeight: '27vh' }}>
-          <Button variant="outlined">Submit</Button>
+          style={{ minHeight: '100vh' }}>
+          <Grid item xs={6}>
+            <Card className={classes.card}>
+              <CardContent className={classes.cardContent}>
+                <Typography className={classes.cardText} variant="h4">
+                    Contact Us
+                </Typography>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl className={classes.formControl}>
+                      <InputLabel htmlFor="my-input">First Name</InputLabel>
+                        <Input id="my-name" aria-describedby="my-helper-text" />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl className={classes.formControl}>
+                      <InputLabel htmlFor="my-input">Last Name</InputLabel>
+                        <Input id="my-surname" aria-describedby="my-helper-text" />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl className={classes.formControl}>
+                      <InputLabel htmlFor="my-input">Email Address</InputLabel>
+                        <Input id="my-email" aria-describedby="my-helper-text"/>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      className={classes.textfield}
+                      id="outlined-textarea"
+                      placeholder="Message"
+                      multiline
+                      rows={7}
+                      variant="outlined"
+                    />
+                  </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-      </Paper>
-      <Toolbar className={classes.footer}>
-          <Typography variant="h5" noWrap>
-            <img src={placeholder} width="75" />
-            Tagify
-          </Typography>
-      </Toolbar>
-    </div>
+  </Box>
+
   );
 };
