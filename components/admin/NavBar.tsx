@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Route } from 'react-router-dom';
 
-import { Button, createStyles, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
+import { Button, createStyles, makeStyles, Tab, Tabs, Theme, Typography } from '@material-ui/core';
 
 import { mapRoute } from '../../utils/Utils';
 import { TagifyAppBar } from '../snippets/TagifyAppBar';
@@ -55,6 +55,7 @@ export function NavBar() {
 
   return (
     <TagifyAppBar hideOnScroll={true}>
+      <Typography variant="h6">Admin Page</Typography>
       <TabBar />
       <Button>Logout</Button>
     </TagifyAppBar>
