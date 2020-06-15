@@ -1,7 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { AppBar, Slide, Toolbar, useScrollTrigger } from '@material-ui/core';
+import {
+    AppBar, createStyles, makeStyles, Slide, Theme, Toolbar, useScrollTrigger
+} from '@material-ui/core';
+
+const useStyles = makeStyles((_theme: Theme) =>
+  createStyles({
+    transparent: {
+      background: "transparent",
+    },
+  })
+);
 
 HideOnScroll.propTypes = {
   children: PropTypes.node.isRequired,
@@ -19,13 +29,23 @@ function HideOnScroll({ children }) {
 TagifyAppBar.propTypes = {
   children: PropTypes.node.isRequired,
   hideOnScroll: PropTypes.bool,
+  transparent: PropTypes.bool,
 };
 TagifyAppBar.defaultProps = {
   hideOnScroll: false,
+  transparent: false,
 };
-export function TagifyAppBar({ children, hideOnScroll }): JSX.Element {
+export function TagifyAppBar({
+  children,
+  hideOnScroll,
+  transparent,
+}): JSX.Element {
+  const classes = useStyles();
   let bar = (
-    <AppBar>
+    <AppBar
+      className={transparent ? classes.transparent : undefined}
+      elevation={0}
+    >
       <Toolbar>{children}</Toolbar>
     </AppBar>
   );
