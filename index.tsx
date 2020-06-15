@@ -10,6 +10,7 @@ import { blue } from '@material-ui/core/colors';
 
 import { App as AdminApp } from './components/admin/App';
 import { App as GuestApp } from './components/guest/App';
+import { DevControls } from './components/snippets/DevControls';
 import { App as UserApp } from './components/user/App';
 
 const theme = createMuiTheme({
@@ -34,27 +35,7 @@ function App() {
           <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
         </RouteSwitch>
         {dev && (
-          <AppBar style={{ top: "auto", bottom: 0 }}>
-            <Toolbar>
-              <Typography variant="h6" style={{ flexGrow: 1 }}>
-                Dev Controls
-              </Typography>
-              <Slide direction="up" in={isLoggedIn}>
-                <Button component={Link} to={"/settings"}>
-                  Settings
-                </Button>
-              </Slide>
-              <FormControlLabel
-                label="login"
-                control={
-                  <Switch
-                    checked={isLoggedIn}
-                    onChange={(event) => setIsLoggedIn(event.target.checked)}
-                  />
-                }
-              />
-            </Toolbar>
-          </AppBar>
+          <DevControls isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         )}
       </ThemeProvider>
     </BrowserRouter>
