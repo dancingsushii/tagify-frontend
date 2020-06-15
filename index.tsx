@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Link } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Switch as RouteSwitch } from 'react-router-dom';
 
 import {
-    AppBar, Button, Collapse, createMuiTheme, CssBaseline, FormControlLabel, Slide, Switch,
-    ThemeProvider, Toolbar, Typography
+    AppBar, Button, createMuiTheme, CssBaseline, FormControlLabel, Slide, Switch, ThemeProvider,
+    Toolbar, Typography
 } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
 
+import { App as AdminApp } from './components/admin/App';
 import { App as GuestApp } from './components/guest/App';
 import { App as UserApp } from './components/user/App';
 
@@ -28,8 +29,10 @@ function App() {
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {!isLoggedIn && <GuestApp />}
-        {isLoggedIn && <UserApp />}
+        <RouteSwitch>
+          <Route path="/admin" component={AdminApp} />
+          <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
+        </RouteSwitch>
         {dev && (
           <AppBar style={{ top: "auto", bottom: 0 }}>
             <Toolbar>
