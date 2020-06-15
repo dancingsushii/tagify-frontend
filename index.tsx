@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Link, Route, Switch as RouteSwitch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch as RouteSwitch } from 'react-router-dom';
 
-import {
-    AppBar, Button, createMuiTheme, CssBaseline, FormControlLabel, Slide, Switch, ThemeProvider,
-    Toolbar, Typography
-} from '@material-ui/core';
+import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
 
 import { App as AdminApp } from './components/admin/App';
