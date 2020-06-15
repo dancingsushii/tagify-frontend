@@ -12,8 +12,25 @@ import { App as UserApp } from './components/user/App';
 
 const theme = createMuiTheme({
   palette: {
-    type: "light",
-    primary: blue,
+    primary: {
+      main: "#dcedc8",
+      light: "#fffffb",
+      dark: "#aabb97",
+      contrastText: "#000000",
+    },
+    secondary: {
+      main: "#d9c8ed",
+      light: "#fffbff",
+      dark: "#a797bb",
+      contrastText: "#000000",
+    },
+  },
+  typography: {
+    fontFamily: `"Raleway", sans-serif`,
+    fontSize: 17,
+    fontWeightLight: 200,
+    fontWeightRegular: 300,
+    fontWeightMedium: 300,
   },
 });
 

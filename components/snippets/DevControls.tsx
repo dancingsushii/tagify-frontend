@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, Route, Switch as RouteSwitch } from 'react-router-dom';
 
-import {
-    AppBar, Button, FormControlLabel, Slide, Switch, Toolbar, Typography
-} from '@material-ui/core';
+import { AppBar, Button, FormControlLabel, Switch, Toolbar, Typography } from '@material-ui/core';
+
+// import { TagifyButton } from './TagifyButton';
 
 export function DevControls({ isLoggedIn, setIsLoggedIn }) {
   return (
@@ -12,14 +12,20 @@ export function DevControls({ isLoggedIn, setIsLoggedIn }) {
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           Dev Controls
         </Typography>
-        <Slide direction="up" in={isLoggedIn}>
+        {isLoggedIn && (
           <Button component={Link} to={"/settings"}>
             Settings
           </Button>
-        </Slide>
+        )}
         <RouteSwitch>
           <Route path="/admin">
-            <Button component={Link} to={"/"}>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableElevation
+              component={Link}
+              to={"/"}
+            >
               Home
             </Button>
           </Route>
