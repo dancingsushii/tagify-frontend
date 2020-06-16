@@ -4,9 +4,9 @@ import { Route } from 'react-router-dom';
 import { Box, Container } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { Login } from './Login';
+import { Albums } from './Albums';
 import { NavBar } from './NavBar';
-import { Welcome } from './Welcome';
+import { Users } from './Users';
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -24,11 +24,11 @@ export function App() {
 
   return (
     <>
-      <NavBar/>
-      <Container className={classes.main} maxWidth={false}>
+      <NavBar />
+      <Container className={classes.main}>
         <Box my={8}>
-          <Route exact path="/" component={Welcome} />
-          <Route path="/login" component={Login} />
+          <Route path={"/admin/users"} component={Users} />
+          <Route path={"/admin/albums"} component={Albums} />
         </Box>
       </Container>
     </>
