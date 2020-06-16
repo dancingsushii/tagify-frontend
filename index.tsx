@@ -37,21 +37,26 @@ function App() {
   // this value gets defined by an api call
   // to the backend.
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [dev] = useState<boolean>(true);
+  const [dev] = useState<boolean>(false);
 
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RouteSwitch>
-          <Route path="/admin" component={AdminApp} />
-          <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
-        </RouteSwitch>
-        {dev && (
-          <DevControls isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-        )}
-      </ThemeProvider>
-    </BrowserRouter>
+    <div style={{ overflowX: "hidden" }}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RouteSwitch>
+            <Route path="/admin" component={AdminApp} />
+            <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
+          </RouteSwitch>
+          {dev && (
+            <DevControls
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
+          )}
+        </ThemeProvider>
+      </BrowserRouter>
+    </div>
   );
 }
 
