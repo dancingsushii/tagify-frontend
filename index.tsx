@@ -40,18 +40,23 @@ function App() {
   const [dev] = useState<boolean>(true);
 
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RouteSwitch>
-          <Route path="/admin" component={AdminApp} />
-          <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
-        </RouteSwitch>
-        {dev && (
-          <DevControls isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-        )}
-      </ThemeProvider>
-    </BrowserRouter>
+    <div style={{ overflowX: "hidden" }}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RouteSwitch>
+            <Route path="/admin" component={AdminApp} />
+            <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
+          </RouteSwitch>
+          {dev && (
+            <DevControls
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
+          )}
+        </ThemeProvider>
+      </BrowserRouter>
+    </div>
   );
 }
 
