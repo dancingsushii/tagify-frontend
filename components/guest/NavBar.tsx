@@ -6,7 +6,6 @@ import { Tab, Tabs } from '@material-ui/core';
 import logo from '../../assets/tagify_icon.svg';
 import { mapRoute } from '../../utils/Utils';
 import { TagifyAppBar } from '../snippets/TagifyAppBar';
-import { Title } from '../snippets/Title';
 
 export function NavBar() {
   const routes: Array<string> = ["/login"];
@@ -28,7 +27,6 @@ export function NavBar() {
 
   return (
     <TagifyAppBar hideOnScroll={true} transparent={true}>
-      {/* <Title style={{ flexGrow: 1 }} /> */}
       <Link to="/">
         <img src={logo} width="150" />
       </Link>
