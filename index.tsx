@@ -37,7 +37,7 @@ function App() {
   // this value gets defined by an api call
   // to the backend.
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [dev] = useState<boolean>(false);
+  const [dev] = useState<boolean>(true);
 
   return (
     <div style={{ overflowX: "hidden" }}>

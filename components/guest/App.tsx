@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, Route } from 'react-router-dom';
 
-import { Box, Container, Tab, Tabs } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Box, Tab, Tabs } from '@material-ui/core';
 
 import logo from '../../assets/tagify_icon.svg';
 import { mapRoute } from '../../utils/Utils';
@@ -10,20 +9,7 @@ import { TagifyNavigation } from '../snippets/TagifyNavigation';
 import { Login } from './Login';
 import { Welcome } from './Welcome';
 
-const useStyles = makeStyles((_theme: Theme) =>
-  createStyles({
-    main: {
-      display: "flex",
-      justifyContent: "center",
-      overflow: "auto",
-      flexGrow: 1,
-    },
-  })
-);
-
 export function App() {
-  const classes = useStyles();
-
   const routes: Array<string> = ["/login"];
 
   const TabBar = () => (
@@ -64,10 +50,10 @@ export function App() {
         }
         transparent={true}
       >
-        {/* <Container className={classes.main}> */}
-        <Route exact path="/" component={Welcome} />
-        <Route path="/login" component={Login} />
-        {/* </Container> */}
+        <div>
+          <Route exact path="/" component={Welcome} />
+          <Route path="/login" component={Login} />
+        </div>
       </TagifyNavigation>
     </>
   );
