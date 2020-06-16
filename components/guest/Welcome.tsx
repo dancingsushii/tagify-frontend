@@ -13,14 +13,13 @@ const useStyles = makeStyles({
     marginTop: -85,
     height: "100%",
     width: "100%",
-    maxWidth: "100%",
     // overflowX: "hidden", not a good solution
     opacity: 1
   },
   // css for first sector with image
   imageGrid: {
     backgroundImage: `url(${background})`,
-    // backgroundPosition: "center",
+    backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no repeat",
     margin: 0
@@ -31,6 +30,7 @@ const useStyles = makeStyles({
   maintext: {
     align: "center",
     alignContent: "center",
+    margin: 5,
   },
   card: {
     height: "420px",
@@ -39,7 +39,6 @@ const useStyles = makeStyles({
   cardContent: {
     alignContent: "center",
     justifyContent: "center",
-    // flex: '1 0 auto',
   },
   cardText: {
     textAlign: "center",
@@ -68,14 +67,13 @@ export const Welcome = () => {
 
   <Box className={classes.root}>
     <Helmet>
-      {/* was #e7dabe */}
-      <style>{'body { background-color: red;  }'}</style> 
+      <style>{'body { background-color: #e7dabe;  }'}</style> 
     </Helmet>
         {/* Image/Info container */}
         <Grid container 
           className={classes.imageGrid}
           direction="column"
-          spacing={10}
+          spacing={0}
           alignItems="center"
           justify="center" 
           style={{ minHeight: '100vh', minWidth: '100vw' }}> 
@@ -98,7 +96,7 @@ export const Welcome = () => {
           className={classes.contactGrid}
           id="contact_container"
           direction="column"
-          spacing={5}
+          spacing={0}
           alignItems="center"
           justify="center"
           // was 100vh
