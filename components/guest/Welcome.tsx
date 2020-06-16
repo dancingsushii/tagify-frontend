@@ -11,16 +11,21 @@ const useStyles = makeStyles({
   root: {
     margin: 0,
     marginTop: -85,
-    minHeight: "100vh",
-    minWidth: "100vw",
+    height: "100%",
+    width: "100%",
+    maxWidth: "100%",
+    // overflowX: "hidden", not a good solution
     opacity: 1
   },
   // css for first sector with image
   imageGrid: {
     backgroundImage: `url(${background})`,
-    backgroundPosition: "center",
+    // backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no repeat",
+    margin: 0
+  },
+  contactGrid: {
     margin: 0
   },
   maintext: {
@@ -29,7 +34,7 @@ const useStyles = makeStyles({
   },
   card: {
     height: "420px",
-    width: "400px"
+    width: "400px",
   },
   cardContent: {
     alignContent: "center",
@@ -58,7 +63,7 @@ const useStyles = makeStyles({
 
 export const Welcome = () => {
   const classes = useStyles();
-
+  const handleClick = () => document.getElementById('contact_container')?.scrollIntoView();
   return (
 
   <Box className={classes.root}>
@@ -70,7 +75,7 @@ export const Welcome = () => {
         <Grid container 
           className={classes.imageGrid}
           direction="column"
-          spacing={3}
+          spacing={10}
           alignItems="center"
           justify="center" 
           style={{ minHeight: '100vh', minWidth: '100vw' }}> 
@@ -85,17 +90,19 @@ export const Welcome = () => {
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Tab label="Contact us"/>
+            <Tab label="Contact us" onChange={handleClick}/>
           </Grid>
         </Grid>
         {/* Contact us container */}
         <Grid container
+          className={classes.contactGrid}
+          id="contact_container"
           direction="column"
           spacing={5}
           alignItems="center"
           justify="center"
           // was 100vh
-          style={{ minHeight: '120vh' }}>
+          style={{ minHeight: '100vh' }}>
             <Card className={classes.card}>
               <CardContent className={classes.cardContent}>
                 {/* <FormControl>
