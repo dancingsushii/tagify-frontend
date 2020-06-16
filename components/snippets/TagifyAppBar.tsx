@@ -1,18 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 
-import { AppBar, Slide, Toolbar, useScrollTrigger, makeStyles } from '@material-ui/core';
+import {
+    AppBar, createStyles, makeStyles, Slide, Theme, Toolbar, useScrollTrigger
+} from '@material-ui/core';
 
-const useStyles = makeStyles({
-  transparent: {
-    backgroundColor: "transparent",
-    borderColor: "transparent",
-    boxShadow: "none",
-  },
-  visibility: {
-    opacity: 1.0
-  }, 
-});
+const useStyles = makeStyles((_theme: Theme) =>
+  createStyles({
+    transparent: {
+      background: "transparent",
+    },
+  })
+);
 
 HideOnScroll.propTypes = {
   children: PropTypes.node.isRequired,
@@ -27,11 +26,6 @@ function HideOnScroll({ children }) {
   );
 }
 
-function useForceUpdate() {
-  const [value, setValue] = useState(0); // integer state
-  return () => setValue(value => ++value); // update the state to force render
-}
-
 TagifyAppBar.propTypes = {
   children: PropTypes.node.isRequired,
   hideOnScroll: PropTypes.bool,
@@ -41,13 +35,17 @@ TagifyAppBar.defaultProps = {
   hideOnScroll: false,
   transparent: false,
 };
-
-export function TagifyAppBar({ children, hideOnScroll }): JSX.Element {
-  const forceUpdate = useForceUpdate();
+export function TagifyAppBar({
+  children,
+  hideOnScroll,
+  transparent,
+}): JSX.Element {
   const classes = useStyles();
   let bar = (
-    <AppBar onClick={forceUpdate} className={(location.pathname === "/") ? classes.transparent : classes.visibility}>
-
+    <AppBar
+      className={transparent ? classes.transparent : undefined}
+      elevation={0}
+    >
       <Toolbar>{children}</Toolbar>
     </AppBar>
   );
