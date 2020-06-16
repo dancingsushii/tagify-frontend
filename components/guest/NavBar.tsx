@@ -27,7 +27,6 @@ export function NavBar() {
   );
 
   return (
-
     <TagifyAppBar hideOnScroll={true} transparent={true}>
       {/* <Title style={{ flexGrow: 1 }} /> */}
       <Link to="/">
