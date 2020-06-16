@@ -1,30 +1,9 @@
+import React, { useState } from 'react';
+
 import {
-  Button,
-  makeStyles,
-  Grid,
-  FormControlLabel,
-  Checkbox,
-  Container,
-  CssBaseline,
-  Input,
-  InputAdornment,
-  Box,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  Typography,
-  ExpansionPanelDetails,
-  Card,
-  CardContent,
-  CardActions,
-} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import React from "react";
-import { useState } from "react";
-import logo from "./assets/TU-Berlin-Logo-Gray.svg";
-import { mergeClasses } from "@material-ui/styles";
-import EditIcon from "@material-ui/icons/Edit";
-import SaveIcon from "@material-ui/icons/Save";
+    Box, Button, Card, CardActions, CardContent, Grid, makeStyles, Typography
+} from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,9 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Settings(props: object) {
-  //let settings = props;
-
+export function Settings() {
   const [password, setPassword] = useState({ password1: "", password2: "" });
   const [nick, setNick] = useState("");
 
