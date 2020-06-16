@@ -35,15 +35,19 @@ function useForceUpdate() {
 TagifyAppBar.propTypes = {
   children: PropTypes.node.isRequired,
   hideOnScroll: PropTypes.bool,
+  transparent: PropTypes.bool,
 };
 TagifyAppBar.defaultProps = {
   hideOnScroll: false,
+  transparent: false,
 };
+
 export function TagifyAppBar({ children, hideOnScroll }): JSX.Element {
   const forceUpdate = useForceUpdate();
   const classes = useStyles();
   let bar = (
     <AppBar onClick={forceUpdate} className={(location.pathname === "/") ? classes.transparent : classes.visibility}>
+
       <Toolbar>{children}</Toolbar>
     </AppBar>
   );

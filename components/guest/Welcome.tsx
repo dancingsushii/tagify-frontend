@@ -151,7 +151,7 @@ export const Welcome = () => {
                       id="outlined-textarea"
                       placeholder="Message"
                       multiline
-                      rows={7}
+                      rows={3}
                       variant="outlined"
                     />
                   </Grid>
