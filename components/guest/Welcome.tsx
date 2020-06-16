@@ -14,11 +14,11 @@ import logo from '../../assets/tagify_icon.svg';
 
 const useStyles = makeStyles({
   root: {
-    //margin: 0,
-    marginTop: -85,
+    // margin: 0,
+    // marginTop: -85,
     height: "100%",
     width: "100%",
-    // overflowX: "hidden", not a good solution
+    // overflowX: "hidden", //not a good solution
     opacity: 1,
   },
   // css for first sector with image
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no repeat",
-    margin: 0,
+    // margin: 0,
   },
   contactGrid: {
     margin: 0,
@@ -74,7 +74,7 @@ export const Welcome = () => {
     });
 
   return (
-    <Box className={classes.root}>
+    <Box>
       <Helmet>
         <style>{"body { background-color: #e7dabe;  }"}</style>
       </Helmet>
@@ -86,7 +86,7 @@ export const Welcome = () => {
         spacing={0}
         alignItems="center"
         justify="center"
-        style={{ minHeight: "100vh", minWidth: "100vw" }}
+        style={{ minHeight: "100vh", width: "100vw" }}
       >
         <Grid item xs={12}>
           <img src={logo} width="350" />

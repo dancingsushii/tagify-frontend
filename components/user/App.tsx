@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { Route } from 'react-router-dom';
+import React from 'react';
+import { Link, Route } from 'react-router-dom';
 
-import { Box, Container } from '@material-ui/core';
+import { Container, Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import ContactSupportIcon from '@material-ui/icons/ContactSupport';
+import HomeIcon from '@material-ui/icons/Home';
+import NotesIcon from '@material-ui/icons/Notes';
 
 import { Impressum } from '../Impressum';
+import { TagifyNavigation } from '../snippets/TagifyNavigation';
 import { DashBoard } from './DashBoard';
-import { NavBar } from './NavBar';
-import { NavDrawer } from './NavDrawer';
 import { Settings } from './Settings';
-import { UserProfileDrawer } from './UserProfileDrawer';
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -22,55 +23,48 @@ const useStyles = makeStyles((_theme: Theme) =>
   })
 );
 
-export type Anchor = "left" | "right";
-
 export function App() {
   const classes = useStyles();
 
-  const [drawerState, setDrawerState] = useState({
-    left: false,
-    right: false,
-  });
-
-  const toggleDrawer = (anchor: Anchor, open: boolean) => (
-    event: React.KeyboardEvent | React.MouseEvent
-  ) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      ((event as React.KeyboardEvent).key === "Tab" ||
-        (event as React.KeyboardEvent).key === "Shift")
-    ) {
-      return;
-    }
-
-    setDrawerState({ ...drawerState, [anchor]: open });
-  };
-
   return (
     <>
-      <NavDrawer
-        anchor={"left" as Anchor}
-        state={drawerState["left" as Anchor]}
-        toggle={toggleDrawer.bind(null, "left" as Anchor)}
-      />
-      <UserProfileDrawer
-        anchor={"right" as Anchor}
-        state={drawerState["right" as Anchor]}
-        toggle={toggleDrawer.bind(null, "right" as Anchor)}
-      />
-
-      <NavBar
-        toggleLeftDrawer={toggleDrawer.bind(null, "left" as Anchor)}
-        toggleRightDrawer={toggleDrawer.bind(null, "right" as Anchor)}
-      />
-      <Container className={classes.main}>
-        <Box my={8}>
+      <TagifyNavigation
+        drawer={
+          <div>
+            <Divider />
+            {/* here comes the drawer content */}
+            <List>
+              <ListItem button key={"Dashboard"} component={Link} to={"/"}>
+                <ListItemIcon children={<HomeIcon />} />
+                <ListItemText primary={"Dashboard"} />
+              </ListItem>
+            </List>
+            <Divider />
+            <List>
+              <ListItem button key={"Contact"}>
+                <ListItemIcon children={<ContactSupportIcon />} />
+                <ListItemText primary={"Contact"} />
+              </ListItem>
+              <ListItem
+                button
+                key={"Impressum"}
+                component={Link}
+                to={"/impressum"}
+              >
+                <ListItemIcon children={<NotesIcon />} />
+                <ListItemText primary={"Impressum"} />
+              </ListItem>
+            </List>
+          </div>
+        }
+        appbar={<div>TagifyAppbar</div>}
+      >
+        <Container className={classes.main}>
           <Route exact path="/" component={DashBoard} />
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
-        </Box>
-      </Container>
+        </Container>
+      </TagifyNavigation>
     </>
   );
 }
