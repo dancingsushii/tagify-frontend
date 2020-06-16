@@ -24,8 +24,8 @@ export function App() {
 
   return (
     <>
-      <NavBar />
-      <Container className={classes.main}>
+      <NavBar/>
+      <Container className={classes.main} maxWidth={false}>
         <Box my={8}>
           <Route exact path="/" component={Welcome} />
           <Route path="/login" component={Login} />
