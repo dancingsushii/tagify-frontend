@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch as RouteSwitch } from 'react-router-dom';
 
 import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
-import { blue } from '@material-ui/core/colors';
 
 import { App as AdminApp } from './components/admin/App';
 import { App as GuestApp } from './components/guest/App';
@@ -38,21 +37,26 @@ function App() {
   // this value gets defined by an api call
   // to the backend.
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [dev, setDev] = useState<boolean>(true);
+  const [dev] = useState<boolean>(true);
 
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RouteSwitch>
-          <Route path="/admin" component={AdminApp} />
-          <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
-        </RouteSwitch>
-        {dev && (
-          <DevControls isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-        )}
-      </ThemeProvider>
-    </BrowserRouter>
+    <div style={{ overflowX: "hidden" }}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RouteSwitch>
+            <Route path="/admin" component={AdminApp} />
+            <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
+          </RouteSwitch>
+          {dev && (
+            <DevControls
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
+          )}
+        </ThemeProvider>
+      </BrowserRouter>
+    </div>
   );
 }
 
