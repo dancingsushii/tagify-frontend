@@ -27,9 +27,11 @@ export function NavBar() {
 
   return (
     <TagifyAppBar hideOnScroll={true} transparent={true}>
-      <Link to="/">
-        <img src={logo} width="150" />
-      </Link>
+      {location.pathname !== "/" && (
+        <Link to="/">
+          <img src={logo} width="150" />
+        </Link>
+      )}
       <div style={{ flexGrow: 1 }} />
       <TabBar />
     </TagifyAppBar>
