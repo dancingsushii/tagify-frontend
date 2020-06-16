@@ -7,9 +7,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Login } from './Login';
 import { NavBar } from './NavBar';
 import { Welcome } from './Welcome';
-import { HashRouter,withRouter } from 'react-router-dom';
-
-// const HeaderWithRouter = withRouter(NavBar);
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -27,9 +24,6 @@ export function App() {
 
   return (
     <>
-      {/* <HashRouter>
-          <HeaderWithRouter/> 
-      </HashRouter> */}
       <NavBar/>
       <Container className={classes.main} maxWidth={false}>
         <Box my={8}>
