@@ -18,17 +18,18 @@ const useStyles = makeStyles((theme) => ({
   },
   main: {
     width: "300px",
-    height: "400px",
+    height: "420px",
   },
-  heading: {
-    marginTop: theme.spacing(1),
+  fieldName: {
+    fontWeight: 400,
   },
   title: {
     fontSize: 16,
     fontWeight: "bold",
   },
   text: {
-    fontSize: 13,
+    fontSize: 14,
+    fontWeight: 400,
   },
   input: {
     height: "10px",
@@ -91,7 +92,9 @@ export function Settings() {
                   <li>Is longer than 8 charachters</li>
                   <li>Does not contain your username </li>
                 </ul>
-                <Typography>New password</Typography>
+                <Typography className={classes.fieldName}>
+                  New password
+                </Typography>
                 <TextField
                   margin="dense"
                   className={classes.input}
@@ -104,7 +107,10 @@ export function Settings() {
                   onChange={handlePasChange}
                 />
 
-                <Typography style={{ marginTop: "40px" }}>
+                <Typography
+                  style={{ marginTop: "40px" }}
+                  className={classes.fieldName}
+                >
                   Re-enter your new password
                 </Typography>
                 <TextField
@@ -151,7 +157,7 @@ export function Settings() {
                   <li>Is not misleading</li>
                   <li>Does not contain any profanity</li>
                 </ul>
-                <Typography style={{ marginTop: "50px" }}>
+                <Typography style={{ marginTop: "45px", fontWeight: 400 }}>
                   Your nickname
                 </Typography>
                 <TextField
