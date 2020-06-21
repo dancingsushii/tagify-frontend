@@ -1,41 +1,44 @@
-import React, { useState } from 'react';
-
 import {
-    Box, Button, Card, CardActions, CardContent, Grid, makeStyles, Typography
-} from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Grid,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import React, { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(8),
+    paddingBottom: theme.spacing(10),
   },
   main: {
     width: "300px",
-    height: "400px",
+    height: "420px",
   },
-  heading: {
-    marginTop: theme.spacing(1),
-  },
-  form: {
-    background: "#f2f2f2",
-    borderTop: "2px solid #2196f3",
-    marginTop: theme.spacing(10),
-    borderRadius: "px",
+  fieldName: {
+    fontWeight: 400,
   },
   title: {
     fontSize: 16,
     fontWeight: "bold",
   },
   text: {
-    fontSize: 13,
-    color: "rgba(0,0,0,.6)",
+    fontSize: 14,
+    fontWeight: 400,
   },
   input: {
     height: "10px",
   },
   btn1: {
-    width: "280px",
+    width: "270px",
     marginTop: "10px",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 }));
 
@@ -89,11 +92,14 @@ export function Settings() {
                   <li>Is longer than 8 charachters</li>
                   <li>Does not contain your username </li>
                 </ul>
-                <Typography>New password</Typography>
+                <Typography className={classes.fieldName}>
+                  New password
+                </Typography>
                 <TextField
                   margin="dense"
                   className={classes.input}
                   required
+                  fullWidth
                   id="filled-required"
                   type="password"
                   name="password1"
@@ -101,13 +107,17 @@ export function Settings() {
                   onChange={handlePasChange}
                 />
 
-                <Typography style={{ marginTop: "40px" }}>
+                <Typography
+                  style={{ marginTop: "40px" }}
+                  className={classes.fieldName}
+                >
                   Re-enter your new password
                 </Typography>
                 <TextField
                   margin="dense"
                   className={classes.input}
                   required
+                  fullWidth
                   type="password"
                   name="password2"
                   onChange={handlePasChange}
@@ -117,16 +127,14 @@ export function Settings() {
               </CardContent>
             </div>
             <CardActions>
-              <Box display="block">
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  type="submit"
-                  className={classes.btn1}
-                >
-                  Change your password
-                </Button>
-              </Box>
+              <Button
+                color="primary"
+                variant="contained"
+                type="submit"
+                className={classes.btn1}
+              >
+                Change your password
+              </Button>
             </CardActions>
           </form>
         </Card>
@@ -149,13 +157,14 @@ export function Settings() {
                   <li>Is not misleading</li>
                   <li>Does not contain any profanity</li>
                 </ul>
-                <Typography style={{ marginTop: "42px" }}>
+                <Typography style={{ marginTop: "45px", fontWeight: 400 }}>
                   Your nickname
                 </Typography>
                 <TextField
                   margin="dense"
                   className={classes.input}
                   required
+                  fullWidth
                   name="nick"
                   onChange={handleNickChange}
                   variant="outlined"
@@ -165,7 +174,7 @@ export function Settings() {
             <CardActions>
               <Button
                 color="primary"
-                variant="outlined"
+                variant="contained"
                 type="submit"
                 className={classes.btn1}
               >
