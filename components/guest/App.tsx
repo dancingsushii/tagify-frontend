@@ -1,36 +1,60 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 
-import { Box, Container } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Box, Tab, Tabs } from '@material-ui/core';
 
+import logo from '../../assets/tagify_icon.svg';
+import { mapRoute } from '../../utils/Utils';
+import { TagifyNavigation } from '../snippets/TagifyNavigation';
 import { Login } from './Login';
-import { NavBar } from './NavBar';
 import { Welcome } from './Welcome';
 
-const useStyles = makeStyles((_theme: Theme) =>
-  createStyles({
-    main: {
-      display: "flex",
-      justifyContent: "center",
-      overflow: "auto",
-      flexGrow: 1,
-    },
-  })
-);
-
 export function App() {
-  const classes = useStyles();
+  const routes: Array<string> = ["/login"];
+
+  const TabBar = () => (
+    <Route
+      path="/"
+      render={() => (
+        <Tabs value={mapRoute(location.pathname, { prefix: routes })}>
+          <Tab
+            label={<div>Login</div>}
+            value="/login"
+            component={Link}
+            to={"/login"}
+          />
+        </Tabs>
+      )}
+    />
+  );
 
   return (
     <>
-      <NavBar/>
-      <Container className={classes.main} maxWidth={false}>
-        <Box my={8}>
+      <TagifyNavigation
+        appbar={
+          <div style={{ width: "100%" }}>
+            <Box display="flex" flexDirection="row" p={1} m={1}>
+              {location.pathname !== "/" && (
+                <Box p={1}>
+                  <Link to="/">
+                    <img src={logo} width="150" />
+                  </Link>
+                </Box>
+              )}
+              <Box flexGrow={1} p={1} />
+              <Box p={1}>
+                <TabBar />
+              </Box>
+            </Box>
+          </div>
+        }
+        transparent={true}
+      >
+        <div>
           <Route exact path="/" component={Welcome} />
           <Route path="/login" component={Login} />
-        </Box>
-      </Container>
+        </div>
+      </TagifyNavigation>
     </>
   );
 }
