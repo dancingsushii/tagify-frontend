@@ -1,13 +1,13 @@
-import React from 'react';
-import { Link, Route } from 'react-router-dom';
+import React from "react";
+import { Link, Route } from "react-router-dom";
 
-import { Box, Tab, Tabs } from '@material-ui/core';
+import { Box, Tab, Tabs } from "@material-ui/core";
 
-import logo from '../../assets/tagify_icon.svg';
-import { mapRoute } from '../../utils/Utils';
-import { TagifyNavigation } from '../snippets/TagifyNavigation';
-import { Login } from './Login';
-import { Welcome } from './Welcome';
+import logo from "../../assets/tagify_icon.svg";
+import { mapRoute } from "../../utils/Utils";
+import { TagifyNavigation } from "../snippets/TagifyNavigation";
+import { Login } from "./Login";
+import { Welcome } from "./Welcome";
 
 export function App() {
   const routes: Array<string> = ["/login"];
