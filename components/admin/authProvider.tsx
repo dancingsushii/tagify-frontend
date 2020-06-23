@@ -1,3 +1,5 @@
+// service provider for admin interface
+
 export default {
     // called when the user attempts to log in
     login: ({ username }) => {
