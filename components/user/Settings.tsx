@@ -131,6 +131,7 @@ export function Settings() {
                 color="primary"
                 variant="contained"
                 type="submit"
+                disableElevation
                 className={classes.btn1}
               >
                 Change your password
@@ -176,6 +177,7 @@ export function Settings() {
                 color="primary"
                 variant="contained"
                 type="submit"
+                disableElevation
                 className={classes.btn1}
               >
                 Set nickname
