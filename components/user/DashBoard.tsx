@@ -30,7 +30,7 @@ export const DashBoard = () => {
     },
   }));
 
-  const [albums, SetAlbums] = useState([
+  const [albums, setAlbums] = useState([
     {
       album_id: 1,
       album_name: "Cats",
