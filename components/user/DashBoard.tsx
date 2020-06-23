@@ -78,21 +78,23 @@ export const DashBoard = () => {
               <Grid item className={classes.card} key={album.album_id}>
                 <Card className={classes.card}>
                   <CardActionArea>
-                    <CardMedia
-                      className={classes.media}
-                      image={album.first_photo}
-                    />
-                    <CardContent>
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="h2"
-                        style={{ fontWeight: 400 }}
-                      >
-                        {album.album_name}
-                      </Typography>
-                    </CardContent>
+                    <Link to="/album">
+                      <CardMedia
+                        className={classes.media}
+                        image={album.first_photo}
+                      />
+                    </Link>
                   </CardActionArea>
+                  <CardContent>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="h2"
+                      style={{ fontWeight: 400 }}
+                    >
+                      {album.album_name}
+                    </Typography>
+                  </CardContent>
                   <CardActions>
                     <Link to="/album" style={{ textDecoration: "none" }}>
                       <Button
