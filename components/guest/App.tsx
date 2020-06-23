@@ -51,7 +51,7 @@ export function App() {
         transparent={true}
       >
         <div>
-          <Route exact path="/" component={Welcome} />
+          <Route path="/welcome" component={Welcome} />
           <Route path="/login" component={Login} />
         </div>
       </TagifyNavigation>

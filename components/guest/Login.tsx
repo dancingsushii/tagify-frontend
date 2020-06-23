@@ -1,87 +1,107 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 
-export class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userName: "",
-      password: "",
-      loginErrors: "",
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+import Token, { Default } from '../../utils/BackendAPI';
+
+const useStyles = makeStyles((_theme: Theme) =>
+  createStyles({
+    textField: {
+      width: "100%",
+      padding: 5,
+      marginTop: 10,
+    },
+  })
+);
+
+enum LoginForm {
+  username = "username",
+  password = "progress",
+}
+
+export function Login(props) {
+  const classes = useStyles();
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  function handleChangeInput(event: React.ChangeEvent<HTMLInputElement>) {
+    const target = event.target;
+    const field = target.name;
+    const value = target.value;
+
+    switch (field) {
+      case LoginForm.username:
+        setUsername(value);
+        break;
+      case LoginForm.password:
+        setPassword(value);
+        break;
+      default:
+        console.error("Default handler reached!");
+    }
   }
 
-  handleChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value,
+  const handleSubmit = (event) => {
+    Default.login({
+      username: username,
+      password: password,
+    }).then((responseCode) => {
+      if (responseCode === "Ok") {
+        Token.login();
+        props.history.push("/dashboard");
+      }
     });
-    console.log("handle change", event);
-  }
-
-  handleSubmit(event) {
-    const { userName, password } = this.state;
-
-    console.log(
-      "form submit function Username =",
-      userName,
-      "password = ",
-      password
-    );
     event.preventDefault();
-  }
+  };
 
-  render() {
-    return (
-      <Container component="main" maxWidth="xs">
-        <Helmet>
-          <style>{"body { background-color: #e7dabe;  }"}</style>
-        </Helmet>
-        <Card style={{ marginTop: 50, width: "100%", paddingTop: 0 }}>
-          <form
-            onSubmit={this.handleSubmit}
-            style={{ margin: 8, alignItems: "stretch" }}
+  return (
+    <Container component="main" maxWidth="xs">
+      <Helmet>
+        <style>{"body { background-color: #e7dabe;  }"}</style>
+      </Helmet>
+      <Card style={{ marginTop: 50, width: "100%", paddingTop: 0 }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ margin: 8, alignItems: "stretch" }}
+        >
+          <TextField
+            className={classes.textField}
+            label="User name"
+            variant="outlined"
+            type="text"
+            name={LoginForm.username}
+            placeholder="User name"
+            value={username}
+            onChange={handleChangeInput}
+            required
+          />
+          <TextField
+            className={classes.textField}
+            label="Password"
+            variant="outlined"
+            type="password"
+            name={LoginForm.password}
+            placeholder="Password"
+            value={password}
+            onChange={handleChangeInput}
+            required
+          />
+
+          <Button
+            className={classes.textField}
+            variant="contained"
+            color="primary"
+            type="submit"
           >
-            <TextField
-              style={{ width: "100%", padding: 5, marginTop: 10 }}
-              label="User name"
-              variant="outlined"
-              type="userName"
-              name="userName"
-              placeholder="User name"
-              value={this.state.userName}
-              onChange={this.handleChange}
-              required
-            />
-            <TextField
-              style={{ width: "100%", padding: 5, marginTop: 10 }}
-              label="Password"
-              variant="outlined"
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={this.state.password}
-              onChange={this.handleChange}
-              required
-            />
-
-            <Button
-              style={{ width: "100%", marginTop: 10, padding: 10 }}
-              variant="contained"
-              color="primary"
-              type="submit"
-            >
-              Login
-            </Button>
-          </form>
-        </Card>
-      </Container>
-    );
-  }
+            Login
+          </Button>
+        </form>
+      </Card>
+    </Container>
+  );
 }

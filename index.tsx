@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch as RouteSwitch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 
 import { App as AdminApp } from './components/admin/App';
 import { App as GuestApp } from './components/guest/App';
-import { DevControls } from './components/snippets/DevControls';
 import { App as UserApp } from './components/user/App';
+import BackendToken from './utils/BackendAPI';
 
 const theme = createMuiTheme({
   palette: {
@@ -34,26 +34,18 @@ const theme = createMuiTheme({
 });
 
 function App() {
-  // this value gets defined by an api call
-  // to the backend.
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [dev] = useState<boolean>(true);
-
   return (
     <div style={{ overflowX: "hidden" }}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <RouteSwitch>
+          <Switch>
             <Route path="/admin" component={AdminApp} />
-            <Route path="/" component={isLoggedIn ? UserApp : GuestApp} />
-          </RouteSwitch>
-          {dev && (
-            <DevControls
-              isLoggedIn={isLoggedIn}
-              setIsLoggedIn={setIsLoggedIn}
-            />
-          )}
+            <Route path="/welcome" component={GuestApp} />
+            <Route path="/login" component={GuestApp} />
+            <Route path="/*" component={UserApp} />
+            <Route path="*" component={() => "404 NOT FOUND"} />
+          </Switch>
         </ThemeProvider>
       </BrowserRouter>
     </div>
