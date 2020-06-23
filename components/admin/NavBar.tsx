@@ -19,45 +19,21 @@ const useStyles = makeStyles((_theme: Theme) =>
       flexGrow: 1,
     },
     tabBarItems: {},
+    logoutButton: {
+      float: 'right',
+      marginRight: 0,
+      alignSelf: "right",
+    },
   })
 );
 
 export function NavBar() {
   const classes = useStyles();
 
-  const routes: Array<string> = ["/admin/users", "/admin/albums"];
-
-  const TabBar = () => (
-    <Route
-      path="/admin"
-      render={() => (
-        <Tabs
-          value={mapRoute(location.pathname, { prefix: routes })}
-          className={classes.tabBar}
-          centered={true}
-        >
-          <Tab
-            label="Users"
-            value="/admin/users"
-            component={Link}
-            to={"/admin/users"}
-          />
-          <Tab
-            label="Albums"
-            value="/admin/albums"
-            component={Link}
-            to={"/admin/albums"}
-          />
-        </Tabs>
-      )}
-    />
-  );
-
   return (
     <TagifyAppBar hideOnScroll={true}>
       <Typography variant="h6">Admin Page</Typography>
-      <TabBar />
-      <Button>Logout</Button>
+      <Button className={classes.logoutButton}>Logout</Button>
     </TagifyAppBar>
   );
 }

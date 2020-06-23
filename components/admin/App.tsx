@@ -1,36 +1,27 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-
-import { Box, Container } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
 import { Albums } from './Albums';
 import { NavBar } from './NavBar';
-import { Users } from './Users';
+import { UserList, UserCreate } from './Users';
+import { Admin, Resource, ListGuesser, EditGuesser} from 'react-admin';
+import jsonServerProvider from 'ra-data-json-server';
+import UserIcon from '@material-ui/icons/Group';
+import AlbumIcon from '@material-ui/icons/Book';
+import authProvider from './authProvider';
+import { Login } from './Login';
 
-const useStyles = makeStyles((_theme: Theme) =>
-  createStyles({
-    main: {
-      display: "flex",
-      justifyContent: "center",
-      overflow: "auto",
-      flexGrow: 1,
-    },
-  })
-);
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
 export function App() {
-  const classes = useStyles();
 
   return (
     <>
       <NavBar />
-      <Container className={classes.main}>
-        <Box my={8}>
-          <Route path={"/admin/users"} component={Users} />
-          <Route path={"/admin/albums"} component={Albums} />
-        </Box>
-      </Container>
+      <Admin dataProvider={dataProvider} authProvider={authProvider} >
+        <Resource name="users" list={UserList} edit={EditGuesser} create={UserCreate} icon={UserIcon} />
+        <Resource name="albums" list={ListGuesser} icon={AlbumIcon} />
+        
+      </Admin>
     </>
   );
 }
