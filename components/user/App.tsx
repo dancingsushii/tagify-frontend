@@ -1,27 +1,23 @@
+import React from 'react';
+import { Link, Redirect, Route } from 'react-router-dom';
+
 import {
-  Button,
-  Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  makeStyles,
-  Theme,
-} from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import InputBase from "@material-ui/core/InputBase";
-import Paper from "@material-ui/core/Paper";
-import ContactSupportIcon from "@material-ui/icons/ContactSupport";
-import HomeIcon from "@material-ui/icons/Home";
-import NotesIcon from "@material-ui/icons/Notes";
-import SearchIcon from "@material-ui/icons/Search";
-import React from "react";
-import { Link, Route } from "react-router-dom";
-import { Impressum } from "../Impressum";
-import { TagifyNavigation } from "../snippets/TagifyNavigation";
-import { Album } from "./Album";
-import { DashBoard } from "./DashBoard";
-import { Settings } from "./Settings";
+    Button, Divider, List, ListItem, ListItemIcon, ListItemText, makeStyles, Theme
+} from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import InputBase from '@material-ui/core/InputBase';
+import Paper from '@material-ui/core/Paper';
+import ContactSupportIcon from '@material-ui/icons/ContactSupport';
+import HomeIcon from '@material-ui/icons/Home';
+import NotesIcon from '@material-ui/icons/Notes';
+import SearchIcon from '@material-ui/icons/Search';
+
+import Token from '../../utils/BackendAPI';
+import { Impressum } from '../Impressum';
+import { TagifyNavigation } from '../snippets/TagifyNavigation';
+import { Album } from './Album';
+import { DashBoard } from './DashBoard';
+import { Settings } from './Settings';
 
 export function App() {
   const useStyles = makeStyles((theme: Theme) => ({
@@ -44,6 +40,7 @@ export function App() {
 
   return (
     <>
+      {!Token.isAuthenticated() && <Redirect to={{ pathname: "/welcome" }} />}
       <TagifyNavigation
         drawer={
           <div>
@@ -76,11 +73,11 @@ export function App() {
         appbar={
           <div>
             <Route path="/album">
-              <Link to="/" style={{ textDecoration: "none" }}>
+              <Link to="/dashboard" style={{ textDecoration: "none" }}>
                 <Button variant="contained">Back</Button>
               </Link>
             </Route>
-            <Route exact path="/">
+            <Route path="/dashboard">
               <Paper component="form" className={classes.root}>
                 <InputBase
                   className={classes.input}
@@ -96,7 +93,7 @@ export function App() {
         }
       >
         <div>
-          <Route exact path="/" component={DashBoard} />
+          <Route path="/dashboard" component={DashBoard} />
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
           <Route path="/album" component={Album} />
