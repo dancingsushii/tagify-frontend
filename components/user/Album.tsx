@@ -192,9 +192,8 @@ export function Album() {
         style={{ marginTop: "3em" }}
       >
         {pictures.pics.map((pic, i) => {
-          const url = `https://picsum.photos/200/300?random=${i}`;
           return (
-            <Grid item className={classes.block} key={i}>
+            <Grid item key={i}>
               <Card className={classes.card}>
                 <CardMedia
                   component="img"
