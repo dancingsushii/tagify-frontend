@@ -1,15 +1,13 @@
 import React from 'react';
 import { Link, Route } from 'react-router-dom';
 
-import { Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import HomeIcon from '@material-ui/icons/Home';
-import NotesIcon from '@material-ui/icons/Notes';
+import { Box, Tab, Tabs } from '@material-ui/core';
 
-import { Impressum } from '../Impressum';
+import logo from '../../assets/tagify_icon.svg';
+import { mapRoute } from '../../utils/Utils';
 import { TagifyNavigation } from '../snippets/TagifyNavigation';
-import { DashBoard } from './DashBoard';
-import { Settings } from './Settings';
+import { Login } from './Login';
+import { Welcome } from './Welcome';
 
 export function App() {
   const routes: Array<string> = ["/login"];
