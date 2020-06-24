@@ -1,5 +1,6 @@
 import React from 'react';
 
+// TODO connect to real API with real data
 export function Albums() {
   return (
     <>
