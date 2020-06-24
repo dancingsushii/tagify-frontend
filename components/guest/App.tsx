@@ -34,7 +34,7 @@ export function App() {
         appbar={
           <div style={{ width: "100%" }}>
             <Box display="flex" flexDirection="row" p={1} m={1}>
-              {location.pathname !== "/" && (
+              {location.pathname !== "/welcome" && (
                 <Box p={1}>
                   <Link to="/">
                     <img src={logo} width="150" />
