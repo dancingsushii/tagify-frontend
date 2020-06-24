@@ -1,14 +1,11 @@
+import React, { useState } from 'react';
+
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import React, { useState } from "react";
+    Button, Card, CardActions, CardContent, Grid, makeStyles, Typography
+} from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+
+import { User } from '../../utils/BackendAPI';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,14 +53,23 @@ export function Settings() {
   function handlePasSubmit(e) {
     e.preventDefault();
     if (password.password1 === password.password2) {
-      alert("Passwords match");
+      User.updatePassword({ password: password.password1 }).then(
+        (responseCode) => {
+          if (responseCode == "Ok") alert("Password changed!");
+          else alert("Server returned error: " + responseCode);
+        }
+      );
     } else {
       alert("Passwords are different");
     }
   }
+
   function handleNickSubmit(e) {
     e.preventDefault();
-    alert("Nick change");
+    User.updateNick({ nickname: nick }).then((responseCode) => {
+      if (responseCode == "Ok") alert("Nickname changed!");
+      else alert("Server returned error: " + responseCode);
+    });
   }
 
   const classes = useStyles();
