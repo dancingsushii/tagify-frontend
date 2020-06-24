@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import { App as AdminApp } from './components/admin/App';
 import { App as GuestApp } from './components/guest/App';
 import { App as UserApp } from './components/user/App';
-import BackendToken from './utils/BackendAPI';
+import BackendToken, { User } from './utils/BackendAPI';
 
 const theme = createMuiTheme({
   palette: {
@@ -34,20 +34,32 @@ const theme = createMuiTheme({
 });
 
 function App() {
+  const [render, setRender] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      let response = (await User.getUser()).responseCode;
+      BackendToken.authenticated = response == "Ok";
+      setRender(true);
+    })();
+  }, []);
+
   return (
     <div style={{ overflowX: "hidden" }}>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Switch>
-            <Route path="/admin" component={AdminApp} />
-            <Route path="/welcome" component={GuestApp} />
-            <Route path="/login" component={GuestApp} />
-            <Route path="/*" component={UserApp} />
-            <Route path="*" component={() => "404 NOT FOUND"} />
-          </Switch>
-        </ThemeProvider>
-      </BrowserRouter>
+      {render && (
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Switch>
+              <Route path="/admin" component={AdminApp} />
+              <Route path="/welcome" component={GuestApp} />
+              <Route path="/login" component={GuestApp} />
+              <Route path="/*" component={UserApp} />
+              <Route path="*" component={() => "404 NOT FOUND"} />
+            </Switch>
+          </ThemeProvider>
+        </BrowserRouter>
+      )}
     </div>
   );
 }
