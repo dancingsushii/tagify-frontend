@@ -70,7 +70,7 @@ function TagifyAppBar(props: TagifyAppBarProps) {
     <Slide appear={false} direction="down" in={!trigger}>
       <AppBar
         position="fixed"
-        elevation={0}
+        elevation={transparent ? 0 : undefined}
         className={hasDrawer ? classes.appBar : undefined}
         style={{ background: transparent ? "transparent" : undefined }}
       >

@@ -7,7 +7,6 @@ import {
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 import HomeIcon from '@material-ui/icons/Home';
 import NotesIcon from '@material-ui/icons/Notes';
 import SearchIcon from '@material-ui/icons/Search';
@@ -18,6 +17,7 @@ import { TagifyNavigation } from '../snippets/TagifyNavigation';
 import { Album } from './Album';
 import { DashBoard } from './DashBoard';
 import { Settings } from './Settings';
+import { UserMenu } from './UserMenu';
 
 export function App() {
   const useStyles = makeStyles((theme: Theme) => ({
@@ -47,17 +47,18 @@ export function App() {
             <Divider />
             {/* here comes the drawer content */}
             <List>
-              <ListItem button key={"Dashboard"} component={Link} to={"/"}>
+              <ListItem
+                button
+                key={"Dashboard"}
+                component={Link}
+                to={"/dashboard"}
+              >
                 <ListItemIcon children={<HomeIcon />} />
                 <ListItemText primary={"Dashboard"} />
               </ListItem>
             </List>
             <Divider />
             <List>
-              <ListItem button key={"Contact"}>
-                <ListItemIcon children={<ContactSupportIcon />} />
-                <ListItemText primary={"Contact"} />
-              </ListItem>
               <ListItem
                 button
                 key={"Impressum"}
@@ -71,7 +72,14 @@ export function App() {
           </div>
         }
         appbar={
-          <div>
+          <div
+            style={{
+              display: "flex",
+              flexGrow: 1,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
             <Route path="/album">
               <Link to="/dashboard" style={{ textDecoration: "none" }}>
                 <Button variant="contained">Back</Button>
@@ -89,6 +97,8 @@ export function App() {
                 </IconButton>
               </Paper>
             </Route>
+            <div style={{ flexGrow: 1 }} />
+            <UserMenu />
           </div>
         }
       >
