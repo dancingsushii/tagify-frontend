@@ -10,17 +10,14 @@ class BackendToken {
   authenticated: boolean;
 
   constructor() {
-    let auth = localStorage.getItem("auth");
-    this.authenticated = auth === "true";
+    this.authenticated = false;
   }
 
   login() {
-    localStorage.setItem("auth", "true");
     this.authenticated = true;
   }
 
   logout() {
-    localStorage.setItem("auth", "false");
     this.authenticated = false;
   }
 
@@ -79,12 +76,14 @@ export const User: UserType = {
   },
   getUser: async () => {
     const response = await fetch("/api/user/me", {
-      method: "POST",
+      method: "GET",
       credentials: "same-origin",
     });
+    let code = ResponseCode[response.status];
+    let json = code == "Ok" ? await response.json() : undefined;
     return {
-      responseCode: ResponseCode[response.status],
-      data: JSON.parse(await response.json()),
+      responseCode: code,
+      data: json,
     };
   },
   getAllData: async () => {
