@@ -54,6 +54,8 @@ export function Login(props) {
       if (responseCode === "Ok") {
         Token.login();
         props.history.push("/dashboard");
+      } else {
+        alert("Failed to login");
       }
     });
     event.preventDefault();
