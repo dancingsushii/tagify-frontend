@@ -47,8 +47,6 @@ export function Login(props) {
   }
 
   const handleSubmit = (event) => {
-    Token.login();
-    props.history.push("/dashboard");
     Default.login({
       username: username,
       password: password,
