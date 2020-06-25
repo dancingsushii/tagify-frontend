@@ -1,17 +1,10 @@
+import React, { useEffect, useState } from 'react';
+
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Container,
-  Grid,
-  makeStyles,
-  Paper,
-} from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
-import SaveIcon from "@material-ui/icons/Save";
-import React, { useEffect, useState } from "react";
+    Box, Button, Card, CardContent, CardMedia, Container, Grid, makeStyles, Paper
+} from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import SaveIcon from '@material-ui/icons/Save';
 
 export function Album() {
   const [album, setAlbum] = useState({

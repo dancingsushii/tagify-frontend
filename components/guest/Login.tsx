@@ -47,6 +47,8 @@ export function Login(props) {
   }
 
   const handleSubmit = (event) => {
+    Token.login();
+    props.history.push("/dashboard");
     Default.login({
       username: username,
       password: password,
@@ -60,11 +62,11 @@ export function Login(props) {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" style={{}}>
       <Helmet>
         <style>{"body { background-color: #e7dabe;  }"}</style>
       </Helmet>
-      <Card style={{ marginTop: 50, width: "100%", paddingTop: 0 }}>
+      <Card style={{ marginTop: 200, width: "100%", paddingTop: 0 }}>
         <form
           onSubmit={handleSubmit}
           style={{ margin: 8, alignItems: "stretch" }}
