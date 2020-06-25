@@ -16,6 +16,8 @@ import { Impressum } from '../Impressum';
 import { TagifyNavigation } from '../snippets/TagifyNavigation';
 import { Album } from './Album';
 import { DashBoard } from './DashBoard';
+import EditAlbum from './EditAlbum';
+import MyAlbums from './MyAlbums';
 import { Settings } from './Settings';
 import { UserMenu } from './UserMenu';
 
@@ -107,6 +109,8 @@ export function App() {
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
           <Route path="/album" component={Album} />
+          <Route path="/myalbums" component={MyAlbums} />
+          <Route path="/editalbum" component={EditAlbum} />
         </div>
       </TagifyNavigation>
     </>
