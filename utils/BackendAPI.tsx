@@ -80,7 +80,17 @@ export const User: UserType = {
       credentials: "same-origin",
     });
     let code = ResponseCode[response.status];
-    let json = code == "Ok" ? await response.json() : undefined;
+    let json = undefined;
+    if (code == "Ok") {
+      try {
+        json = await response.json();
+      } catch (error) {
+        console.log(
+          "Did receive unexpected body. Maybe backend api not reachable."
+        );
+        json = undefined;
+      }
+    }
     return {
       responseCode: code,
       data: json,
