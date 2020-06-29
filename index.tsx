@@ -7,6 +7,7 @@ import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import { App as AdminApp } from './components/admin/App';
 import { App as GuestApp } from './components/guest/App';
 import { App as UserApp } from './components/user/App';
+import { raleway200, raleway300 } from './fonts/Fonts';
 import BackendToken, { User } from './utils/BackendAPI';
 
 const theme = createMuiTheme({
@@ -25,11 +26,18 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: `"Raleway", sans-serif`,
+    fontFamily: "Raleway",
     fontSize: 17,
     fontWeightLight: 200,
     fontWeightRegular: 300,
     fontWeightMedium: 300,
+  },
+  overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        "@font-face": [raleway200, raleway300],
+      },
+    },
   },
 });
 
