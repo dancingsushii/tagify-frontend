@@ -58,7 +58,9 @@ interface UserType {
   logout(): Promise<string>;
   getUser(): Promise<{
     responseCode: string;
-    data: { id: number; username: string; nickname: string; role: string };
+    data:
+      | { id: number; username: string; nickname: string; role: string }
+      | undefined;
   }>;
   getAllData(): Promise<void>; // TODO
   updateNick(body: { nickname: string }): Promise<string>;
@@ -85,9 +87,13 @@ export const User: UserType = {
       try {
         json = await response.json();
       } catch (error) {
-        console.log(
-          "Did receive unexpected body. Maybe backend api not reachable."
+        console.error(error);
+        console.error(
+          "The API query resulted with an unexpected body: Could not parse JSON: " +
+            "You most probably run the website with 'npm run serve-frontend': " +
+            "Use 'npm run serve-backend' instead."
         );
+        code = ResponseCode[500];
         json = undefined;
       }
     }
@@ -97,7 +103,7 @@ export const User: UserType = {
     };
   },
   getAllData: async () => {
-    console.log("not implemented.");
+    console.error("not implemented.");
   },
   updateNick: async (body) => {
     const response = await fetch("/api/user/me", {
