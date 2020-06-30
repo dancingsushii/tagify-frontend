@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import {
     Box, Button, Card, CardContent, CardMedia, Container, Grid, makeStyles, Paper
 } from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { Albums } from '../../utils/BackendAPI';
+import { AlbumSkeleton } from '../snippets/AlbumSkeleton';
 
 export function Album(props) {
   let id = props.location.id;
@@ -216,18 +216,6 @@ export function Album(props) {
       </Container>
     );
   } else {
-    return (
-      <Container
-        maxWidth="xs"
-        style={{
-          margin: "auto",
-          marginTop: "8em",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <CircularProgress></CircularProgress>
-      </Container>
-    );
+    return <AlbumSkeleton></AlbumSkeleton>;
   }
 }

@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 
 import { Albums } from '../../utils/BackendAPI';
+import { DashboardSkeleton } from '../snippets/DashboardSkeleton';
 
 // const loader = () => {
 //   const [loading, setLoading] = useState(true);
@@ -30,7 +31,7 @@ export const DashBoard = () => {
       height: 0,
     },
   }));
-
+  const [isLoaded, setLoaded] = useState(false);
   const [albums, setAlbums] = useState([
     {
       album_id: "1",
@@ -67,8 +68,9 @@ export const DashBoard = () => {
       if (response.responseCode === "Ok") {
         if (response.albums !== undefined && response.albums.length) {
           setAlbums(response.albums);
+          setLoaded(true);
         } else {
-          alert("No albums to load, using dummy content");
+          //alert("No albums to load, using dummy content");
         }
       } else {
         alert("Failed to load album");
@@ -78,65 +80,68 @@ export const DashBoard = () => {
   }, []);
 
   const classes = useStyles();
-
-  return (
-    <>
-      <Container className={classes.root}>
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          spacing={3}
-          style={{ marginTop: "3em" }}
-        >
-          {albums.map((album) => {
-            return (
-              <Grid item className={classes.card} key={album.album_id}>
-                <Card className={classes.card}>
-                  <CardActionArea>
-                    <Link to={{ pathname: "/album", id: album.album_id }}>
-                      <CardMedia
-                        className={classes.media}
-                        image={album.first_photo}
-                      />
-                    </Link>
-                  </CardActionArea>
-                  <CardContent>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="h2"
-                      style={{ fontWeight: 400 }}
-                    >
-                      {album.album_name}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Link
-                      to={{ pathname: "/album", id: album.album_id }}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <Button
-                        size="small"
-                        color="primary"
-                        variant="contained"
-                        disableElevation
+  if (isLoaded) {
+    return (
+      <>
+        <Container className={classes.root}>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            spacing={3}
+            style={{ marginTop: "3em" }}
+          >
+            {albums.map((album) => {
+              return (
+                <Grid item className={classes.card} key={album.album_id}>
+                  <Card className={classes.card}>
+                    <CardActionArea>
+                      <Link to={{ pathname: "/album", id: album.album_id }}>
+                        <CardMedia
+                          className={classes.media}
+                          image={album.first_photo}
+                        />
+                      </Link>
+                    </CardActionArea>
+                    <CardContent>
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="h2"
+                        style={{ fontWeight: 400 }}
                       >
-                        Show album
-                      </Button>
-                    </Link>
-                  </CardActions>
-                </Card>
-              </Grid>
-            );
-          })}
-          <Grid item className={classes.filler}></Grid>
-          <Grid item className={classes.filler}></Grid>
-          <Grid item className={classes.filler}></Grid>
-          <Grid item className={classes.filler}></Grid>
-          <Grid item className={classes.filler}></Grid>
-        </Grid>
-      </Container>
-    </>
-  );
+                        {album.album_name}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Link
+                        to={{ pathname: "/album", id: album.album_id }}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Button
+                          size="small"
+                          color="primary"
+                          variant="contained"
+                          disableElevation
+                        >
+                          Show album
+                        </Button>
+                      </Link>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              );
+            })}
+            <Grid item className={classes.filler}></Grid>
+            <Grid item className={classes.filler}></Grid>
+            <Grid item className={classes.filler}></Grid>
+            <Grid item className={classes.filler}></Grid>
+            <Grid item className={classes.filler}></Grid>
+          </Grid>
+        </Container>
+      </>
+    );
+  } else {
+    return <DashboardSkeleton></DashboardSkeleton>;
+  }
 };
