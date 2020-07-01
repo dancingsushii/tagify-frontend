@@ -36,9 +36,9 @@ export function DashboardSkeleton() {
         >
           {Array(9)
             .fill(1)
-            .map((index) => {
+            .map((_index, i) => {
               return (
-                <Grid item key={index}>
+                <Grid item key={i}>
                   <Card className={classes.card}>
                     <CardActionArea>
                       <CardMedia>

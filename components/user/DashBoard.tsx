@@ -34,43 +34,19 @@ export const DashBoard = () => {
   const [isLoaded, setLoaded] = useState(false);
   const [albums, setAlbums] = useState([
     {
-      album_id: "1",
-      album_name: "Cats",
-      first_photo: "https://placekitten.com/g/200/300",
-    },
-    {
-      album_id: "2",
-      album_name: "Dogs",
-      first_photo:
-        "https://images.dog.ceo/breeds/havanese/00100trPORTRAIT_00100_BURST20191103202017556_COVER.jpg",
-    },
-    {
-      album_id: "3",
-      album_name: "Zebras",
-      first_photo:
-        "https://loremflickr.com/cache/resized/65535_49700189643_5e5000b9fa_320_240_nofilter.jpg",
-    },
-    {
-      album_id: "4",
-      album_name: "Faces",
-      first_photo:
-        "https://loremflickr.com/cache/resized/65535_49501755806_3b102c5ded_n_320_240_nofilter.jpg",
-    },
-    {
-      album_id: "5",
-      album_name: "Cars",
-      first_photo: "https://jooinn.com/images/vehicles-on-road-1.png",
+      id: 1,
+      title: "",
+      description: "",
+      first_photo: "",
     },
   ]);
   useEffect(() => {
     const fetchData = async () => {
       let response = await Albums.getAllAlbums();
       if (response.responseCode === "Ok") {
-        if (response.albums !== undefined && response.albums.length) {
-          setAlbums(response.albums);
+        if (response.albums !== undefined) {
+          setAlbums(response.albums.albums);
           setLoaded(true);
-        } else {
-          //alert("No albums to load, using dummy content");
         }
       } else {
         alert("Failed to load album");
@@ -93,10 +69,10 @@ export const DashBoard = () => {
           >
             {albums.map((album) => {
               return (
-                <Grid item className={classes.card} key={album.album_id}>
+                <Grid item className={classes.card} key={album.id}>
                   <Card className={classes.card}>
                     <CardActionArea>
-                      <Link to={{ pathname: "/album", id: album.album_id }}>
+                      <Link to={{ pathname: "/album", id: album.id }}>
                         <CardMedia
                           className={classes.media}
                           image={album.first_photo}
@@ -110,12 +86,12 @@ export const DashBoard = () => {
                         component="h2"
                         style={{ fontWeight: 400 }}
                       >
-                        {album.album_name}
+                        {album.title}
                       </Typography>
                     </CardContent>
                     <CardActions>
                       <Link
-                        to={{ pathname: "/album", id: album.album_id }}
+                        to={{ pathname: "/album", id: album.id }}
                         style={{ textDecoration: "none" }}
                       >
                         <Button

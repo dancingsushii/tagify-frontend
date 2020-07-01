@@ -136,11 +136,14 @@ interface AlbumType {
   getAllAlbums(): Promise<{
     responseCode: string;
     albums:
-      | Array<{
-          album_id: string;
-          album_name: string;
-          first_photo: string;
-        }>
+      | {
+          albums: Array<{
+            id: number;
+            title: string;
+            description: string;
+            first_photo: string;
+          }>;
+        }
       | undefined;
   }>;
   getAlbum(
@@ -149,12 +152,14 @@ interface AlbumType {
     responseCode: string;
     album:
       | {
-          album_id: string;
-          album_name: string;
-          first_photo: string;
-          tags: string[];
+          id: number;
+          title: string;
           description: string;
-          owner: string;
+          tags: string[];
+          image_number: number;
+          tagged_number: number;
+          users_id: number;
+          first_photo: string;
         }
       | undefined;
   }>;
@@ -177,6 +182,9 @@ export const Albums: AlbumType = {
     let json = undefined;
     try {
       json = await response.json();
+      // if (json !== undefined) {
+      //   json = json.albums;
+      // }
     } catch (error) {
       console.error(error);
       console.error(
@@ -245,13 +253,13 @@ interface UserAlbumType {
     albums:
       | [
           {
-            id: string;
+            id: number;
             title: string;
             description: string;
             tags: string[];
-            image_number: string;
-            tagged_number: string;
-            users_id: string;
+            image_number: number;
+            tagged_number: number;
+            users_id: number;
             first_photo: string;
           }
         ]
@@ -265,13 +273,13 @@ interface UserAlbumType {
     responseCode: string;
     album:
       | {
-          id: string;
+          id: number;
           title: string;
           description: string;
           tags: string[];
-          image_number: string;
-          tagged_number: string;
-          users_id: string;
+          image_number: number;
+          tagged_number: number;
+          users_id: number;
           first_photo: string;
         }
       | undefined;

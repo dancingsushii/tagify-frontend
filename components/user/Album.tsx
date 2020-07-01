@@ -12,10 +12,14 @@ import { AlbumSkeleton } from '../snippets/AlbumSkeleton';
 export function Album(props) {
   let id = props.location.id;
   const [album, setAlbum] = useState({
-    album_id: "",
-    album_name: "",
-    tags: [""],
+    id: 1,
+    title: "",
     description: "",
+    tags: [""],
+    image_number: 0,
+    tagged_number: 0,
+    users_id: 0,
+    first_photo: "",
   });
   const [pictures, setPictures] = useState([""]);
   const [isLoaded, setLoaded] = useState(false);
@@ -29,8 +33,6 @@ export function Album(props) {
           if (pics.responseCode === "Ok" && pics.photos !== undefined) {
             setPictures(pics.photos);
             setLoaded(true);
-          } else {
-            alert("Failed to fetch pictures");
           }
         } else {
           alert("Failed to fetch album");
@@ -128,10 +130,7 @@ export function Album(props) {
     return (
       <Container className={classes.root}>
         <Card className={classes.album}>
-          <CardMedia
-            className={classes.media}
-            image="https://media.nature.com/lw800/magazine-assets/d41586-020-01430-5/d41586-020-01430-5_17977552.jpg"
-          />
+          <CardMedia className={classes.media} image={album.first_photo} />
           <CardContent>
             <Typography
               gutterBottom
@@ -139,7 +138,7 @@ export function Album(props) {
               component="h2"
               style={{ fontWeight: "bold" }}
             >
-              {album.album_name}
+              {album.title}
             </Typography>
             <Typography
               variant="body2"
