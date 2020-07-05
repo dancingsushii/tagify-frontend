@@ -131,3 +131,206 @@ export const User: UserType = {
     return ResponseCode[response.status];
   },
 };
+
+interface AlbumType {
+  getAllAlbums(): Promise<{
+    responseCode: string;
+    albums:
+      | {
+          albums: Array<{
+            id: number;
+            title: string;
+            description: string;
+            first_photo: string;
+          }>;
+        }
+      | undefined;
+  }>;
+  getAlbum(
+    album_id: string
+  ): Promise<{
+    responseCode: string;
+    album:
+      | {
+          id: number;
+          title: string;
+          description: string;
+          tags: string[];
+          image_number: number;
+          tagged_number: number;
+          users_id: number;
+          first_photo: string;
+        }
+      | undefined;
+  }>;
+  getAlbumPhotos(
+    album_id: string,
+    index: string
+  ): Promise<{
+    responseCode: string;
+    photos: string[] | undefined;
+  }>;
+}
+
+export const Albums: AlbumType = {
+  getAllAlbums: async () => {
+    const response = await fetch("api/albums", {
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+    });
+    let code = ResponseCode[response.status];
+    let json = undefined;
+    try {
+      json = await response.json();
+      // if (json !== undefined) {
+      //   json = json.albums;
+      // }
+    } catch (error) {
+      console.error(error);
+      console.error(
+        "The API query resulted with an unexpected body: Could not parse JSON"
+      );
+      code = ResponseCode[500];
+      json = undefined;
+    }
+    return {
+      responseCode: code,
+      albums: json,
+    };
+  },
+  getAlbum: async (album_id) => {
+    let url = `api/albums/${album_id}`;
+    const response = await fetch(url, {
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+    });
+    let code = ResponseCode[response.status];
+    let json = undefined;
+    try {
+      json = await response.json();
+    } catch (error) {
+      console.error(error);
+      console.error(
+        "The API query resulted with an unexpected body: Could not parse JSON"
+      );
+      code = ResponseCode[500];
+      json = undefined;
+    }
+
+    return {
+      responseCode: code,
+      album: json,
+    };
+  },
+  getAlbumPhotos: async (album_id, index) => {
+    let url = `api/albums/${album_id}/photos/${index}`;
+    const response = await fetch(url, {
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+    });
+    let code = ResponseCode[response.status];
+    let json = undefined;
+    try {
+      json = await response.json();
+    } catch (error) {
+      console.error(error);
+      console.error(
+        "The API query resulted with an unexpected body: Could not parse JSON"
+      );
+      code = ResponseCode[500];
+      json = undefined;
+    }
+    return {
+      responseCode: code,
+      photos: json,
+    };
+  },
+};
+
+interface UserAlbumType {
+  getMyAlbums(): Promise<{
+    responseCode: string;
+    albums:
+      | [
+          {
+            id: number;
+            title: string;
+            description: string;
+            tags: string[];
+            image_number: number;
+            tagged_number: number;
+            users_id: number;
+            first_photo: string;
+          }
+        ]
+      | undefined;
+  }>;
+  createNewAlbum(body: {
+    title: string;
+    description: string;
+    tags: string[];
+  }): Promise<{
+    responseCode: string;
+    album:
+      | {
+          id: number;
+          title: string;
+          description: string;
+          tags: string[];
+          image_number: number;
+          tagged_number: number;
+          users_id: number;
+          first_photo: string;
+        }
+      | undefined;
+  }>;
+}
+
+export const UserAlbum: UserAlbumType = {
+  getMyAlbums: async () => {
+    const response = await fetch("/api/user/albums", {
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+    });
+    let code = ResponseCode[response.status];
+    let json = undefined;
+    try {
+      json = await response.json();
+    } catch (error) {
+      console.error(error);
+      console.error(
+        "The API query resulted with an unexpected body: Could not parse JSON"
+      );
+      code = ResponseCode[500];
+      json = undefined;
+    }
+    return {
+      responseCode: code,
+      albums: json,
+    };
+  },
+  createNewAlbum: async (body) => {
+    const response = await fetch("/api/user/albums", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    let code = ResponseCode[response.status];
+    let json = undefined;
+    try {
+      json = await response.json();
+    } catch (error) {
+      console.error(error);
+      console.error(
+        "The API query resulted with an unexpected body: Could not parse JSON"
+      );
+      code = ResponseCode[500];
+      json = undefined;
+    }
+    return {
+      responseCode: code,
+      album: json,
+    };
+  },
+};

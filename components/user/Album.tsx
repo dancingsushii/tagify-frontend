@@ -6,29 +6,37 @@ import {
 import Typography from '@material-ui/core/Typography';
 import SaveIcon from '@material-ui/icons/Save';
 
-export function Album() {
+import { Albums } from '../../utils/BackendAPI';
+import { AlbumSkeleton } from '../snippets/AlbumSkeleton';
+
+export function Album(props) {
+  let id = props.location.id;
   const [album, setAlbum] = useState({
-    album_id: 1,
-    album_name: "Dummy album",
-    tags: ["dog", "cat", "husky", "bulldog"],
-    description:
-      "This is a dummy album with random pictures, used for presentation purposes",
-    owner: "Bob",
+    id: 1,
+    title: "",
+    description: "",
+    tags: [""],
+    image_number: 0,
+    tagged_number: 0,
+    users_id: 0,
+    first_photo: "",
   });
-  const [pictures, setPictures] = useState({ pics: [] });
+  const [pictures, setPictures] = useState([""]);
   const [isLoaded, setLoaded] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await fetch(
-          `https://dog.ceo/api/breeds/image/random/20`
-        );
-        const data = await result.json();
-        // var picsUrl = data.map(function (pic) {
-        //   return pic.download_url;
-        // });
-        setPictures({ pics: data.message });
-        setLoaded(true);
+        let response = await Albums.getAlbum(id);
+        if (response.responseCode === "Ok" && response.album !== undefined) {
+          setAlbum(response.album);
+          let pics = await Albums.getAlbumPhotos(id, "0");
+          if (pics.responseCode === "Ok" && pics.photos !== undefined) {
+            setPictures(pics.photos);
+            setLoaded(true);
+          }
+        } else {
+          alert("Failed to fetch album");
+        }
       } catch (error) {
         console.log(error);
       }
@@ -38,7 +46,7 @@ export function Album() {
 
   const useStyles = makeStyles((theme) => ({
     root: {
-      marginTop: theme.spacing(4),
+      marginTop: theme.spacing(8),
       marginBottom: theme.spacing(8),
       paddingBottom: theme.spacing(10),
     },
@@ -118,94 +126,95 @@ export function Album() {
   }));
   const classes = useStyles();
 
-  return (
-    <Container className={classes.root}>
-      <Card className={classes.album}>
-        <CardMedia
-          className={classes.media}
-          image="https://media.nature.com/lw800/magazine-assets/d41586-020-01430-5/d41586-020-01430-5_17977552.jpg"
-        />
-        <CardContent>
-          <Typography
-            gutterBottom
-            variant="h5"
-            component="h2"
-            style={{ fontWeight: "bold" }}
-          >
-            {album.album_name}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            component="p"
-            style={{ fontWeight: 500 }}
-          >
-            {album.description}
-          </Typography>
-          <Button
-            variant="contained"
-            size="small"
-            disableElevation
-            className={classes.button}
-          >
-            Annotate
-          </Button>
+  if (isLoaded) {
+    return (
+      <Container className={classes.root}>
+        <Card className={classes.album}>
+          <CardMedia className={classes.media} image={album.first_photo} />
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="h2"
+              style={{ fontWeight: "bold" }}
+            >
+              {album.title}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+              style={{ fontWeight: 500 }}
+            >
+              {album.description}
+            </Typography>
+            <Button
+              variant="contained"
+              size="small"
+              disableElevation
+              className={classes.button}
+            >
+              Annotate
+            </Button>
 
-          <Button
-            variant="contained"
-            size="small"
-            disableElevation
-            className={classes.button}
-            startIcon={<SaveIcon />}
-          >
-            Save
-          </Button>
-        </CardContent>
-      </Card>
+            <Button
+              variant="contained"
+              size="small"
+              disableElevation
+              className={classes.button}
+              startIcon={<SaveIcon />}
+            >
+              Save
+            </Button>
+          </CardContent>
+        </Card>
 
-      <Box component="ul" className={classes.tags}>
-        <Typography style={{ marginRight: "6px", fontWeight: "bold" }}>
-          Tags:
-        </Typography>
-        {album.tags.map((tag, i) => {
-          return (
-            <li key={i}>
-              <Paper className={classes.chip} variant="outlined" square>
-                {tag}
-              </Paper>
-            </li>
-          );
-        })}
-      </Box>
-      <Grid
-        container
-        direction="row"
-        justify="center"
-        spacing={3}
-        style={{ marginTop: "3em" }}
-      >
-        {pictures.pics.map((pic, i) => {
-          return (
-            <Grid item key={i}>
-              <Card className={classes.card}>
-                <CardMedia
-                  component="img"
-                  height="150"
-                  width="150"
-                  image={pic}
-                ></CardMedia>
-              </Card>
-            </Grid>
-          );
-        })}
-        <Grid item className={classes.filler}></Grid>
-        <Grid item className={classes.filler}></Grid>
-        <Grid item className={classes.filler}></Grid>
-        <Grid item className={classes.filler}></Grid>
-        <Grid item className={classes.filler}></Grid>
-        <Grid item className={classes.filler}></Grid>
-        <Grid item className={classes.filler}></Grid>
-      </Grid>
-    </Container>
-  );
+        <Box component="ul" className={classes.tags}>
+          <Typography style={{ marginRight: "6px", fontWeight: "bold" }}>
+            Tags:
+          </Typography>
+          {album.tags.map((tag, i) => {
+            return (
+              <li key={i}>
+                <Paper className={classes.chip} variant="outlined" square>
+                  {tag}
+                </Paper>
+              </li>
+            );
+          })}
+        </Box>
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          spacing={3}
+          style={{ marginTop: "3em" }}
+        >
+          {pictures.map((pic, i) => {
+            return (
+              <Grid item key={i}>
+                <Card className={classes.card}>
+                  <CardMedia
+                    component="img"
+                    height="150"
+                    width="150"
+                    image={pic}
+                  ></CardMedia>
+                </Card>
+              </Grid>
+            );
+          })}
+          <Grid item className={classes.filler}></Grid>
+          <Grid item className={classes.filler}></Grid>
+          <Grid item className={classes.filler}></Grid>
+          <Grid item className={classes.filler}></Grid>
+          <Grid item className={classes.filler}></Grid>
+          <Grid item className={classes.filler}></Grid>
+          <Grid item className={classes.filler}></Grid>
+        </Grid>
+      </Container>
+    );
+  } else {
+    return <AlbumSkeleton></AlbumSkeleton>;
+  }
 }

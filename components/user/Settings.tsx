@@ -28,9 +28,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
     fontWeight: 400,
   },
-  input: {
-    height: "10px",
-  },
+
   btn1: {
     width: "270px",
     marginTop: "10px",
@@ -102,11 +100,9 @@ export function Settings() {
                   New password
                 </Typography>
                 <TextField
-                  margin="dense"
-                  className={classes.input}
                   required
                   fullWidth
-                  id="filled-required"
+                  size="small"
                   type="password"
                   name="password1"
                   variant="outlined"
@@ -114,20 +110,18 @@ export function Settings() {
                 />
 
                 <Typography
-                  style={{ marginTop: "40px" }}
+                  style={{ marginTop: "20px" }}
                   className={classes.fieldName}
                 >
                   Re-enter your new password
                 </Typography>
                 <TextField
-                  margin="dense"
-                  className={classes.input}
                   required
                   fullWidth
+                  size="small"
                   type="password"
                   name="password2"
                   onChange={handlePasChange}
-                  id="filled-required"
                   variant="outlined"
                 />
               </CardContent>
@@ -168,9 +162,8 @@ export function Settings() {
                   Your nickname
                 </Typography>
                 <TextField
-                  margin="dense"
-                  className={classes.input}
                   required
+                  size="small"
                   fullWidth
                   name="nick"
                   onChange={handleNickChange}

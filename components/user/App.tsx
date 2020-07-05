@@ -14,6 +14,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import Token from '../../utils/BackendAPI';
 import { Impressum } from '../Impressum';
 import { TagifyNavigation } from '../snippets/TagifyNavigation';
+import { AddAlbum } from './AddAlbum';
 import { Album } from './Album';
 import { DashBoard } from './DashBoard';
 import EditAlbum from './EditAlbum';
@@ -111,6 +112,7 @@ export function App() {
           <Route path="/album" component={Album} />
           <Route path="/myalbums" component={MyAlbums} />
           <Route path="/editalbum" component={EditAlbum} />
+          <Route path="/addalbum" component={AddAlbum} />
         </div>
       </TagifyNavigation>
     </>
