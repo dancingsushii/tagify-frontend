@@ -53,7 +53,7 @@ export function Login(props) {
     }).then((responseCode) => {
       if (responseCode === "Ok") {
         Token.login();
-        props.history.push("/dashboard");
+        props.history.push("/");
       } else {
         alert("Failed to login");
       }

@@ -1,17 +1,23 @@
 import React from 'react';
 
 import {
-    Button, Card, CardActions, CardContent, Chip, Container, makeStyles, TextField
+    Button, Card, CardActions, CardContent, Chip, Container, makeStyles, TextField, useTheme
 } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 import { UserAlbum } from '../../utils/BackendAPI';
+import { FileSelector, FileUploader } from '../snippets/FileUtils';
+import { ProgressButton } from '../snippets/ProgressButton';
 
 export function AddAlbum() {
+  const theme = useTheme();
   const [name, setName] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [tags, setTags] = React.useState<string[]>([]);
   const [input, setInput] = React.useState("");
+  const [files, setFiles] = React.useState<FileList | Array<File>>([]);
+  const [progress, setProgress] = React.useState<number>(0);
   const initalErrors = {
     name: "",
     description: "",
@@ -63,13 +69,24 @@ export function AddAlbum() {
         title: name,
         description: description,
         tags: tags,
-      }).then((response) => {
-        if (response.responseCode === "Ok" && response.album !== undefined) {
-          //TODO: ? Redirect to add photos page with album_id from response passed as prop ?
-        } else {
-          alert("Failed to create new album");
-        }
-      });
+      })
+        .then((response) => {
+          if (response.responseCode !== "Ok" || response.album === undefined) {
+            alert("Failed to create new album");
+            console.error(
+              `Server answered with error code ${response.responseCode}`
+            );
+            return;
+          }
+          return FileUploader(
+            files,
+            response.album?.id.toString(),
+            setProgress
+          );
+        })
+        .then(() => {
+          console.log("Finished!");
+        });
     }
   }
   function removeTag(i) {
@@ -178,17 +195,38 @@ export function AddAlbum() {
                 ))}
               </ul>
             </div>
+            <FileSelector accept={"image/*"} setFiles={setFiles}>
+              <Button
+                color="primary"
+                variant="contained"
+                disableElevation
+                component="span"
+                startIcon={<CloudUploadIcon />}
+              >
+                Select Files
+              </Button>
+            </FileSelector>
+            <div>Total number of selected files: {files.length}</div>
           </CardContent>
           <CardActions>
-            <Button
+            <ProgressButton
               variant="contained"
               disableElevation
               fullWidth
               onClick={handleSubmit}
-              style={{ marginLeft: "auto", marginRight: "auto" }}
+              style={{
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+              progress={progress}
+              onProgress={(p) => `${p}% uploaded`}
+              onSuccess={"Successfully created!"}
+              primary={theme.palette.primary.main}
+              secondary={theme.palette.secondary.main}
+              fadeWidth={30}
             >
-              Add pictures
-            </Button>
+              Create Album
+            </ProgressButton>
           </CardActions>
         </form>
       </Card>

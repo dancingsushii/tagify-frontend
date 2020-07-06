@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import {
-    ClickAwayListener, Grow, IconButton, makeStyles, MenuItem, MenuList, Paper, Popper
+    ClickAwayListener, Grow, IconButton, MenuItem, MenuList, Paper, Popper
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 

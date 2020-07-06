@@ -7,6 +7,7 @@ import {
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
+import AddIcon from '@material-ui/icons/Add';
 import HomeIcon from '@material-ui/icons/Home';
 import NotesIcon from '@material-ui/icons/Notes';
 import SearchIcon from '@material-ui/icons/Search';
@@ -50,12 +51,7 @@ export function App() {
             <Divider />
             {/* here comes the drawer content */}
             <List>
-              <ListItem
-                button
-                key={"Dashboard"}
-                component={Link}
-                to={"/dashboard"}
-              >
+              <ListItem button key={"Dashboard"} component={Link} to={"/"}>
                 <ListItemIcon children={<HomeIcon />} />
                 <ListItemText primary={"Dashboard"} />
               </ListItem>
@@ -84,11 +80,11 @@ export function App() {
             }}
           >
             <Route path="/album">
-              <Link to="/dashboard" style={{ textDecoration: "none" }}>
+              <Link to="/" style={{ textDecoration: "none" }}>
                 <Button variant="contained">Back</Button>
               </Link>
             </Route>
-            <Route path="/dashboard">
+            <Route exact path="/">
               <Paper component="form" className={classes.root}>
                 <InputBase
                   className={classes.input}
@@ -101,12 +97,15 @@ export function App() {
               </Paper>
             </Route>
             <div style={{ flexGrow: 1 }} />
+            <IconButton component={Link} to={"/addalbum"}>
+              <AddIcon />
+            </IconButton>
             <UserMenu />
           </div>
         }
       >
         <div>
-          <Route path="/dashboard" component={DashBoard} />
+          <Route exact path="/" component={DashBoard} />
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
           <Route path="/album" component={Album} />

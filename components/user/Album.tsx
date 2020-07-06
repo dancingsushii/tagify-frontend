@@ -130,7 +130,16 @@ export function Album(props) {
     return (
       <Container className={classes.root}>
         <Card className={classes.album}>
-          <CardMedia className={classes.media} image={album.first_photo} />
+          <CardMedia
+            className={classes.media}
+            image={(() => {
+              if (album.first_photo == "default_path" && pictures.length > 0) {
+                console.log("here");
+                return `/api/user/albums/${album.id}/photos/${pictures[0].id}`;
+              }
+              return album.first_photo;
+            })()}
+          />
           <CardContent>
             <Typography
               gutterBottom
@@ -191,6 +200,7 @@ export function Album(props) {
           style={{ marginTop: "3em" }}
         >
           {pictures.map((pic, i) => {
+            console.log(pic);
             return (
               <Grid item key={i}>
                 <Card className={classes.card}>
@@ -198,7 +208,7 @@ export function Album(props) {
                     component="img"
                     height="150"
                     width="150"
-                    image={pic}
+                    image={`/api/user/albums/${album.id}/photos/${pic.id}`}
                   ></CardMedia>
                 </Card>
               </Grid>

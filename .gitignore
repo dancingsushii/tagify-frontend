@@ -1,2 +1,3 @@
 debug_dist
 .cache
+*.DS_Store*

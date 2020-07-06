@@ -182,14 +182,12 @@ export const Albums: AlbumType = {
     let json = undefined;
     try {
       json = await response.json();
-      // if (json !== undefined) {
-      //   json = json.albums;
-      // }
     } catch (error) {
       console.error(error);
       console.error(
         "The API query resulted with an unexpected body: Could not parse JSON"
       );
+      response.text().then((text) => console.error(text));
       code = ResponseCode[500];
       json = undefined;
     }
@@ -237,6 +235,7 @@ export const Albums: AlbumType = {
       console.error(
         "The API query resulted with an unexpected body: Could not parse JSON"
       );
+      response.text().then((text) => console.error(text));
       code = ResponseCode[500];
       json = undefined;
     }
@@ -301,6 +300,7 @@ export const UserAlbum: UserAlbumType = {
       console.error(
         "The API query resulted with an unexpected body: Could not parse JSON"
       );
+      response.text().then((text) => console.error(text));
       code = ResponseCode[500];
       json = undefined;
     }
@@ -325,6 +325,7 @@ export const UserAlbum: UserAlbumType = {
       console.error(
         "The API query resulted with an unexpected body: Could not parse JSON"
       );
+      response.text().then((text) => console.error(text));
       code = ResponseCode[500];
       json = undefined;
     }
@@ -332,5 +333,49 @@ export const UserAlbum: UserAlbumType = {
       responseCode: code,
       album: json,
     };
+  },
+};
+
+interface UserPhotoType {
+  addPhotoToAlbum(albumId: string, body: FormData): Promise<string>;
+  replacePhotoInAlbum(
+    albumId: string,
+    photoId: string,
+    body: FormData
+  ): Promise<string>;
+  deletePhotoFromAlbum(albumId: string, photoId: string): Promise<string>;
+}
+
+export const UserPhoto: UserPhotoType = {
+  addPhotoToAlbum: async (albumId, body) => {
+    const response = await fetch(`/api/user/albums/${albumId}/photos`, {
+      method: "POST",
+      credentials: "same-origin",
+      body: body,
+    });
+    return ResponseCode[response.status];
+  },
+
+  replacePhotoInAlbum: async (albumId, photoId, body) => {
+    const response = await fetch(
+      `/api/user/albums/${albumId}/photos/${photoId}`,
+      {
+        method: "PUT",
+        credentials: "same-origin",
+        body: body,
+      }
+    );
+    return ResponseCode[response.status];
+  },
+
+  deletePhotoFromAlbum: async (albumId, photoId) => {
+    const response = await fetch(
+      `/api/user/albums/${albumId}/photos/${photoId}`,
+      {
+        method: "DELETE",
+        credentials: "same-origin",
+      }
+    );
+    return ResponseCode[response.status];
   },
 };
