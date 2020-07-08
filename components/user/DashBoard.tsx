@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
-    Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Grid, makeStyles,
-    Typography
+    Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Grid,
+    makeStyles, Typography
 } from '@material-ui/core';
 
 import { Albums } from '../../utils/BackendAPI';
@@ -31,15 +31,15 @@ export const DashBoard = () => {
       height: 0,
     },
   }));
+
+  type Album = {
+    id: number;
+    title: string;
+    description: string;
+    first_photo: string;
+  };
   const [isLoaded, setLoaded] = useState(false);
-  const [albums, setAlbums] = useState([
-    {
-      id: 1,
-      title: "",
-      description: "",
-      first_photo: "",
-    },
-  ]);
+  const [albums, setAlbums] = useState<Album[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       let response = await Albums.getAllAlbums();
@@ -56,7 +56,7 @@ export const DashBoard = () => {
   }, []);
 
   const classes = useStyles();
-  if (isLoaded) {
+  if (isLoaded && albums.length) {
     return (
       <>
         <Container className={classes.root}>
@@ -72,7 +72,7 @@ export const DashBoard = () => {
                 <Grid item className={classes.card} key={album.id}>
                   <Card className={classes.card}>
                     <CardActionArea>
-                      <Link to={{ pathname: "/album", id: album.id }}>
+                      <Link to={{ pathname: `/album/${album.id}` }}>
                         <CardMedia
                           className={classes.media}
                           image={album.first_photo}
@@ -91,7 +91,7 @@ export const DashBoard = () => {
                     </CardContent>
                     <CardActions>
                       <Link
-                        to={{ pathname: "/album", id: album.id }}
+                        to={{ pathname: `/album/${album.id}` }}
                         style={{ textDecoration: "none" }}
                       >
                         <Button
@@ -116,6 +116,27 @@ export const DashBoard = () => {
           </Grid>
         </Container>
       </>
+    );
+  } else if (isLoaded) {
+    // No albums ---> display link to create new album
+    return (
+      <Container style={{ textAlign: "center", marginTop: "6em" }}>
+        <Typography variant="h2">Oops</Typography>
+        <Box component="div" style={{ marginTop: "1em" }}>
+          It looks like right now there are no albums that you can contribute to
+          :(
+        </Box>
+        <Box component="div">
+          Please help us make Tagify a better platform and create a new album.
+        </Box>
+        <Box component="div" style={{ marginTop: "2em" }}>
+          <Link to="/addalbum" style={{ textDecoration: "none" }}>
+            <Button variant="contained" disableElevation>
+              Create new album
+            </Button>
+          </Link>
+        </Box>
+      </Container>
     );
   } else {
     return <DashboardSkeleton></DashboardSkeleton>;

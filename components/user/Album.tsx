@@ -10,7 +10,7 @@ import { Albums } from '../../utils/BackendAPI';
 import { AlbumSkeleton } from '../snippets/AlbumSkeleton';
 
 export function Album(props) {
-  let id = props.location.id;
+  let id = props.match.params.id;
   const [album, setAlbum] = useState({
     id: 1,
     title: "",

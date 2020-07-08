@@ -29,7 +29,6 @@ export function App() {
       padding: "2px 4px",
       display: "flex",
       alignItems: "center",
-      width: 220,
       height: 35,
     },
     input: {
@@ -79,7 +78,7 @@ export function App() {
               alignItems: "center",
             }}
           >
-            <Route path="/album">
+            <Route path="/album/:id">
               <Link to="/" style={{ textDecoration: "none" }}>
                 <Button variant="contained">Back</Button>
               </Link>
@@ -108,7 +107,10 @@ export function App() {
           <Route exact path="/" component={DashBoard} />
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
-          <Route path="/album" component={Album} />
+          <Route exact path="/album">
+            <Redirect to="/"></Redirect>
+          </Route>
+          <Route path="/album/:id" component={Album} />
           <Route path="/myalbums" component={MyAlbums} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
