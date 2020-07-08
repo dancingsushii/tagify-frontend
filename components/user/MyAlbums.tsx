@@ -31,7 +31,7 @@ function MyAlbums(props) {
       image_number: 0,
       tagged_number: 0,
       users_id: 0,
-      first_photo: "",
+      first_photo: "https://picsum.photos/id/33/300/300",
     },
   ]);
 
@@ -59,7 +59,7 @@ function MyAlbums(props) {
   const [toDelete, setToDelete] = useState({
     id: 3,
     title: "Anima",
-    description: "test123 super album",
+    description: "test123 supesr album",
     tags: ["back cat", "white cat", "dog"],
     image_number: 0,
     tagged_number: 0,
