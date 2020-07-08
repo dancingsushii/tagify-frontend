@@ -311,7 +311,10 @@ function MyAlbums(props) {
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
-          <DialogTitle id="alert-dialog-slide-title">
+          <DialogTitle
+            id="alert-dialog-slide-title"
+            style={{ alignSelf: "center" }}
+          >
             Confirm Delete
           </DialogTitle>
           <DialogContent>
