@@ -69,13 +69,17 @@ function Albumthumbneil(props) {
   const {
     id,
     title,
-    description,
-    tags,
     image_number,
     tagged_number,
     users_id,
     first_photo,
   } = props;
+  function progress() {
+    if (image_number > 0) {
+      return (100 * tagged_number) / image_number;
+    }
+    return 0;
+  }
 
   return (
     <Card className={classes.root}>
@@ -87,10 +91,7 @@ function Albumthumbneil(props) {
         >
           <CardHeader
             action={
-              <CircularProgressWithLabel
-                variant="static"
-                value={(tagged_number * 100) / image_number}
-              />
+              <CircularProgressWithLabel variant="static" value={progress()} />
             }
             title={title}
             subheader={users_id}
@@ -125,14 +126,15 @@ function Albumthumbneil(props) {
         item
         justify="space-around"
       >
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-          href="editalbum"
+        <Link
+          to={{ pathname: "/editalbum", id: id }}
+          style={{ textDecoration: "none", color: "inherit" }}
         >
-          Edit
-        </Button>
+          <Button size="small" color="primary" variant="contained">
+            Edit
+          </Button>
+        </Link>
+
         <Button
           onClick={() => props.onDelete(title)}
           size="small"

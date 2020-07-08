@@ -66,6 +66,7 @@ function MyAlbums(props) {
     users_id: 2,
     first_photo: "https://picsum.photos/id/33/300/300",
   });
+
   const [open, setOpen] = useState(false);
 
   const elementsProPage = 8;
@@ -106,6 +107,13 @@ function MyAlbums(props) {
     AlbumList.forEach((c) => (tagged += c.tagged_number));
     return tagged;
   };
+
+  function progress() {
+    if (totalImages() > 0) {
+      return (100 * totalTagged()) / totalImages();
+    }
+    return 0;
+  }
 
   const makeAlbumThumbneil = (cardProps) => {
     return (
@@ -161,7 +169,8 @@ function MyAlbums(props) {
       marginRight: theme.spacing(2),
     },
     media: {
-      width: "100%",
+      maxHeight: "200px",
+      maxWidth: "100px",
       margin: 0,
       paddingTop: "56.25%",
       height: "150px",
@@ -225,7 +234,7 @@ function MyAlbums(props) {
                         <CircularProgressWithLabel
                           style={{ float: "right" }}
                           variant="static"
-                          value={(totalTagged() * 100) / totalImages()}
+                          value={progress()}
                         />
                       }
                       subheader={
@@ -327,12 +336,7 @@ function MyAlbums(props) {
                 >
                   <CardHeader
                     action={
-                      <CircularProgressWithLabel
-                        variant="static"
-                        value={
-                          (toDelete.tagged_number * 100) / toDelete.image_number
-                        }
-                      />
+                      <CircularProgressWithLabel variant="static" value={0} />
                     }
                     title={toDelete.title}
                     subheader={toDelete.users_id}

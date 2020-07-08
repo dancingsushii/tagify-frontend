@@ -1,18 +1,141 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import {
-    Box, Button, Card, CardContent, CardHeader, Chip, CircularProgress, Grid, makeStyles, Typography
+    Box, Button, Card, CardActionArea, CardContent, CardHeader, Chip, CircularProgress, Grid,
+    makeStyles, TextField, Typography
 } from '@material-ui/core';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
 import EditIcon from '@material-ui/icons/Edit';
 import Pagination from '@material-ui/lab/Pagination';
 
+import { Albums, UserPhoto } from '../../utils/BackendAPI';
 import PictureEditCard from '../snippets/PictureThumbneil';
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 function EditAlbum(props) {
+  let id = props.location.id;
+  const [album, setAlbum] = useState({
+    id: 1,
+    title: "",
+    description: "",
+    tags: [""],
+    image_number: 0,
+    tagged_number: 0,
+    users_id: 0,
+    first_photo: "",
+  });
+  const [pictures, setPictures] = useState([""]);
+  const [isLoaded, setLoaded] = useState(false);
+  const [curentPage, setCurentPage] = useState(1);
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState("sm");
+  const [numDelet, setnumDelet] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let response = await Albums.getAlbum(id);
+        if (response.responseCode === "Ok" && response.album !== undefined) {
+          setAlbum(response.album);
+          setTitle(response.album.title);
+          setDescription(response.album.description);
+
+          let pics = await Albums.getAlbumPhotos(
+            id,
+            (curentPage - 1).toString()
+          );
+          if (pics.responseCode === "Ok" && pics.photos !== undefined) {
+            setPictures(pics.photos);
+            setLoaded(true);
+          }
+        } else {
+          alert("Failed to fetch album");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [curentPage, numDelet]);
+
+  //console.log(pictures);
+
+  const elementsProPage = 20;
+  const handlePageChange = (event, value) => {
+    setCurentPage(value);
+  };
+
+  const handleEdit = () => {
+    /* Temporaly only for demo. No contact with backedn*/
+    album.title = title;
+    album.description = description;
+    /*                     */
+    setFormOpen(false);
+  };
+  const [title, setTitle] = useState("sdfas");
+  const [description, setDescription] = useState("");
+
+  function handleNameChange(e) {
+    setTitle(e.target.value);
+  }
+
+  function handleDescriptionChange(e) {
+    setDescription(e.target.value);
+  }
+
+  const [toDelete, setToDelete] = useState("");
+
+  const [open, setOpen] = useState(false);
+  const [view, setViewOpen] = useState(false);
+  const [form, setFormOpen] = useState(false);
+
+  /* openes Delete confirmation dialog */
+  function handleDelete(pic) {
+    setToDelete(pic);
+    setOpen(true);
+  }
+
+  function handleDeleteConfirmation() {
+    /* here will come a asynce function to delete Album from server  */
+    /* at the moment only lokal */
+    const delPic = async (albumId, picId) => {
+      try {
+        let response = await UserPhoto.deletePhotoFromAlbum(albumId, picId);
+
+        if (response === "Ok") {
+          setnumDelet(numDelet + 1);
+          setOpen(false);
+        } else {
+          setOpen(false);
+          alert("Failed to Delete Picture");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    delPic(album.id, toDelete.id);
+  }
+
+  const handleClickOpen = () => {
+    setFormOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const useStyles = makeStyles((theme) => ({
     root: {
-      width: "100%",
+      maxWidth: "100%",
       marginTop: theme.spacing(4),
       marginBottom: theme.spacing(8),
       paddingBottom: theme.spacing(10),
@@ -25,7 +148,16 @@ function EditAlbum(props) {
       paddingLeft: "0",
       marginTop: theme.spacing(4),
     },
+    chip: {
+      marginTop: "0.2em",
+      marginRight: "0.5em",
+      marginBottom: "0.5em",
+      paddingLeft: "0.5em",
+      paddingRight: "0.5em",
+      fontWeight: 400,
+    },
     chips: {
+      paddingBottom: "10px",
       display: "flex",
       justifyContent: "left",
       flexWrap: "wrap",
@@ -37,173 +169,420 @@ function EditAlbum(props) {
       marginTop: theme.spacing(2),
       marginRight: theme.spacing(2),
     },
+    media: {
+      width: "100%",
+      margin: 0,
+      paddingTop: "56.25%",
+      height: "150px",
+    },
+    title: {
+      fontSize: 20,
+      marginTop: "1em",
+    },
   }));
   const classes = useStyles();
 
-  const handleDelete = () => {};
-
-  const makePictureCard = (cardProps) => {
-    return (
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        {" "}
-        <PictureEditCard {...cardProps} />{" "}
-      </Grid>
-    );
-  };
-
-  var { titel, description, image_number, tagged_number, tags } = {
-    titel: "Animals",
-    description:
-      " The definition of an animal is a member of the kingdom Animalia, and is typically characterized by a multicellular body, specialized sense organs, voluntary movement, responses to factors in the environment and the ability to acquire and digest food.",
-    image_number: 20,
-    tagged_number: 11,
-    tags: 3,
-  };
+  function progress() {
+    if (album.image_number > 0) {
+      return (100 * album.tagged_number) / album.image_number;
+    }
+    return 0;
+  }
 
   return (
-    <Grid className={classes.root} justify="center">
-      <Grid item container>
-        {/* Left columnt */}
-        <Grid item sm={1}></Grid>
+    <Grid container justify="center" className={classes.root} spacing={1}>
+      {/* Left columnt */}
 
-        {/* Middle column */}
+      <Grid item sm={1}></Grid>
+
+      {/* Middle column */}
+      <Grid
+        container
+        justify="center"
+        item
+        xs={12}
+        sm={10}
+        md={10}
+        spacing={2}
+        style={{ margin: 0 }}
+      >
+        {/*   <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+          Open dialog
+        </Button> */}
+        {/*Card wrapper */}
         <Grid
           item
-          container
           xs={12}
-          sm={10}
-          md={10}
+          container
           spacing={2}
-          justify="center"
+          justify="space-around"
           style={{ margin: 0 }}
         >
-          {/*Card wrapper */}
-          <Grid
-            item
-            container
-            xs={12}
-            spacing={2}
-            justify="space-around"
-            style={{ margin: 0 }}
-          >
-            {/* Backround Card */}
-            <Card>
-              <Grid
-                item
-                container
-                xs={12}
-                spacing={2}
-                justify="space-around"
-                style={{ margin: 0 }}
-              >
-                {/* Album Titel Card */}
-                <Grid item sm={6} spacing={2}>
+          {/* Backround Card */}
+          <Card>
+            <Grid
+              item
+              xs={12}
+              container
+              spacing={2}
+              justify="space-around"
+              style={{ margin: 0 }}
+            >
+              {/* Album Titel Card */}
+              <Grid item xs={12} sm={6}>
+                <Card style={{ minHeight: "250px" }}>
+                  <CardHeader
+                    action={
+                      <Button onClick={() => setFormOpen(true)}>
+                        <EditIcon />{" "}
+                      </Button>
+                    }
+                    title={album.title}
+                  />
+
+                  <CardContent>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                    >
+                      {album.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Column with Progres and tags */}
+              <Grid item container sm={6} spacing={1}>
+                {/* Progres Card */}
+                <Grid item xs={12}>
                   <Card>
                     <CardHeader
+                      title={"Progres"}
                       action={
-                        <Button>
-                          <EditIcon />{" "}
-                        </Button>
+                        <CircularProgressWithLabel
+                          style={{ float: "right" }}
+                          variant="static"
+                          value={progress()}
+                        />
                       }
-                      title={titel}
-                      subheader={"Created:12/07/2020"}
+                      subheader={
+                        <Grid item>
+                          <Typography variant={"h6"}>
+                            Images Number: {album.image_number}
+                          </Typography>
+                          <Typography variant={"h6"}>
+                            Images Labeled: {album.tagged_number}
+                          </Typography>
+                        </Grid>
+                      }
                     />
-
-                    <CardContent>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        component="p"
-                      >
-                        {description}
-                      </Typography>
-                    </CardContent>
                   </Card>
                 </Grid>
 
-                {/* Column with Progres and tags */}
-                <Grid item container sm={6} spacing={1}>
-                  {/* Progres Card */}
-                  <Grid item xs={12}>
-                    <Card>
-                      <CardHeader
-                        title={"Progres"}
-                        action={
-                          <CircularProgressWithLabel
-                            style={{ float: "right" }}
-                            variant="static"
-                            value={(100 * (album.length - 1)) / album.length}
-                          />
-                        }
-                        subheader={
-                          <Grid item>
-                            <Typography variant={"h6"}>
-                              Images Number: {album.length}
-                            </Typography>
-                            <Typography variant={"h6"}>
-                              Images Labeled: {album.length - 1}
-                            </Typography>
-                          </Grid>
-                        }
-                      />
-                    </Card>
-                  </Grid>
-
-                  {/* Card with Tags */}
-                  <Grid item xs={12}>
-                    <Card>
-                      <Typography variant={"h6"}>Tags</Typography>
-                      <div className={classes.chips}>
-                        {albumtags.map((c) => (
-                          <Chip
-                            label={c}
-                            variant="default"
-                            color="primary"
-                            onDelete={handleDelete}
-                          />
-                        ))}
-                      </div>
-                    </Card>
-                  </Grid>
-                </Grid>
-
-                {/* Pagination and add  Pic button */}
+                {/* Card with Tags */}
                 <Grid item xs={12}>
-                  <Pagination
-                    style={{ float: "left", marginTop: "10px" }}
-                    count={1}
-                    color="secondary"
-                  />
-                  <Button
-                    style={{ float: "right", margin: "5px" }}
-                    variant="contained"
-                    color="secondary"
-                  >
-                    Add Pictures
-                  </Button>
+                  <Card>
+                    <Typography variant={"h6"}>Tags</Typography>
+                    <div className={classes.chips}>
+                      {album.tags.map((c, i) => (
+                        <Chip
+                          key={i}
+                          label={c}
+                          variant="default"
+                          color="primary"
+                          onDelete={handleDelete}
+                        />
+                      ))}
+                    </div>
+                  </Card>
                 </Grid>
               </Grid>
-              {/* End of Backround Card */}
-            </Card>
 
-            {/* Card Wrapper end */}
-          </Grid>
+              {/* Pagination and add  Pic button */}
+              <Grid item xs={12}>
+                <Pagination
+                  style={{ float: "left" }}
+                  count={
+                    album.image_number / elementsProPage >= 1
+                      ? Math.ceil((album.image_number - 1) / elementsProPage)
+                      : 3
+                  }
+                  color="primary"
+                  page={curentPage}
+                  onChange={handlePageChange}
+                />
 
-          {/* Picture Thumbneils */}
-          {album.map((c) => makePictureCard(c))}
-          <Grid item xs={12} justify="center">
-            <Pagination
-              style={{ marginTop: "20px" }}
-              count={1}
-              color="primary"
-            />
-          </Grid>
-          {/* End of midle Column */}
+                <Button
+                  style={{ float: "right", margin: "5px" }}
+                  variant="contained"
+                  color="secondary"
+                >
+                  Add Pictures
+                </Button>
+              </Grid>
+            </Grid>
+            {/* End of Backround Card */}
+          </Card>
+
+          {/* Card Wrapper end */}
         </Grid>
 
-        {/* Right Column */}
-        <Grid item xs={0} sm={1}></Grid>
+        {/* Picture Thumbneils */}
+
+        {pictures.map((pic, j) => {
+          if (pic.id !== undefined) {
+            return (
+              <Grid key={j} item xs={12} sm={6} md={4} lg={3}>
+                <PictureEditCard
+                  key={j}
+                  picture={pic}
+                  albumId={album.id}
+                  tags={["example"]}
+                  onDelete={handleDelete}
+                />
+              </Grid>
+            );
+          }
+        })}
+        <Grid item xs={12}>
+          <Pagination
+            style={{ float: "left" }}
+            count={
+              album.image_number / elementsProPage >= 1
+                ? Math.ceil((album.image_number - 1) / elementsProPage)
+                : 3
+            }
+            color="primary"
+            page={curentPage}
+            onChange={handlePageChange}
+          />
+        </Grid>
+        {/* End of midle Column */}
       </Grid>
+
+      {/* Right Column */}
+      <Grid item sm={1}></Grid>
+
+      <div>
+        {/* <Button color="primary" onClick={handleDelete}>
+          Dialog deleter
+        </Button> */}
+
+        {/* Dialog box for delete confirmation */}
+        <Dialog
+          open={open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle
+            id="alert-dialog-slide-title"
+            style={{ alignSelf: "center" }}
+          >
+            Confirm Delete
+          </DialogTitle>
+          <DialogContent>
+            <Typography variant={"body1"}>
+              File: {toDelete.file_path}
+            </Typography>
+            <Typography variant={"body1"}>Id: {toDelete.id}</Typography>
+            {/* Album info */}
+            {/* <Card>
+              
+              <CardActionArea>
+                <Link
+                  to={{ pathname: "/album", id: toDelete.id }}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <CardHeader
+                    action={
+                      <CircularProgressWithLabel
+                        variant="static"
+                        value={
+                          (toDelete.tagged_number * 100) / toDelete.image_number
+                        }
+                      />
+                    }
+                    title={toDelete.title}
+                    subheader={toDelete.users_id}
+                  />
+                  <CardMedia
+                    className={classes.media}
+                    image={toDelete.first_photo}
+                    title={toDelete.title}
+                  />
+                  <CardContent>
+                    
+                  </CardContent>
+                </Link>
+              </CardActionArea>
+            </Card> */}
+            <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              onClick={handleClose}
+              variant="contained"
+              color="primary"
+              style={{ flex: "left" }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteConfirmation}
+              variant="contained"
+              color="primary"
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+
+      {/*     <Button onClick={() => setViewOpen(true)}>view</Button> */}
+      {/* ####################################################
+       */}
+
+      {/* Big pic view */}
+      <div>
+        {/* Dialog box for del view */}
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={view}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <Grid container spacing={1} item sm={12}>
+            <Grid item sm={12} md={6}>
+              <img src="https://picsum.photos/id/21/300/300" alt="" />
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Typography variant={"body1"}>Name: pic1.jpg</Typography>
+              <Typography variant={"body1"}>Id: 22</Typography>
+            </Grid>
+          </Grid>
+
+          <DialogTitle
+            id="alert-dialog-slide-title"
+            style={{ alignSelf: "center" }}
+          ></DialogTitle>
+          <DialogContent>
+            <img src="https://picsum.photos/id/21/300/300" alt="" />
+
+            <Typography variant={"body1"}>Id: </Typography>
+            {/* Album info */}
+            {/* <Card>
+              
+              <CardActionArea>
+                <Link
+                  to={{ pathname: "/album", id: toDelete.id }}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <CardHeader
+                    action={
+                      <CircularProgressWithLabel
+                        variant="static"
+                        value={
+                          (toDelete.tagged_number * 100) / toDelete.image_number
+                        }
+                      />
+                    }
+                    title={toDelete.title}
+                    subheader={toDelete.users_id}
+                  />
+                  <CardMedia
+                    className={classes.media}
+                    image={toDelete.first_photo}
+                    title={toDelete.title}
+                  />
+                  <CardContent>
+                    
+                  </CardContent>
+                </Link>
+              </CardActionArea>
+            </Card> */}
+            <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              onClick={handleClose}
+              variant="contained"
+              color="primary"
+              style={{ flex: "left" }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteConfirmation}
+              variant="contained"
+              color="primary"
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+      {/* ///////////////////////////////////////////////////////// */}
+      {/* Form dialog */}
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={form}
+        onClose={() => setFormOpen(false)}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          Chnge Album name or description
+        </DialogTitle>
+        <DialogContent>
+          <Typography className={classes.title} gutterBottom>
+            Album name:
+          </Typography>
+          <TextField
+            required
+            fullWidth
+            size="small"
+            name="title"
+            variant="outlined"
+            value={title}
+            onChange={handleNameChange}
+          />
+          <Typography className={classes.title} gutterBottom>
+            Album description:
+          </Typography>
+          <TextField
+            required
+            fullWidth
+            // helperText={errors.description}
+            size="small"
+            name="description"
+            variant="outlined"
+            value={description}
+            onChange={handleDescriptionChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setFormOpen(false)}
+            variant="contained"
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleEdit} variant="contained" color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }
