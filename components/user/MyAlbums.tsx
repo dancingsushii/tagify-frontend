@@ -1,22 +1,126 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
-    Box, Button, Card, CardHeader, Chip, CircularProgress, Grid, makeStyles, Typography
+    Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, Chip, CircularProgress,
+    Grid, makeStyles, Typography
 } from '@material-ui/core';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
 import Pagination from '@material-ui/lab/Pagination';
 
+import { UserAlbum } from '../../utils/BackendAPI';
 import Albumthumbneil from '../snippets/Albumthumbneil';
 
-function handleDelete() {}
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
-function MyAlbums() {
+function MyAlbums(props) {
+  const [isLoaded, setLoaded] = useState(false);
+  const [AlbumList, setAlbums] = useState([
+    {
+      id: 1,
+      title: "",
+      description: "",
+      tags: [""],
+      image_number: 0,
+      tagged_number: 0,
+      users_id: 0,
+      first_photo: "",
+    },
+  ]);
+
+  useEffect(() => {
+    const fetchAlbum = async () => {
+      try {
+        let response = await UserAlbum.getMyAlbums();
+
+        if (response.responseCode === "Ok" && response.albums !== undefined) {
+          //setAlbums(response.albums);
+          setAlbums(Albums1);
+        } else {
+          alert("Failed to fetch album");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchAlbum();
+  }, []);
+
+  const [curentPage, setCurentPage] = useState(1);
+
+  const [toDelete, setToDelete] = useState({
+    id: 3,
+    title: "Anima",
+    description: "test123 super album",
+    tags: ["back cat", "white cat", "dog"],
+    image_number: 0,
+    tagged_number: 0,
+    users_id: 2,
+    first_photo: "https://picsum.photos/id/33/300/300",
+  });
+  const [open, setOpen] = useState(false);
+
+  const elementsProPage = 8;
+
+  /* openes Delete confirmation dialog */
+  function handleDelete(titel) {
+    const to = AlbumList.find((el) => el.title.match(titel));
+    setToDelete(to);
+    setOpen(true);
+  }
+
+  function handleDeleteConfirmation() {
+    /* here will come a asynce function to delete Album from server  */
+    /* at the moment only lokal */
+    setAlbums(AlbumList.filter((c) => c.title !== toDelete.title));
+    setOpen(false);
+  }
+
+  const handlePageChange = (event, value) => {
+    setCurentPage(value);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const totalImages = () => {
+    let total = 0;
+    AlbumList.forEach((c) => (total += c.image_number));
+    return total;
+  };
+  const totalTagged = () => {
+    let tagged = 0;
+    AlbumList.forEach((c) => (tagged += c.tagged_number));
+    return tagged;
+  };
+
   const makeAlbumThumbneil = (cardProps) => {
     return (
-      <Grid item xs={12} sm={6} md={4} lg={3} xl={3}>
-        <Albumthumbneil {...cardProps} />
+      <Grid key={cardProps.id} item xs={12} sm={6} md={4} lg={3} xl={3}>
+        <Albumthumbneil onDelete={handleDelete} {...cardProps} />
       </Grid>
     );
+  };
+
+  const renderThumbneils = () => {
+    let end = curentPage * elementsProPage;
+    if (end > AlbumList.length) {
+      end = AlbumList.length;
+    }
+    const start = (curentPage - 1) * elementsProPage;
+    return AlbumList.slice(start, end).map((c) => makeAlbumThumbneil(c));
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -55,9 +159,14 @@ function MyAlbums() {
       marginTop: theme.spacing(2),
       marginRight: theme.spacing(2),
     },
+    media: {
+      width: "100%",
+      margin: 0,
+      paddingTop: "56.25%",
+      height: "150px",
+    },
   }));
   const classes = useStyles();
-  console.log(mytags);
 
   return (
     <Grid item container justify="center" className={classes.root} spacing={0}>
@@ -74,8 +183,7 @@ function MyAlbums() {
           justify="space-around"
           style={{ margin: 0 }}
         >
-          <Card>
-            {" "}
+          <Card style={{ width: "100%" }}>
             {/* Background Card */}
             <Grid
               item
@@ -97,7 +205,7 @@ function MyAlbums() {
                             Last edit: 12/06/2020
                           </Typography>
                           <Typography variant={"h6"}>
-                            Number of Albums: 70
+                            Number of Albums: {AlbumList.length}
                           </Typography>
                         </Grid>
                       }
@@ -116,16 +224,16 @@ function MyAlbums() {
                         <CircularProgressWithLabel
                           style={{ float: "right" }}
                           variant="static"
-                          value={(100 * 150) / 200}
+                          value={(totalTagged() * 100) / totalImages()}
                         />
                       }
                       subheader={
                         <Grid item>
                           <Typography variant={"h6"}>
-                            Total Images : {2000}
+                            Total Images : {totalImages()}
                           </Typography>
                           <Typography variant={"h6"}>
-                            Total Labeled: {1500}
+                            Total Labeled: {totalTagged()}
                           </Typography>
                         </Grid>
                       }
@@ -135,7 +243,7 @@ function MyAlbums() {
               </Grid>
 
               {/* card with tags */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Card style={{ padding: "5px" }}>
                   <Typography style={{ padding: "10px" }} variant={"h6"}>
                     My Tags
@@ -152,29 +260,118 @@ function MyAlbums() {
                     ))}
                   </div>
                 </Card>
-              </Grid>
+              </Grid> */}
             </Grid>
-            <Pagination style={{ float: "left" }} count={5} color="primary" />
+            <Pagination
+              style={{ float: "left" }}
+              count={
+                AlbumList.length / elementsProPage >= 1
+                  ? Math.ceil((AlbumList.length - 1) / elementsProPage)
+                  : 1
+              }
+              color="primary"
+              page={curentPage}
+              onChange={handlePageChange}
+            />
             <Button
               className={classes.button}
               style={{ float: "right", margin: "5px" }}
               variant="contained"
               color="primary"
+              href={"/addalbum"}
             >
               Add new Album
             </Button>
           </Card>
         </Grid>{" "}
         {/* end of upper part */}
-        {AlbumList.map((c) => makeAlbumThumbneil(c))}
+        {renderThumbneils()}
       </Grid>
 
       <Grid item xs={1} sm={1} md={1}></Grid>
       <Pagination
-        style={{ float: "center", marginTop: "20px" }}
-        count={5}
+        style={{ marginTop: "20px" }}
+        count={
+          AlbumList.length / elementsProPage >= 1
+            ? Math.ceil((AlbumList.length - 1) / elementsProPage)
+            : 1
+        }
         color="primary"
+        page={curentPage}
+        onChange={handlePageChange}
       />
+      <div>
+        {/* Dialog box for delete confirmation */}
+        <Dialog
+          open={open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle id="alert-dialog-slide-title">
+            Confirm Delete
+          </DialogTitle>
+          <DialogContent>
+            <Card>
+              {/* Album info */}
+              <CardActionArea href={"/album"}>
+                <CardHeader
+                  action={
+                    <CircularProgressWithLabel
+                      variant="static"
+                      value={
+                        (toDelete.tagged_number * 100) / toDelete.image_number
+                      }
+                    />
+                  }
+                  title={toDelete.title}
+                  subheader={toDelete.users_id}
+                />
+                <CardMedia
+                  className={classes.media}
+                  image={toDelete.first_photo}
+                  title={toDelete.title}
+                />
+                <CardContent>
+                  <Typography variant={"body2"}>
+                    AlbumID: {toDelete.id}
+                  </Typography>
+                  <Typography variant={"body2"}>
+                    description: {toDelete.description}
+                  </Typography>
+                  <Typography variant={"body2"}>
+                    image_number: {toDelete.image_number}
+                  </Typography>
+                  <Typography variant={"body2"}>
+                    tagged_number: {toDelete.tagged_number}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+            <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              onClick={handleClose}
+              variant="contained"
+              color="primary"
+              style={{ flex: "left" }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteConfirmation}
+              variant="contained"
+              color="primary"
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </Grid>
   );
 }
@@ -233,127 +430,219 @@ const mytags = [
   "#vulture",
   "#roe",
 ];
-const AlbumList = [
+
+const Albums1 = [
   {
-    titel: "Animals   ",
-    date: "12/07/2020",
-    img: "https://picsum.photos/id/237/300/300",
+    title: "Animals   ",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://picsum.photos/id/237/300/300",
     tags: ["#Dog", "#dogs", "#labrador"],
-    progres: 92,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Nature",
-    date: "12/07/2020",
-    img: "https://picsum.photos/id/33/300/300",
+    title: "Nature",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://picsum.photos/id/33/300/300",
     tags: ["#Three", "#woods"],
-    progres: 33,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Oranges",
-    date: "12/07/2020",
-    img:
+    title: "Oranges",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
       "https://vignette.wikia.nocookie.net/testo/images/f/fa/Pomara%C5%84cza.png/revision/latest?cb=20190305224547&path-prefix=pl",
     tags: ["#orange", "#oranges"],
-    progres: 66,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Laptops ",
-    date: "12/07/2020",
-    img:
+    title: "Laptops ",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
       "https://i.picsum.photos/id/119/3264/2176.jpg?hmac=PYRYBOGQhlUm6wS94EkpN8dTIC7-2GniC3pqOt6CpNU",
     tags: ["#Apple", "#lenovo"],
-    progres: 19,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Shoes",
-    date: "12/07/2020",
-    img: "https://picsum.photos/id/21/300/300",
+    title: "Shoes",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://picsum.photos/id/21/300/300",
     tags: ["#Hills", "#sneakers"],
-    progres: 22,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Watches",
-    date: "12/07/2020",
-    img: "https://i.ytimg.com/vi/ydXgwo_nvuk/maxresdefault.jpg",
+    title: "Watches",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://i.ytimg.com/vi/ydXgwo_nvuk/maxresdefault.jpg",
     tags: ["#Rolex", "#sixo", "#berd"],
-    progres: 11,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Architectrure",
-    date: "12/07/2020",
-    img:
+    title: "Architectrure",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
       "https://i.picsum.photos/id/1048/5616/3744.jpg?hmac=N5TZKe4gtmf4hU8xRs-zbS4diYiO009Jni7n50609zk",
     tags: ["#circle", "#ball", "#berd"],
-    progres: 19,
+    id: 22,
+    description: "test123 super album",
   },
 
   {
-    titel: "People",
-    date: "12/07/2020",
-    img:
+    title: "People",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
       "https://static.polityka.pl/_resource/res/path/57/ff/57ff8ee9-b145-45e3-bd37-3bb9cf91d23c_f1400x900",
     tags: ["#man", "#woman"],
-    progres: 33,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Ships",
-    date: "12/07/2020",
-    img: "https://picsum.photos/id/211/300/300",
+    title: "Ships",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://picsum.photos/id/211/300/300",
     tags: ["#circle", "#ball", "#berd"],
-    progres: 66,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Instruments ",
-    date: "12/09/2020",
-    img:
+    title: "Instruments ",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
       "https://i.picsum.photos/id/1082/5416/3611.jpg?hmac=GrASx5oGYbTwT4xyJDYkurgXFFfgj37WHvaJNe8Sr1E",
     tags: ["#circle", "#ball", "#berd"],
-    progres: 19,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Bicycle",
-    date: "01/11/2020",
-    img: "https://picsum.photos/id/1077/3000/1995",
+    title: "Bicycle",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://picsum.photos/id/1077/3000/1995",
     tags: ["#Bicycle", "#monocycle"],
-    progres: 22,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Architectrure",
-    date: "12/07/2020",
-    img:
+    title: "Architectrure",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
       "https://i.picsum.photos/id/1048/5616/3744.jpg?hmac=N5TZKe4gtmf4hU8xRs-zbS4diYiO009Jni7n50609zk",
     tags: ["#block", "#Road"],
-    progres: 19,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Dogs ",
-    date: "12/07/2020",
-    img:
+    title: "Dogs ",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
       "https://i.picsum.photos/id/1062/5092/3395.jpg?hmac=o9m7qeU51uOLfXvepXcTrk2ZPiSBJEkiiOp-Qvxja-k",
     tags: ["#jork", "#terier"],
-    progres: 11,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Nature",
-    date: "12/07/2020",
-    img: "https://picsum.photos/id/33/300/300",
+    title: "Nature",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://picsum.photos/id/33/300/300",
     tags: ["#circle", "#ball", "#berd"],
-    progres: 33,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Cars ",
-    date: "22/07/2020",
-    img:
+    title: "Cars ",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
       "https://i.picsum.photos/id/1071/3000/1996.jpg?hmac=rPo94Qr1Ffb657k6R7c9Zmfgs4wc4c1mNFz7ND23KnQ",
     tags: ["#mercedes", "#bmv", "#opel"],
-    progres: 19,
+    id: 22,
+    description: "test123 super album",
   },
   {
-    titel: "Je",
-    date: "12/07/2020",
-    img: "https://picsum.photos/id/21/300/300",
+    title: "Je",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://picsum.photos/id/21/300/300",
     tags: ["#circle", "#ball", "#berd"],
-    progres: 22,
+    id: 22,
+    description: "test123 super album",
+  },
+  {
+    title: "17",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
+      "https://i.picsum.photos/id/1048/5616/3744.jpg?hmac=N5TZKe4gtmf4hU8xRs-zbS4diYiO009Jni7n50609zk",
+    tags: ["#block", "#Road"],
+    id: 22,
+    description: "test123 super album",
+  },
+  {
+    title: "18 ",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
+      "https://i.picsum.photos/id/1062/5092/3395.jpg?hmac=o9m7qeU51uOLfXvepXcTrk2ZPiSBJEkiiOp-Qvxja-k",
+    tags: ["#jork", "#terier"],
+    id: 22,
+    description: "test123 super album",
+  },
+  {
+    title: "19",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo: "https://picsum.photos/id/33/300/300",
+    tags: ["#circle", "#ball", "#berd"],
+    id: 22,
+    description: "test123 super album",
+  },
+  {
+    title: "20 ",
+    image_number: 20,
+    tagged_number: 11,
+    users_id: "Maniek",
+    first_photo:
+      "https://i.picsum.photos/id/1071/3000/1996.jpg?hmac=rPo94Qr1Ffb657k6R7c9Zmfgs4wc4c1mNFz7ND23KnQ",
+    tags: ["#mercedes", "#bmv", "#opel"],
+    id: 22,
+    description: "test123 super album",
   },
 ];
 export default MyAlbums;

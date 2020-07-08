@@ -65,22 +65,39 @@ const useStyles = makeStyles((theme) => ({
 function Albumthumbneil(props) {
   const classes = useStyles();
 
-  const { titel, tags, date, progres, img, id } = props;
-
-  console.log(tags);
+  const {
+    id,
+    title,
+    description,
+    tags,
+    image_number,
+    tagged_number,
+    users_id,
+    first_photo,
+  } = props;
 
   return (
     <Card className={classes.root}>
       {/* Album info */}
-      <CardHeader
-        action={<CircularProgressWithLabel variant="static" value={progres} />}
-        title={titel}
-        subheader={date}
-      />
+      <CardActionArea href={"/album"}>
+        <CardHeader
+          action={
+            <CircularProgressWithLabel
+              variant="static"
+              value={(tagged_number * 100) / image_number}
+            />
+          }
+          title={title}
+          subheader={users_id}
+        />
 
-      {/* Album Thumbneil */}
-      <CardActionArea href={"http://localhost:1234/album"}>
-        <CardMedia className={classes.media} image={img} title={titel} />
+        {/* Album Thumbneil */}
+
+        <CardMedia
+          className={classes.media}
+          image={first_photo}
+          title={title}
+        />
       </CardActionArea>
 
       {/* Falls man tags auf die Thumbneil sehen will dann auskomentieren */}
@@ -110,7 +127,12 @@ function Albumthumbneil(props) {
         >
           Edit
         </Button>
-        <Button size="small" color="primary" variant="contained">
+        <Button
+          onClick={() => props.onDelete(title)}
+          size="small"
+          color="primary"
+          variant="contained"
+        >
           Delete
         </Button>
       </Grid>
