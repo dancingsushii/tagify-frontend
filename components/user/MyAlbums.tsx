@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import {
     Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, Chip, CircularProgress,
@@ -40,8 +41,8 @@ function MyAlbums(props) {
         let response = await UserAlbum.getMyAlbums();
 
         if (response.responseCode === "Ok" && response.albums !== undefined) {
-          //setAlbums(response.albums);
-          setAlbums(Albums1);
+          setAlbums(response.albums);
+          //setAlbums(Albums1);
         } else {
           alert("Failed to fetch album");
         }
@@ -316,38 +317,43 @@ function MyAlbums(props) {
           <DialogContent>
             <Card>
               {/* Album info */}
-              <CardActionArea href={"/album"}>
-                <CardHeader
-                  action={
-                    <CircularProgressWithLabel
-                      variant="static"
-                      value={
-                        (toDelete.tagged_number * 100) / toDelete.image_number
-                      }
-                    />
-                  }
-                  title={toDelete.title}
-                  subheader={toDelete.users_id}
-                />
-                <CardMedia
-                  className={classes.media}
-                  image={toDelete.first_photo}
-                  title={toDelete.title}
-                />
-                <CardContent>
-                  <Typography variant={"body2"}>
-                    AlbumID: {toDelete.id}
-                  </Typography>
-                  <Typography variant={"body2"}>
-                    description: {toDelete.description}
-                  </Typography>
-                  <Typography variant={"body2"}>
-                    image_number: {toDelete.image_number}
-                  </Typography>
-                  <Typography variant={"body2"}>
-                    tagged_number: {toDelete.tagged_number}
-                  </Typography>
-                </CardContent>
+              <CardActionArea>
+                <Link
+                  to={{ pathname: "/album", id: toDelete.id }}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <CardHeader
+                    action={
+                      <CircularProgressWithLabel
+                        variant="static"
+                        value={
+                          (toDelete.tagged_number * 100) / toDelete.image_number
+                        }
+                      />
+                    }
+                    title={toDelete.title}
+                    subheader={toDelete.users_id}
+                  />
+                  <CardMedia
+                    className={classes.media}
+                    image={toDelete.first_photo}
+                    title={toDelete.title}
+                  />
+                  <CardContent>
+                    <Typography variant={"body2"}>
+                      AlbumID: {toDelete.id}
+                    </Typography>
+                    <Typography variant={"body2"}>
+                      description: {toDelete.description}
+                    </Typography>
+                    <Typography variant={"body2"}>
+                      image_number: {toDelete.image_number}
+                    </Typography>
+                    <Typography variant={"body2"}>
+                      tagged_number: {toDelete.tagged_number}
+                    </Typography>
+                  </CardContent>
+                </Link>
               </CardActionArea>
             </Card>
             <DialogContentText id="alert-dialog-slide-description"></DialogContentText>

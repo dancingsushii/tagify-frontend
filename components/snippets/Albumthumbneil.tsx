@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { Box, Button, CardActionArea, Chip, Grid } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
@@ -79,25 +80,30 @@ function Albumthumbneil(props) {
   return (
     <Card className={classes.root}>
       {/* Album info */}
-      <CardActionArea href={"/album"}>
-        <CardHeader
-          action={
-            <CircularProgressWithLabel
-              variant="static"
-              value={(tagged_number * 100) / image_number}
-            />
-          }
-          title={title}
-          subheader={users_id}
-        />
+      <CardActionArea>
+        <Link
+          to={{ pathname: "/album", id: id }}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <CardHeader
+            action={
+              <CircularProgressWithLabel
+                variant="static"
+                value={(tagged_number * 100) / image_number}
+              />
+            }
+            title={title}
+            subheader={users_id}
+          />
 
-        {/* Album Thumbneil */}
+          {/* Album Thumbneil */}
 
-        <CardMedia
-          className={classes.media}
-          image={first_photo}
-          title={title}
-        />
+          <CardMedia
+            className={classes.media}
+            image={first_photo}
+            title={title}
+          />
+        </Link>
       </CardActionArea>
 
       {/* Falls man tags auf die Thumbneil sehen will dann auskomentieren */}
