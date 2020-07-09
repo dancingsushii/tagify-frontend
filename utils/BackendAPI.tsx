@@ -379,3 +379,5 @@ export const UserPhoto: UserPhotoType = {
     return ResponseCode[response.status];
   },
 };
+
+interface AdminType {}

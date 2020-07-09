@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 
-import { App as AdminApp } from './components/admin/App';
-import { App as GuestApp } from './components/guest/App';
-import { App as UserApp } from './components/user/App';
-import { raleway200, raleway300 } from './fonts/Fonts';
-import BackendToken, { User } from './utils/BackendAPI';
+import { App as AdminApp } from "./components/admin/App";
+import { App as GuestApp } from "./components/guest/App";
+import { App as UserApp } from "./components/user/App";
+import { raleway200, raleway300 } from "./fonts/Fonts";
+import BackendToken, { User } from "./utils/BackendAPI";
 
 const theme = createMuiTheme({
   palette: {
@@ -53,7 +53,7 @@ function App() {
   }, []);
 
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div>
       {render && (
         <BrowserRouter>
           <ThemeProvider theme={theme}>
