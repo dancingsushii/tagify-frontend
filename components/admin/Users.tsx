@@ -14,7 +14,6 @@ import {
   DeleteButton,
   Edit,
 } from "react-admin";
-import { User } from "../../utils/BackendAPI";
 
 // TODO: GET lists all users
 export const UserList = (props) => (
