@@ -174,7 +174,7 @@ interface AlbumType {
 
 export const Albums: AlbumType = {
   getAllAlbums: async () => {
-    const response = await fetch("api/albums", {
+    const response = await fetch("/api/albums", {
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
     });
@@ -197,7 +197,7 @@ export const Albums: AlbumType = {
     };
   },
   getAlbum: async (album_id) => {
-    let url = `api/albums/${album_id}`;
+    let url = `/api/albums/${album_id}`;
     const response = await fetch(url, {
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
@@ -221,7 +221,7 @@ export const Albums: AlbumType = {
     };
   },
   getAlbumPhotos: async (album_id, index) => {
-    let url = `api/albums/${album_id}/photos/${index}`;
+    let url = `/api/albums/${album_id}/photos/${index}`;
     const response = await fetch(url, {
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
