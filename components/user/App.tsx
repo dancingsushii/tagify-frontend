@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Redirect, Route } from 'react-router-dom';
+import { Link, Redirect, Route, Switch } from 'react-router-dom';
 
 import {
     Button, Divider, List, ListItem, ListItemIcon, ListItemText, makeStyles, Theme
@@ -103,7 +103,7 @@ export function App() {
           </div>
         }
       >
-        <div>
+        <Switch>
           <Route exact path="/" component={DashBoard} />
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
@@ -114,7 +114,8 @@ export function App() {
           <Route path="/myalbums" component={MyAlbums} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
-        </div>
+          <Route path="/*" component={() => <h1>404 Not Found</h1>} />
+        </Switch>
       </TagifyNavigation>
     </>
   );

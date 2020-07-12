@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import Token, { User } from '../../utils/BackendAPI';
+import BackendToken, { User } from '../../utils/BackendAPI';
 
 export function UserMenu(props) {
   const [open, setOpen] = React.useState(false);
@@ -25,7 +25,7 @@ export function UserMenu(props) {
 
   const handleLogout = () => {
     User.logout().then(() => {
-      Token.authenticated = false;
+      BackendToken.authenticated = false;
       window.location.href = "/welcome";
     });
   };
