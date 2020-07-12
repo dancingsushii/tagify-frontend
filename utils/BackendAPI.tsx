@@ -6,11 +6,18 @@ export enum ResponseCode {
   "InternalServerError" = 500,
 }
 
+export enum UserRole {
+  User,
+  Admin,
+}
+
 class BackendToken {
   authenticated: boolean;
+  userRole: UserRole | undefined;
 
   constructor() {
     this.authenticated = false;
+    this.userRole = undefined;
   }
 
   login() {
@@ -30,7 +37,27 @@ var token = new BackendToken();
 export default token;
 
 interface DefaultType {
-  login(body: { username: string; password: string }): Promise<string>;
+  login(body: {
+    username: string;
+    password: string;
+  }): Promise<{
+    responseCode: string;
+    data?: {
+      id: number;
+      username: string;
+      nickname: string;
+      role: string;
+    };
+  }>;
+  getUser(): Promise<{
+    responseCode: string;
+    data?: {
+      id: number;
+      username: string;
+      nickname: string;
+      role: string;
+    };
+  }>;
   status(): Promise<string>;
 }
 
@@ -43,43 +70,6 @@ export const Default: DefaultType = {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-    });
-    return ResponseCode[response.status];
-  },
-  status: async () => {
-    const response: Response = await fetch("/api/status", {
-      method: "GET",
-    });
-    return ResponseCode[response.status];
-  },
-};
-
-interface UserType {
-  logout(): Promise<string>;
-  getUser(): Promise<{
-    responseCode: string;
-    data:
-      | { id: number; username: string; nickname: string; role: string }
-      | undefined;
-  }>;
-  getAllData(): Promise<void>; // TODO
-  updateNick(body: { nickname: string }): Promise<string>;
-  updatePassword(body: { password: string }): Promise<string>;
-  deleteAccout(): Promise<string>; // TODO
-}
-
-export const User: UserType = {
-  logout: async () => {
-    const response = await fetch("/api/user/logout", {
-      method: "POST",
-      credentials: "same-origin",
-    });
-    return ResponseCode[response.status];
-  },
-  getUser: async () => {
-    const response = await fetch("/api/user/me", {
-      method: "GET",
-      credentials: "same-origin",
     });
     let code = ResponseCode[response.status];
     let json = undefined;
@@ -101,6 +91,63 @@ export const User: UserType = {
       responseCode: code,
       data: json,
     };
+  },
+  getUser: async () => {
+    let request = async (endpoint: string) => {
+      let response = await fetch(endpoint, {
+        method: "GET",
+        credentials: "same-origin",
+      });
+      let code = ResponseCode[response.status];
+      let json = undefined;
+      if (code == "Ok") {
+        try {
+          json = await response.json();
+        } catch (error) {
+          console.error(error);
+          console.error(
+            "The API query resulted with an unexpected body: Could not parse JSON: " +
+              "You most probably run the website with 'npm run serve-frontend': " +
+              "Use 'npm run serve-backend' instead."
+          );
+          code = ResponseCode[500];
+          json = undefined;
+        }
+      }
+      return {
+        responseCode: code,
+        data: json,
+      };
+    };
+    let response = await request("/api/user/me");
+    if (response.responseCode != "Ok" || response.data === undefined) {
+      response = await request("/api/admin/me");
+    }
+    return response;
+  },
+  status: async () => {
+    const response: Response = await fetch("/api/status", {
+      method: "GET",
+    });
+    return ResponseCode[response.status];
+  },
+};
+
+interface UserType {
+  logout(): Promise<string>;
+  getAllData(): Promise<void>; // TODO
+  updateNick(body: { nickname: string }): Promise<string>;
+  updatePassword(body: { password: string }): Promise<string>;
+  deleteAccout(): Promise<string>; // TODO
+}
+
+export const User: UserType = {
+  logout: async () => {
+    const response = await fetch("/api/user/logout", {
+      method: "POST",
+      credentials: "same-origin",
+    });
+    return ResponseCode[response.status];
   },
   getAllData: async () => {
     console.error("not implemented.");
@@ -376,6 +423,24 @@ export const UserPhoto: UserPhotoType = {
         credentials: "same-origin",
       }
     );
+    return ResponseCode[response.status];
+  },
+};
+
+interface AdminUserType {}
+
+interface AdminAlbumType {}
+
+interface AdminType {
+  logout(): Promise<string>;
+}
+
+export const Admin: AdminType = {
+  logout: async () => {
+    const response = await fetch("/api/admin/logout", {
+      method: "POST",
+      credentials: "same-origin",
+    });
     return ResponseCode[response.status];
   },
 };

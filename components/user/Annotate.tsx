@@ -51,14 +51,6 @@ export function Annotate(props) {
       paddingTop: "56.25%",
       height: "150px",
     },
-    tags: {
-      display: "flex",
-      justifyContent: "center",
-      flexWrap: "wrap",
-      listStyle: "none",
-      paddingLeft: "0",
-      marginTop: theme.spacing(4),
-    },
     progressBar: {
       marginLeft: "10px",
       width: "100%",
@@ -77,6 +69,18 @@ export function Annotate(props) {
   // TODO Buttons <back> <submit> <next>
 
   // TODO Button verify (what for?)
+
+  // mapping pictures in album, showing only one picture
+  const showCurrentPicture = (cardProps) => {
+    return (
+      <Grid item xs={12}>
+        <Card>
+          <CardHeader title={album[0].titel}></CardHeader>
+          <CardMedia className={classes.media} image={album[0].img} />
+        </Card>
+      </Grid>
+    );
+  };
 
   // static data for page
   var { titel, image_number, tagged_number, tags } = {
@@ -141,12 +145,15 @@ export function Annotate(props) {
                   </Card>
                 </Grid>
 
-                {/* progress bar section */}
+                {/* TODO progress bar section with current tagged photos in album percentage */}
                 <div className={classes.progressBar}>
                   <LinearProgressWithLabel value={30} />
                 </div>
 
                 {/* TODO with mapping picture section */}
+                {/* {album.map((c) => showCurrentPicture(c))} */}
+
+                {/* no need if mapping DONE */}
                 <Grid item xs={12}>
                   <Card>
                     <CardHeader title={album[0].titel}></CardHeader>
@@ -154,7 +161,7 @@ export function Annotate(props) {
                   </Card>
                 </Grid>
 
-                {/* buttons section */}
+                {/* TODO buttons section with links*/}
                 <Grid item xs={12}>
                   <Card>
                     <CardActions className={classes.buttonsCard}>
@@ -163,6 +170,9 @@ export function Annotate(props) {
                         color="primary"
                         variant="contained"
                         disableElevation
+                        onClick={() => {
+                          alert("previous picture");
+                        }}
                       >
                         Back
                       </Button>
@@ -171,6 +181,9 @@ export function Annotate(props) {
                         color="primary"
                         variant="contained"
                         disableElevation
+                        onClick={() => {
+                          alert("submit tags");
+                        }}
                       >
                         Submit
                       </Button>
@@ -179,12 +192,15 @@ export function Annotate(props) {
                         color="primary"
                         variant="contained"
                         disableElevation
+                        onClick={() => {
+                          alert("next picture");
+                        }}
                       >
                         Next
                       </Button>
                     </CardActions>
 
-                    {/* verify button */}
+                    {/* TODO verify button with link*/}
                     <CardActions className={classes.buttonsCard}>
                       <Button
                         size="large"
@@ -199,11 +215,11 @@ export function Annotate(props) {
                 </Grid>
               </Grid>
 
-              {/* End of Backround Card */}
+              {/* end of Backround Card */}
             </Card>
-            {/* Card Wrapper end */}
+            {/* card Wrapper end */}
           </Grid>
-          {/* End of middle Column */}
+          {/* end of middle Column */}
         </Grid>
         {/* progress bar  */}
 
@@ -214,6 +230,7 @@ export function Annotate(props) {
   );
 }
 
+// override existing linear progress bar with custom height
 const CustomLinearProgress = withStyles((theme: Theme) =>
   createStyles({
     root: {
