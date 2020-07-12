@@ -11,6 +11,9 @@ import {
   LinearProgress,
   LinearProgressProps,
   Theme,
+  Button,
+  CardContent,
+  CardActions,
 } from "@material-ui/core";
 import PictureEditCard from "../snippets/PictureThumbneil";
 import { mergeClasses, withStyles, createStyles } from "@material-ui/styles";
@@ -61,20 +64,19 @@ export function Annotate(props) {
       width: "100%",
       marginRight: "10px",
     },
+    buttonsCard: {
+      justifyItems: "center",
+      alignItems: "center",
+      alignContent: "center",
+      justifyContent: "center",
+      borderSpacing: 5,
+    },
   }));
   const classes = useStyles();
 
-  // Album name at the top
+  // TODO Buttons <back> <submit> <next>
 
-  // Tags entered by album creator
-
-  // Progress bar with annotation percentage
-
-  // Picture to annotate
-
-  // Buttons <back> <submit> <next>
-
-  // Button verify (what for?)
+  // TODO Button verify (what for?)
 
   // static data for page
   var { titel, image_number, tagged_number, tags } = {
@@ -147,11 +149,54 @@ export function Annotate(props) {
                 {/* TODO with mapping picture section */}
                 <Grid item xs={12}>
                   <Card>
+                    <CardHeader title={album[0].titel}></CardHeader>
                     <CardMedia className={classes.media} image={album[0].img} />
                   </Card>
                 </Grid>
 
                 {/* buttons section */}
+                <Grid item xs={12}>
+                  <Card>
+                    <CardActions className={classes.buttonsCard}>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        disableElevation
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        disableElevation
+                      >
+                        Submit
+                      </Button>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        disableElevation
+                      >
+                        Next
+                      </Button>
+                    </CardActions>
+
+                    {/* verify button */}
+                    <CardActions className={classes.buttonsCard}>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        disableElevation
+                      >
+                        Verify
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
               </Grid>
 
               {/* End of Backround Card */}
