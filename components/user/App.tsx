@@ -1,27 +1,35 @@
-import React from 'react';
-import { Link, Redirect, Route } from 'react-router-dom';
+import React from "react";
+import { Link, Redirect, Route } from "react-router-dom";
 
 import {
-    Button, Divider, List, ListItem, ListItemIcon, ListItemText, makeStyles, Theme
-} from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import InputBase from '@material-ui/core/InputBase';
-import Paper from '@material-ui/core/Paper';
-import AddIcon from '@material-ui/icons/Add';
-import HomeIcon from '@material-ui/icons/Home';
-import NotesIcon from '@material-ui/icons/Notes';
-import SearchIcon from '@material-ui/icons/Search';
+  Button,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Theme,
+} from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import InputBase from "@material-ui/core/InputBase";
+import Paper from "@material-ui/core/Paper";
+import AddIcon from "@material-ui/icons/Add";
+import HomeIcon from "@material-ui/icons/Home";
+import NotesIcon from "@material-ui/icons/Notes";
+import SearchIcon from "@material-ui/icons/Search";
 
-import Token from '../../utils/BackendAPI';
-import { Impressum } from '../Impressum';
-import { TagifyNavigation } from '../snippets/TagifyNavigation';
-import { AddAlbum } from './AddAlbum';
-import { Album } from './Album';
-import { DashBoard } from './DashBoard';
-import EditAlbum from './EditAlbum';
-import MyAlbums from './MyAlbums';
-import { Settings } from './Settings';
-import { UserMenu } from './UserMenu';
+import Token from "../../utils/BackendAPI";
+import { Impressum } from "../Impressum";
+import { TagifyNavigation } from "../snippets/TagifyNavigation";
+import { AddAlbum } from "./AddAlbum";
+import { Album } from "./Album";
+import { DashBoard } from "./DashBoard";
+import EditAlbum from "./EditAlbum";
+import MyAlbums from "./MyAlbums";
+import { Settings } from "./Settings";
+import { UserMenu } from "./UserMenu";
+import { Annotate } from "./Annotate";
 
 export function App() {
   const useStyles = makeStyles((theme: Theme) => ({
@@ -114,6 +122,7 @@ export function App() {
           <Route path="/myalbums" component={MyAlbums} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
+          <Route path="/annotate" component={Annotate} />
         </div>
       </TagifyNavigation>
     </>

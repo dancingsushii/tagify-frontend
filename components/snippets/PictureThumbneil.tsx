@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import { Box, Button, Chip, Grid } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import { makeStyles } from '@material-ui/core/styles';
-import EditIcon from '@material-ui/icons/Edit';
+import { Box, Button, Chip, Grid } from "@material-ui/core";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
+import { makeStyles } from "@material-ui/core/styles";
+import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles((theme) => ({
   action: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     height: "150px",
   },
   chips: {
-    minHeight:"90px",
+    minHeight: "90px",
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(0.3),
     },
   },
-});
+}));
 const handleDelete = () => {};
 
 function PictureEditCard(props) {
@@ -35,7 +35,7 @@ function PictureEditCard(props) {
 
   const { avatarsrc, titel, tags, date, progres, img, id } = props;
   return (
-    <Card >
+    <Card>
       {/* Pic info */}
       <CardHeader
         action={
@@ -48,10 +48,10 @@ function PictureEditCard(props) {
       />
       {/*  Picture */}
       <CardMedia className={classes.media} image={img} title={titel} />
-      
+
       {/* Tags */}
       <Grid container justify="center" className={classes.chips}>
-      {tags.map((c) => (
+        {tags.map((c) => (
           <Chip
             label={c}
             variant="default"
@@ -62,7 +62,12 @@ function PictureEditCard(props) {
       </Grid>
 
       {/* Buttons */}
-      <Grid style={{ marginTop: "10px", marginBottom: "10px" }} container item justify="space-around">
+      <Grid
+        style={{ marginTop: "10px", marginBottom: "10px" }}
+        container
+        item
+        justify="space-around"
+      >
         <Button size="small" color="secondary" variant="contained">
           View
         </Button>

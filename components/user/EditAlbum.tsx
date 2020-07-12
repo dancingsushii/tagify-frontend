@@ -1,13 +1,22 @@
-import React from 'react';
+import React from "react";
 
 import {
-    Box, Button, Card, CardContent, CardHeader, Chip, CircularProgress, Grid, makeStyles, Typography
-} from '@material-ui/core';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import EditIcon from '@material-ui/icons/Edit';
-import Pagination from '@material-ui/lab/Pagination';
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Chip,
+  CircularProgress,
+  Grid,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import EditIcon from "@material-ui/icons/Edit";
+import Pagination from "@material-ui/lab/Pagination";
 
-import PictureEditCard from '../snippets/PictureThumbneil';
+import PictureEditCard from "../snippets/PictureThumbneil";
 
 function EditAlbum(props) {
   const useStyles = makeStyles((theme) => ({
@@ -127,7 +136,7 @@ function EditAlbum(props) {
                   <Grid item xs={12}>
                     <Card>
                       <CardHeader
-                        title={"Progres"}
+                        title={"Progress"}
                         action={
                           <CircularProgressWithLabel
                             style={{ float: "right" }}
