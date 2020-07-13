@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   makeStyles,
   Grid,
@@ -12,11 +12,9 @@ import {
   LinearProgressProps,
   Theme,
   Button,
-  CardContent,
   CardActions,
 } from "@material-ui/core";
-import PictureEditCard from "../snippets/PictureThumbneil";
-import { mergeClasses, withStyles, createStyles } from "@material-ui/styles";
+import { withStyles, createStyles } from "@material-ui/styles";
 
 export function Annotate(props) {
   const useStyles = makeStyles((theme) => ({
@@ -66,20 +64,23 @@ export function Annotate(props) {
   }));
   const classes = useStyles();
 
-  // TODO Buttons <back> <submit> <next>
+  const [index, setIndex] = useState(0);
 
-  // TODO Button verify (what for?)
+  // TODO function for rendering next photo ocClick() next button
+  const onClickNext = () => {
+    if (index + 1 === album.length) {
+      setIndex(0);
+    } else {
+      setIndex(index + 1);
+    }
+  };
 
-  // mapping pictures in album, showing only one picture
-  const showCurrentPicture = (cardProps) => {
-    return (
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title={album[0].titel}></CardHeader>
-          <CardMedia className={classes.media} image={album[0].img} />
-        </Card>
-      </Grid>
-    );
+  const onclickBack = () => {
+    if (index - 1 === -1) {
+      setIndex(album.length - 1);
+    } else {
+      setIndex(index - 1);
+    }
   };
 
   // static data for page
@@ -151,13 +152,15 @@ export function Annotate(props) {
                 </div>
 
                 {/* TODO with mapping picture section */}
-                {/* {album.map((c) => showCurrentPicture(c))} */}
 
                 {/* no need if mapping DONE */}
                 <Grid item xs={12}>
                   <Card>
-                    <CardHeader title={album[0].titel}></CardHeader>
-                    <CardMedia className={classes.media} image={album[0].img} />
+                    <CardHeader title={album[index].titel}></CardHeader>
+                    <CardMedia
+                      className={classes.media}
+                      image={album[index].img}
+                    />
                   </Card>
                 </Grid>
 
@@ -170,9 +173,7 @@ export function Annotate(props) {
                         color="primary"
                         variant="contained"
                         disableElevation
-                        onClick={() => {
-                          alert("previous picture");
-                        }}
+                        onClick={onclickBack}
                       >
                         Back
                       </Button>
@@ -192,9 +193,7 @@ export function Annotate(props) {
                         color="primary"
                         variant="contained"
                         disableElevation
-                        onClick={() => {
-                          alert("next picture");
-                        }}
+                        onClick={onClickNext}
                       >
                         Next
                       </Button>
@@ -207,6 +206,9 @@ export function Annotate(props) {
                         color="primary"
                         variant="contained"
                         disableElevation
+                        onClick={() => {
+                          alert("VERIFY");
+                        }}
                       >
                         Verify
                       </Button>

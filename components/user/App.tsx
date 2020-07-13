@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import React from "react";
-import { Link, Redirect, Route } from "react-router-dom";
-=======
-import React from 'react';
-import { Link, Redirect, Route, Switch } from 'react-router-dom';
->>>>>>> db4be39076bdb4f0e61b7703c6ee4fd474bdfd69
+import { Link, Redirect, Route, Switch } from "react-router-dom";
 
 import {
   Button,
@@ -127,13 +122,9 @@ export function App() {
           <Route path="/myalbums" component={MyAlbums} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
-<<<<<<< HEAD
           <Route path="/annotate" component={Annotate} />
-        </div>
-=======
           <Route path="/*" component={() => <h1>404 Not Found</h1>} />
         </Switch>
->>>>>>> db4be39076bdb4f0e61b7703c6ee4fd474bdfd69
       </TagifyNavigation>
     </>
   );

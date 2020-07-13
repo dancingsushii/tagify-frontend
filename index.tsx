@@ -4,18 +4,10 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 
-<<<<<<< HEAD
-// import { App as AdminApp } from './components/admin/App';
-import { App as GuestApp } from "./components/guest/App";
-import { App as UserApp } from "./components/user/App";
-import { raleway200, raleway300 } from "./fonts/Fonts";
-import BackendToken, { User } from "./utils/BackendAPI";
-=======
 import { App as GuestApp } from './components/guest/App';
 import { App as UserApp } from './components/user/App';
 import { raleway200, raleway300 } from './fonts/Fonts';
 import BackendToken, { Default, UserRole } from './utils/BackendAPI';
->>>>>>> db4be39076bdb4f0e61b7703c6ee4fd474bdfd69
 
 const theme = createMuiTheme({
   palette: {

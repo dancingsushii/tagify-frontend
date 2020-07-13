@@ -133,6 +133,7 @@ export const Default: DefaultType = {
   },
 };
 
+// USER
 interface UserType {
   logout(): Promise<string>;
   getAllData(): Promise<void>; // TODO
@@ -179,6 +180,7 @@ export const User: UserType = {
   },
 };
 
+// ALBUM
 interface AlbumType {
   getAllAlbums(): Promise<{
     responseCode: string;
@@ -293,6 +295,7 @@ export const Albums: AlbumType = {
   },
 };
 
+// USER -> ALBUM
 interface UserAlbumType {
   getMyAlbums(): Promise<{
     responseCode: string;
@@ -383,6 +386,7 @@ export const UserAlbum: UserAlbumType = {
   },
 };
 
+// USER -> PHOTO
 interface UserPhotoType {
   addPhotoToAlbum(albumId: string, body: FormData): Promise<string>;
   replacePhotoInAlbum(
@@ -427,10 +431,143 @@ export const UserPhoto: UserPhotoType = {
   },
 };
 
-interface AdminUserType {}
+// TODO ADMIN -> USER
+interface AdminUserType {
+  createUser(body: {
+    username: string;
+    nickname: string;
+    password: string;
+    role: string;
+  }): Promise<{
+    responseCode: string;
+    data?: {
+      id: number;
+      username: string;
+      nickname: string;
+      password: string;
+      role: string;
+    };
+  }>;
+  getAllUsers(): Promise<{
+    responseCode: string;
+    users:
+      | [
+          {
+            id: number;
+            username: string;
+            nickname: string;
+            role: string;
+          }
+        ]
+      | undefined;
+  }>;
+  createAdmin(): Promise<void>; // TODO
+  deleteUser(): Promise<void>; // TODO
+}
 
-interface AdminAlbumType {}
+export const AdminUser: AdminUserType = {
+  createUser: async (body) => {
+    const response = await fetch(`/api/admin/users`, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    let code = ResponseCode[response.status];
+    let json = undefined;
+    try {
+      json = await response.json();
+    } catch (error) {
+      console.error(error);
+      console.error(
+        "The API query resulted with an unexpected body: Could not parse JSON"
+      );
+      response.text().then((text) => console.error(text));
+      code = ResponseCode[500];
+      json = undefined;
+    }
+    return {
+      responseCode: code,
+      data: json,
+    };
+  },
+  getAllUsers: async () => {
+    const response = await fetch("/api/admin/users", {
+      credentials: "same-origin",
+      method: "GET",
+    });
+    let code = ResponseCode[response.status];
+    let json = undefined;
+    try {
+      json = await response.json();
+    } catch (error) {
+      console.error(error);
+      console.error(
+        "The API query resulted with an unexpected body: Could not parse JSON"
+      );
+      response.text().then((text) => console.error(text));
+      code = ResponseCode[500];
+      json = undefined;
+    }
+    return {
+      responseCode: code,
+      users: json,
+    };
+  },
+  createAdmin: async () => {
+    console.error("not implemented.");
+  },
+  deleteUser: async () => {
+    console.error("not implemented.");
+  },
+};
 
+// TODO ADMIN -> ALBUM
+interface AdminAlbumType {
+  updateAlbum(body: {
+    title: string;
+    description: string;
+  }): Promise<{
+    responseCode: string;
+    data?: {
+      status: string;
+    };
+  }>;
+  deleteAlbum(): Promise<{
+    responseCode: string;
+    data?: {
+      status: string;
+    };
+  }>;
+}
+
+// export const AdminAlbum: AdminAlbumType = {
+//   updateAlbum: async (body) => {
+//     const response = await fetch(`/api/admin/albums/${album_id}`, {
+//       method: "PUT",
+//       credentials: "same-origin",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(body),
+//     });
+// TODO
+//     return {
+//       responseCode: code,
+//       data: json,
+//     };
+//   },
+//   deleteAlbum: async () => {
+//     const response = await fetch(`/api/admin/albums/${album_id}`, {
+//       credentials: "same-origin",
+//       method: "DELETE",
+// TODO
+//     });
+//     return {
+//       responseCode: code,
+//     };
+//   },
+};
+
+// ADMIN
 interface AdminType {
   logout(): Promise<string>;
 }
