@@ -330,15 +330,6 @@ interface UserAlbumType {
         }
       | undefined;
   }>;
-  updateAlbum(
-    albumId,
-    body: {
-      title: string;
-      description: string;
-    }
-  ): Promise<{
-    responseCode: string;
-  }>;
 }
 
 export const UserAlbum: UserAlbumType = {
@@ -388,19 +379,6 @@ export const UserAlbum: UserAlbumType = {
     return {
       responseCode: code,
       album: json,
-    };
-  },
-  updateAlbum: async (albumId, body) => {
-    const response = await fetch(`/api/user/albums/${albumId}`, {
-      method: "PUT",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    let code = ResponseCode[response.status];
-
-    return {
-      responseCode: code,
     };
   },
 };
