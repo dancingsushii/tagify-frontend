@@ -86,7 +86,7 @@ function Albumthumbneil(props) {
       {/* Album info */}
       <CardActionArea>
         <Link
-          to={{ pathname: "/album", id: id }}
+          to={{ pathname: `/album/${id}` }
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <CardHeader

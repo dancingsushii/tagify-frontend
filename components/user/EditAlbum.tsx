@@ -17,7 +17,7 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Pagination from '@material-ui/lab/Pagination';
 
-import { Albums, UserPhoto } from '../../utils/BackendAPI';
+import { Albums, UserAlbum, UserPhoto } from '../../utils/BackendAPI';
 import PictureEditCard from '../snippets/PictureThumbneil';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -162,6 +162,26 @@ function EditAlbum(props) {
   const [description, setDescription] = useState("");
 
   function editConfirmation() {
+    const upAlbum = async () => {
+      try {
+        const body = {
+          title: title,
+          description: description,
+        };
+        let response = await UserAlbum.updateAlbum(album.id, body);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    upAlbum();
+    setnumDelet(numDelet + 1);
+    setFormOpen(false);
+    /*   here comes backend api                  */
+
+    //setnumDelet(numDelet + 1);
+
+    //setFormOpen(false);
     console.log("in edit confirmation");
   }
 
@@ -278,7 +298,7 @@ function EditAlbum(props) {
                         <EditIcon />{" "}
                       </Button>
                     }
-                    title={"sdfdf"}
+                    title={album.title}
                   />
 
                   <CardContent>
@@ -287,7 +307,7 @@ function EditAlbum(props) {
                       color="textSecondary"
                       component="p"
                     >
-                      {"JApierdole"}
+                      {album.description}
                     </Typography>
                   </CardContent>
                 </Card>
