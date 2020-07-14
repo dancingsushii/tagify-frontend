@@ -35,6 +35,8 @@ function MyAlbums(props) {
     },
   ]);
 
+  const [numDelete, setNumDelete] = useState(0);
+
   useEffect(() => {
     const fetchAlbum = async () => {
       try {
@@ -52,7 +54,7 @@ function MyAlbums(props) {
     };
 
     fetchAlbum();
-  }, []);
+  }, [numDelete]);
 
   const [curentPage, setCurentPage] = useState(1);
 
@@ -78,10 +80,28 @@ function MyAlbums(props) {
     setOpen(true);
   }
 
-  function handleDeleteConfirmation() {
+  function handleDeleteConfirmation(albumId) {
     /* here will come a asynce function to delete Album from server  */
     /* at the moment only lokal */
-    setAlbums(AlbumList.filter((c) => c.title !== toDelete.title));
+    const delAlbum = async (albumId) => {
+      try {
+        let response = await UserAlbum.deleteOwnAlbum(albumId);
+
+        /* TODO response Handling if backend adds it 
+        if (response === "Ok") {
+          
+          setOpen(false);
+        } else {
+          setOpen(false);
+          alert("Failed to Delete Picture");
+        } */
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    delAlbum(albumId);
+    setNumDelete(numDelete + 1);
     setOpen(false);
   }
 
@@ -376,7 +396,7 @@ function MyAlbums(props) {
               Cancel
             </Button>
             <Button
-              onClick={handleDeleteConfirmation}
+              onClick={() => handleDeleteConfirmation(toDelete.id)}
               variant="contained"
               color="primary"
             >

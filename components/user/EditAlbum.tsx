@@ -59,6 +59,7 @@ function EditAlbum(props) {
           );
           if (pics.responseCode === "Ok" && pics.photos !== undefined) {
             setPictures(pics.photos);
+
             setLoaded(true);
           }
         } else {
@@ -169,6 +170,8 @@ function EditAlbum(props) {
           description: description,
         };
         let response = await UserAlbum.updateAlbum(album.id, body);
+
+        /* TODO handling response */
       } catch (error) {
         console.log(error);
       }
@@ -392,7 +395,7 @@ function EditAlbum(props) {
         {/* Picture Thumbneils */}
 
         {pictures.map((pic, j) => {
-          if (pic.id !== undefined) {
+          if (pic.id !== undefined && pic !== undefined) {
             return (
               <Grid key={j} item xs={12} sm={6} md={4} lg={3}>
                 <PictureEditCard
@@ -506,7 +509,14 @@ function EditAlbum(props) {
 
         <img
           id={"photo"}
-          src={`/api/user/albums/${id}/photos/${toDelete.id}`}
+          src={(() => {
+            if (toDelete.id === undefined) {
+              return "";
+            } else {
+              return `/api/user/albums/${id}/photos/${toDelete.id}`;
+            }
+          })()}
+          // src={`/api/user/albums/${id}/photos/${toDelete.id}`}
           alt=""
           style={{
             height: "70vh",

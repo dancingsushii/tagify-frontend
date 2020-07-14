@@ -339,6 +339,7 @@ interface UserAlbumType {
   ): Promise<{
     responseCode: string;
   }>;
+  deleteOwnAlbum(albumId: string): Promise<string>;
 }
 
 export const UserAlbum: UserAlbumType = {
@@ -402,6 +403,13 @@ export const UserAlbum: UserAlbumType = {
     return {
       responseCode: code,
     };
+  },
+  deleteOwnAlbum: async (albumId) => {
+    const response = await fetch(`/api/user/albums/${albumId}`, {
+      method: "DELETE",
+      credentials: "same-origin",
+    });
+    return ResponseCode[response.status];
   },
 };
 

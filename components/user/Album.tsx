@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import {
     Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Grid, makeStyles, Paper
@@ -146,7 +147,7 @@ export function Album(props) {
             className={classes.media}
             image={(() => {
               if (album.first_photo == "default_path" && pictures.length > 0) {
-                console.log("here");
+                // console.log("here");
                 return `/api/user/albums/${album.id}/photos/${pictures[0].id}`;
               }
               return album.first_photo;
@@ -177,6 +178,20 @@ export function Album(props) {
             >
               Annotate
             </Button>
+
+            <Link
+              to={{ pathname: "/editalbum", id: album.id }}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Button
+                variant="contained"
+                size="small"
+                disableElevation
+                className={classes.button}
+              >
+                Edit
+              </Button>
+            </Link>
 
             <Button
               variant="contained"
