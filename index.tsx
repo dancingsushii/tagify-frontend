@@ -56,6 +56,8 @@ function App() {
           : undefined;
       BackendToken.authenticated = code == "Ok";
       BackendToken.userRole = role;
+      BackendToken.nickname =
+        response.data == undefined ? "" : response.data.nickname;
       if (BackendToken.userRole == UserRole.Admin)
         window.location.replace("/admin");
       setRender(true);
