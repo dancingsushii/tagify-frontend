@@ -7,7 +7,7 @@ import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 
-import Token, { Default } from '../../utils/BackendAPI';
+import BackendToken, { Default, UserRole } from '../../utils/BackendAPI';
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -50,10 +50,25 @@ export function Login(props) {
     Default.login({
       username: username,
       password: password,
-    }).then((responseCode) => {
-      if (responseCode === "Ok") {
-        Token.login();
-        props.history.push("/");
+    }).then((response) => {
+      if (response.responseCode === "Ok") {
+        BackendToken.login();
+        BackendToken.userRole =
+          response.data?.role == "user"
+            ? UserRole.User
+            : response.data?.role == "admin"
+            ? UserRole.Admin
+            : undefined;
+        if (BackendToken.userRole == UserRole.Admin) {
+          window.location.replace("/admin");
+        } else if (BackendToken.userRole == UserRole.User) {
+          props.history.push("/");
+        } else {
+          alert("Oops, broken");
+          console.error(
+            "Reached unexpected case: Server returned 200, but role is undefined"
+          );
+        }
       } else {
         alert("Failed to login");
       }

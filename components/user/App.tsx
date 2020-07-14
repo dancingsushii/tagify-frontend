@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Redirect, Route } from 'react-router-dom';
+import { Link, Redirect, Route, Switch } from 'react-router-dom';
 
 import {
     Button, Divider, List, ListItem, ListItemIcon, ListItemText, makeStyles, Theme
@@ -29,7 +29,6 @@ export function App() {
       padding: "2px 4px",
       display: "flex",
       alignItems: "center",
-      width: 220,
       height: 35,
     },
     input: {
@@ -79,7 +78,7 @@ export function App() {
               alignItems: "center",
             }}
           >
-            <Route path="/album">
+            <Route path="/album/:id">
               <Link to="/" style={{ textDecoration: "none" }}>
                 <Button variant="contained">Back</Button>
               </Link>
@@ -104,15 +103,19 @@ export function App() {
           </div>
         }
       >
-        <div>
+        <Switch>
           <Route exact path="/" component={DashBoard} />
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
-          <Route path="/album" component={Album} />
+          <Route exact path="/album">
+            <Redirect to="/"></Redirect>
+          </Route>
+          <Route path="/album/:id" component={Album} />
           <Route path="/myalbums" component={MyAlbums} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
-        </div>
+          <Route path="/*" component={() => <h1>404 Not Found</h1>} />
+        </Switch>
       </TagifyNavigation>
     </>
   );
