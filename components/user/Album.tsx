@@ -180,7 +180,7 @@ export function Album(props) {
             </Button>
 
             <Link
-              to={{ pathname: "/editalbum", id: album.id }}
+              to={{ pathname: `/editalbum/${album.id}` }}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <Button

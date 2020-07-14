@@ -271,26 +271,6 @@ function MyAlbums(props) {
                   </Card>
                 </Grid>
               </Grid>
-
-              {/* card with tags */}
-              {/* <Grid item xs={12}>
-                <Card style={{ padding: "5px" }}>
-                  <Typography style={{ padding: "10px" }} variant={"h6"}>
-                    My Tags
-                  </Typography>
-
-                  <div className={classes.chips}>
-                    {mytags.map((c) => (
-                      <Chip
-                        label={c}
-                        variant="default"
-                        color="default"
-                        onDelete={handleDelete}
-                      />
-                    ))}
-                  </div>
-                </Card>
-              </Grid> */}
             </Grid>
             <Pagination
               style={{ float: "left" }}
@@ -303,15 +283,19 @@ function MyAlbums(props) {
               page={curentPage}
               onChange={handlePageChange}
             />
-            <Button
-              className={classes.button}
-              style={{ float: "right", margin: "5px" }}
-              variant="contained"
-              color="primary"
-              href={"/addalbum"}
+            <Link
+              to={{ pathname: `/addalbum` }}
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              Add new Album
-            </Button>
+              <Button
+                className={classes.button}
+                style={{ float: "right", margin: "5px" }}
+                variant="contained"
+                color="primary"
+              >
+                Add new Album
+              </Button>
+            </Link>
           </Card>
         </Grid>{" "}
         {/* end of upper part */}
@@ -433,249 +417,4 @@ function CircularProgressWithLabel(props) {
     </Box>
   );
 }
-
-//Data for the static example
-const mytags = [
-  "#dogs",
-  "#labrador",
-  "#Three",
-  "#woods",
-  "#Bicycle",
-  "#mercedes",
-  "#bmv",
-  "#opel",
-  "#monocycle",
-  "Oranges",
-  "#Apple",
-  "#lenovo",
-  "#Hills",
-  "#sneakers",
-  "#Rolex",
-  "#sixo",
-  "#berd",
-  "#circle",
-  "#ball",
-  "#dog",
-  "#lion",
-  "#dachshund",
-  "#elephant",
-  "#bird",
-  "#vulture",
-  "#roe",
-];
-
-const Albums1 = [
-  {
-    title: "Animals   ",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://picsum.photos/id/237/300/300",
-    tags: ["#Dog", "#dogs", "#labrador"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Nature",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://picsum.photos/id/33/300/300",
-    tags: ["#Three", "#woods"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Oranges",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://vignette.wikia.nocookie.net/testo/images/f/fa/Pomara%C5%84cza.png/revision/latest?cb=20190305224547&path-prefix=pl",
-    tags: ["#orange", "#oranges"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Laptops ",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/119/3264/2176.jpg?hmac=PYRYBOGQhlUm6wS94EkpN8dTIC7-2GniC3pqOt6CpNU",
-    tags: ["#Apple", "#lenovo"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Shoes",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://picsum.photos/id/21/300/300",
-    tags: ["#Hills", "#sneakers"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Watches",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://i.ytimg.com/vi/ydXgwo_nvuk/maxresdefault.jpg",
-    tags: ["#Rolex", "#sixo", "#berd"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Architectrure",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/1048/5616/3744.jpg?hmac=N5TZKe4gtmf4hU8xRs-zbS4diYiO009Jni7n50609zk",
-    tags: ["#circle", "#ball", "#berd"],
-    id: 22,
-    description: "test123 super album",
-  },
-
-  {
-    title: "People",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://static.polityka.pl/_resource/res/path/57/ff/57ff8ee9-b145-45e3-bd37-3bb9cf91d23c_f1400x900",
-    tags: ["#man", "#woman"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Ships",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://picsum.photos/id/211/300/300",
-    tags: ["#circle", "#ball", "#berd"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Instruments ",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/1082/5416/3611.jpg?hmac=GrASx5oGYbTwT4xyJDYkurgXFFfgj37WHvaJNe8Sr1E",
-    tags: ["#circle", "#ball", "#berd"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Bicycle",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://picsum.photos/id/1077/3000/1995",
-    tags: ["#Bicycle", "#monocycle"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Architectrure",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/1048/5616/3744.jpg?hmac=N5TZKe4gtmf4hU8xRs-zbS4diYiO009Jni7n50609zk",
-    tags: ["#block", "#Road"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Dogs ",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/1062/5092/3395.jpg?hmac=o9m7qeU51uOLfXvepXcTrk2ZPiSBJEkiiOp-Qvxja-k",
-    tags: ["#jork", "#terier"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Nature",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://picsum.photos/id/33/300/300",
-    tags: ["#circle", "#ball", "#berd"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Cars ",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/1071/3000/1996.jpg?hmac=rPo94Qr1Ffb657k6R7c9Zmfgs4wc4c1mNFz7ND23KnQ",
-    tags: ["#mercedes", "#bmv", "#opel"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "Je",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://picsum.photos/id/21/300/300",
-    tags: ["#circle", "#ball", "#berd"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "17",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/1048/5616/3744.jpg?hmac=N5TZKe4gtmf4hU8xRs-zbS4diYiO009Jni7n50609zk",
-    tags: ["#block", "#Road"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "18 ",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/1062/5092/3395.jpg?hmac=o9m7qeU51uOLfXvepXcTrk2ZPiSBJEkiiOp-Qvxja-k",
-    tags: ["#jork", "#terier"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "19",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo: "https://picsum.photos/id/33/300/300",
-    tags: ["#circle", "#ball", "#berd"],
-    id: 22,
-    description: "test123 super album",
-  },
-  {
-    title: "20 ",
-    image_number: 20,
-    tagged_number: 11,
-    users_id: "Maniek",
-    first_photo:
-      "https://i.picsum.photos/id/1071/3000/1996.jpg?hmac=rPo94Qr1Ffb657k6R7c9Zmfgs4wc4c1mNFz7ND23KnQ",
-    tags: ["#mercedes", "#bmv", "#opel"],
-    id: 22,
-    description: "test123 super album",
-  },
-];
 export default MyAlbums;

@@ -127,7 +127,7 @@ function Albumthumbneil(props) {
         justify="space-around"
       >
         <Link
-          to={{ pathname: "/editalbum", id: id }}
+          to={{ pathname: `/editalbum/${id}` }}
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <Button size="small" color="primary" variant="contained">

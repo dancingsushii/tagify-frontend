@@ -38,15 +38,15 @@ function PictureEditCard(props) {
     <Card>
       {/* Pic info */}
       <CardHeader
-        action={
+        /*  action={
           <Button onClick={() => props.onEdit(picture)}>
             <EditIcon />
           </Button>
-        }
+        } */
         title={picture.file_path}
         subheader={"Id: " + picture.id}
       />
-      <CardActionArea onClick={() => props.onView(picture)}>
+      <CardActionArea onClick={() => props.onView(props.index)}>
         {/*  Picture */}
         <CardMedia
           className={classes.media}
@@ -79,7 +79,7 @@ function PictureEditCard(props) {
           size="small"
           color="secondary"
           variant="contained"
-          onClick={() => props.onView(picture)}
+          onClick={() => props.onView(props.index)}
         >
           View
         </Button>

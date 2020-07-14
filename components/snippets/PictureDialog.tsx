@@ -32,6 +32,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
       props.changeView(props.toView-1);
     }
   }
+    
   return(
   
       <Dialog
@@ -61,7 +62,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
         
         <img
           id={"photo"}
-          src={`/api/user/albums/${props.albumID}/photos/${pictures[props.toView].id}`}
+          src={`/api/user/albums/${props.albumID}/photos/${props.pictures[props.toView].id}`} 
           alt=""
           style={{
             height: "70vh",
