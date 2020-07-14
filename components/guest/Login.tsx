@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, IconButton, InputAdornment, makeStyles, Theme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import BackendToken, { Default, UserRole } from '../../utils/BackendAPI';
 
@@ -15,6 +17,9 @@ const useStyles = makeStyles((_theme: Theme) =>
       width: "100%",
       padding: 5,
       marginTop: 10,
+    },
+    adornedEnd: {
+      paddingRight: 0,
     },
   })
 );
@@ -28,6 +33,7 @@ export function Login(props) {
   const classes = useStyles();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleChangeInput(event: React.ChangeEvent<HTMLInputElement>) {
     const target = event.target;
@@ -59,6 +65,8 @@ export function Login(props) {
             : response.data?.role == "admin"
             ? UserRole.Admin
             : undefined;
+        BackendToken.nickname =
+          response.data == undefined ? "" : response.data.nickname;
         if (BackendToken.userRole == UserRole.Admin) {
           window.location.replace("/admin");
         } else if (BackendToken.userRole == UserRole.User) {
@@ -73,6 +81,14 @@ export function Login(props) {
         alert("Failed to login");
       }
     });
+    event.preventDefault();
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
@@ -101,12 +117,28 @@ export function Login(props) {
             className={classes.textField}
             label="Password"
             variant="outlined"
-            type="password"
+            type={showPassword ? "text" : "password"}
             name={LoginForm.password}
             placeholder="Password"
             value={password}
             onChange={handleChangeInput}
             required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+              classes: {
+                adornedEnd: classes.adornedEnd,
+              },
+            }}
           />
 
           <Button
