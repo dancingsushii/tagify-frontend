@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Button, Chip, Grid } from '@material-ui/core';
+import { Box, Button, CardActionArea, Chip, Grid } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -39,19 +39,21 @@ function PictureEditCard(props) {
       {/* Pic info */}
       <CardHeader
         action={
-          <Button>
+          <Button onClick={() => props.onEdit(picture)}>
             <EditIcon />
           </Button>
         }
         title={picture.file_path}
         subheader={"Id: " + picture.id}
       />
-      {/*  Picture */}
-      <CardMedia
-        className={classes.media}
-        image={`/api/user/albums/${albumId}/photos/${picture.id}`}
-        title={picture.id}
-      />
+      <CardActionArea onClick={() => props.onView(picture)}>
+        {/*  Picture */}
+        <CardMedia
+          className={classes.media}
+          image={`/api/user/albums/${albumId}/photos/${picture.id}`}
+          title={picture.id}
+        />
+      </CardActionArea>
 
       {/* Tags */}
       <div className={classes.chips}>
@@ -73,7 +75,12 @@ function PictureEditCard(props) {
         item
         justify="space-around"
       >
-        <Button size="small" color="secondary" variant="contained">
+        <Button
+          size="small"
+          color="secondary"
+          variant="contained"
+          onClick={() => props.onView(picture)}
+        >
           View
         </Button>
         <Button

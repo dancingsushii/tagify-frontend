@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-    Box, Button, Card, CardContent, CardMedia, Container, Grid, makeStyles, Paper
+    Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Grid, makeStyles, Paper
 } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { Albums } from '../../utils/BackendAPI';
 import { AlbumSkeleton } from '../snippets/AlbumSkeleton';
+import PictureDialog from '../snippets/PictureDialog';
 
 export function Album(props) {
   let id = props.location.id;
@@ -43,6 +44,17 @@ export function Album(props) {
     };
     fetchData();
   }, []);
+  /* Picture Dialog Controls */
+  const [view, setViewOpen] = useState(false);
+  const [index, setPicIndex] = useState(0);
+  function changeView(i) {
+    setPicIndex(i);
+  }
+  function toggelView(i) {
+    changeView(i);
+    setViewOpen(!view);
+  }
+  /* ////////////////////// */
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -200,16 +212,18 @@ export function Album(props) {
           style={{ marginTop: "3em" }}
         >
           {pictures.map((pic, i) => {
-            console.log(pic);
+            //   console.log(pic);
             return (
               <Grid item key={i}>
                 <Card className={classes.card}>
-                  <CardMedia
-                    component="img"
-                    height="150"
-                    width="150"
-                    image={`/api/user/albums/${album.id}/photos/${pic.id}`}
-                  ></CardMedia>
+                  <CardActionArea onClick={() => toggelView(i)}>
+                    <CardMedia
+                      component="img"
+                      height="150"
+                      width="150"
+                      image={`/api/user/albums/${album.id}/photos/${pic.id}`}
+                    ></CardMedia>
+                  </CardActionArea>
                 </Card>
               </Grid>
             );
@@ -222,6 +236,14 @@ export function Album(props) {
           <Grid item className={classes.filler}></Grid>
           <Grid item className={classes.filler}></Grid>
         </Grid>
+        <PictureDialog
+          pictures={pictures}
+          view={view}
+          toggelView={toggelView}
+          changeView={changeView}
+          albumID={album.id}
+          toView={index}
+        />
       </Container>
     );
   } else {

@@ -11,10 +11,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Pagination from '@material-ui/lab/Pagination';
 
-import { Albums, UserPhoto } from '../../utils/BackendAPI';
+import { Albums, UserAlbum, UserPhoto } from '../../utils/BackendAPI';
 import PictureEditCard from '../snippets/PictureThumbneil';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -22,6 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function EditAlbum(props) {
+  // let id = 1;
   let id = props.location.id;
   const [album, setAlbum] = useState({
     id: 1,
@@ -74,39 +78,64 @@ function EditAlbum(props) {
     setCurentPage(value);
   };
 
-  const handleEdit = () => {
-    /* Temporaly only for demo. No contact with backedn*/
-    album.title = title;
-    album.description = description;
-    /*                     */
-    setFormOpen(false);
-  };
-  const [title, setTitle] = useState("sdfas");
-  const [description, setDescription] = useState("");
-
-  function handleNameChange(e) {
-    setTitle(e.target.value);
-  }
-
-  function handleDescriptionChange(e) {
-    setDescription(e.target.value);
-  }
-
   const [toDelete, setToDelete] = useState("");
 
-  const [open, setOpen] = useState(false);
+  /* Control of Gallery Big View */
   const [view, setViewOpen] = useState(false);
-  const [form, setFormOpen] = useState(false);
+  function handleView(pic) {
+    setToDelete(pic);
+    setViewOpen(true);
+  }
+  function handleNext() {
+    let index = pictures.indexOf(toDelete);
+    if (index === pictures.length - 1) {
+      console.log("An die grenze");
+    } else {
+      console.log(toDelete);
+      setToDelete(pictures[index + 1]);
+      console.log(toDelete);
+    }
+  }
+  function handleBefor() {
+    console.log(toDelete);
+    let index = pictures.indexOf(toDelete);
+    if (index === 0) {
+      console.log("An die grenze");
+    } else {
+      setToDelete(pictures[index - 1]);
+      console.log(toDelete);
+    }
+  }
+  /* /////////////////////////////// */
 
+  /* Editing pic file_path */
+  const [picTmp, setPicTmp] = useState("");
+  const [picForm, setPicFormOpen] = useState(false);
+  function handlePicEdit(pic) {
+    setPicTmp(pic.file_path);
+    setPicFormOpen(true);
+  }
+  const handlePicNameChange = (event, value) => {
+    setPicTmp(value);
+    console.log(value);
+  };
+  function ConfirmEdit() {
+    /*   here comes backend api                  */
+
+    setPicFormOpen(false);
+    console.log(toDelete);
+  }
+  /* //////////////////////////////////////////// */
+
+  /* Deleting of a picture////////// */
+  const [open, setOpen] = useState(false);
   /* openes Delete confirmation dialog */
   function handleDelete(pic) {
     setToDelete(pic);
     setOpen(true);
   }
-
   function handleDeleteConfirmation() {
-    /* here will come a asynce function to delete Album from server  */
-    /* at the moment only lokal */
+    /*is connected with backend */
     const delPic = async (albumId, picId) => {
       try {
         let response = await UserPhoto.deletePhotoFromAlbum(albumId, picId);
@@ -122,16 +151,55 @@ function EditAlbum(props) {
         console.log(error);
       }
     };
+    handleView;
     delPic(album.id, toDelete.id);
   }
+  /* /////////////////////// */
 
-  const handleClickOpen = () => {
-    setFormOpen(true);
-  };
+  /* Editing Album name and description */
+  const [form, setFormOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  function editConfirmation() {
+    console.log("in edit confirmation");
+
+    /* Temporaly only for demo. No contact with backedn*/
+    const upAlbum = async () => {
+      try {
+        const body = {
+          title: title,
+          description: description,
+        };
+        let response = await UserAlbum.updateAlbum(album.id, body);
+        //console.log(response);
+
+        /*  if (response === "Ok") {
+          setnumDelet(numDelet + 1);
+          setOpen(false); 
+        } else {
+          setOpen(false);
+          alert("Failed to Delete Picture");
+        } */
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    upAlbum();
+    /*   here comes backend api                  */
+    //setnumDelet(numDelet + 1);
+
+    //setFormOpen(false);
+  }
+  function handleNameChange(e) {
+    setTitle(e.target.value);
+  }
+
+  function handleDescription(e) {
+    setDescription(e.target.value);
+  }
+  /* /////////////////////////////////// */
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -219,7 +287,7 @@ function EditAlbum(props) {
           style={{ margin: 0 }}
         >
           {/* Backround Card */}
-          <Card>
+          <Card style={{ margin: 0, width: "100%" }}>
             <Grid
               item
               xs={12}
@@ -237,7 +305,7 @@ function EditAlbum(props) {
                         <EditIcon />{" "}
                       </Button>
                     }
-                    title={album.title}
+                    title={"Guuuuuuuuuuuuuuuuuuuwno"}
                   />
 
                   <CardContent>
@@ -291,7 +359,6 @@ function EditAlbum(props) {
                           label={c}
                           variant="default"
                           color="primary"
-                          onDelete={handleDelete}
                         />
                       ))}
                     </div>
@@ -317,6 +384,7 @@ function EditAlbum(props) {
                   style={{ float: "right", margin: "5px" }}
                   variant="contained"
                   color="secondary"
+                  href={"/addAlbum"}
                 >
                   Add Pictures
                 </Button>
@@ -340,6 +408,8 @@ function EditAlbum(props) {
                   albumId={album.id}
                   tags={["example"]}
                   onDelete={handleDelete}
+                  onView={handleView}
+                  onEdit={handlePicEdit}
                 />
               </Grid>
             );
@@ -365,16 +435,12 @@ function EditAlbum(props) {
       <Grid item sm={1}></Grid>
 
       <div>
-        {/* <Button color="primary" onClick={handleDelete}>
-          Dialog deleter
-        </Button> */}
-
         {/* Dialog box for delete confirmation */}
         <Dialog
           open={open}
           TransitionComponent={Transition}
           keepMounted
-          onClose={handleClose}
+          onClose={() => setOpen(false)}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
@@ -389,43 +455,13 @@ function EditAlbum(props) {
               File: {toDelete.file_path}
             </Typography>
             <Typography variant={"body1"}>Id: {toDelete.id}</Typography>
-            {/* Album info */}
-            {/* <Card>
-              
-              <CardActionArea>
-                <Link
-                  to={{ pathname: "/album", id: toDelete.id }}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <CardHeader
-                    action={
-                      <CircularProgressWithLabel
-                        variant="static"
-                        value={
-                          (toDelete.tagged_number * 100) / toDelete.image_number
-                        }
-                      />
-                    }
-                    title={toDelete.title}
-                    subheader={toDelete.users_id}
-                  />
-                  <CardMedia
-                    className={classes.media}
-                    image={toDelete.first_photo}
-                    title={toDelete.title}
-                  />
-                  <CardContent>
-                    
-                  </CardContent>
-                </Link>
-              </CardActionArea>
-            </Card> */}
+
             <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
           </DialogContent>
 
           <DialogActions>
             <Button
-              onClick={handleClose}
+              onClick={() => setOpen(false)}
               variant="contained"
               color="primary"
               style={{ flex: "left" }}
@@ -443,99 +479,76 @@ function EditAlbum(props) {
         </Dialog>
       </div>
 
-      {/*     <Button onClick={() => setViewOpen(true)}>view</Button> */}
       {/* ####################################################
        */}
-
+      {/* ######################################## */}
       {/* Big pic view */}
-      <div>
-        {/* Dialog box for del view */}
-        <Dialog
-          fullWidth={fullWidth}
-          maxWidth={maxWidth}
-          open={view}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-slide-title"
-          aria-describedby="alert-dialog-slide-description"
+      {/*  */}
+
+      <Dialog
+        open={view}
+        maxWidth={"lg"}
+        TransitionComponent={Transition}
+        keepMounted
+        PaperProps={{
+          style: {
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            minWidth: "40vw",
+            maxHeight: "100vh",
+            margin: 0,
+          },
+        }}
+        onClose={() => setViewOpen(false)}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <Button
+          style={{ justifyContent: "left" }}
+          color="primary"
+          onClick={() => setViewOpen(false)}
         >
-          <Grid container spacing={1} item sm={12}>
-            <Grid item sm={12} md={6}>
-              <img src="https://picsum.photos/id/21/300/300" alt="" />
-            </Grid>
-            <Grid item sm={12} md={6}>
-              <Typography variant={"body1"}>Name: pic1.jpg</Typography>
-              <Typography variant={"body1"}>Id: 22</Typography>
-            </Grid>
-          </Grid>
+          <CloseIcon />
+        </Button>
 
-          <DialogTitle
-            id="alert-dialog-slide-title"
-            style={{ alignSelf: "center" }}
-          ></DialogTitle>
-          <DialogContent>
-            <img src="https://picsum.photos/id/21/300/300" alt="" />
+        <img
+          id={"photo"}
+          src={`/api/user/albums/${id}/photos/${toDelete.id}`}
+          alt=""
+          style={{
+            height: "70vh",
+            objectFit: "contain",
+          }}
+        />
 
-            <Typography variant={"body1"}>Id: </Typography>
-            {/* Album info */}
-            {/* <Card>
-              
-              <CardActionArea>
-                <Link
-                  to={{ pathname: "/album", id: toDelete.id }}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <CardHeader
-                    action={
-                      <CircularProgressWithLabel
-                        variant="static"
-                        value={
-                          (toDelete.tagged_number * 100) / toDelete.image_number
-                        }
-                      />
-                    }
-                    title={toDelete.title}
-                    subheader={toDelete.users_id}
-                  />
-                  <CardMedia
-                    className={classes.media}
-                    image={toDelete.first_photo}
-                    title={toDelete.title}
-                  />
-                  <CardContent>
-                    
-                  </CardContent>
-                </Link>
-              </CardActionArea>
-            </Card> */}
-            <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
-          </DialogContent>
+        <div
+          style={{
+            width: "30vw",
+            alignSelf: "center",
+            display: "flex",
+            justifyContent: "space-around",
+            marginTop: "1vh",
+          }}
+        >
+          <Button
+            onClick={handleBefor}
+            color="primary"
+            style={{ flex: "left" }}
+          >
+            <SkipPreviousIcon />
+          </Button>
+          <Chip label={"example"} variant="default" color="primary" />
+          <Button onClick={handleNext} color="primary">
+            <SkipNextIcon />
+          </Button>
+        </div>
+      </Dialog>
 
-          <DialogActions>
-            <Button
-              onClick={handleClose}
-              variant="contained"
-              color="primary"
-              style={{ flex: "left" }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleDeleteConfirmation}
-              variant="contained"
-              color="primary"
-            >
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
       {/* ///////////////////////////////////////////////////////// */}
       {/* Form dialog */}
       <Dialog
-        fullWidth={fullWidth}
-        maxWidth={maxWidth}
+        fullWidth={true}
+        maxWidth={"sm"}
         open={form}
         onClose={() => setFormOpen(false)}
         aria-labelledby="form-dialog-title"
@@ -562,12 +575,11 @@ function EditAlbum(props) {
           <TextField
             required
             fullWidth
-            // helperText={errors.description}
             size="small"
             name="description"
             variant="outlined"
             value={description}
-            onChange={handleDescriptionChange}
+            onChange={handleDescription}
           />
         </DialogContent>
         <DialogActions>
@@ -578,7 +590,49 @@ function EditAlbum(props) {
           >
             Cancel
           </Button>
-          <Button onClick={handleEdit} variant="contained" color="primary">
+
+          <Button
+            onClick={editConfirmation}
+            variant="contained"
+            color="primary"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* //////////////////////////////////////////// */}
+      {/* edit Pic  dialog */}
+      <Dialog
+        open={picForm}
+        onClose={() => setPicFormOpen(false)}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Picture name:</DialogTitle>
+        <DialogContent>
+          {/* <Typography className={classes.title} gutterBottom>
+            Picture name:
+          </Typography> */}
+          <TextField
+            required
+            fullWidth
+            size="small"
+            name="title"
+            variant="outlined"
+            value={picTmp}
+            onChange={handlePicNameChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setFormOpen(false)}
+            variant="contained"
+            color="primary"
+          >
+            Cancel
+          </Button>
+
+          <Button onClick={ConfirmEdit} variant="contained" color="primary">
             Save
           </Button>
         </DialogActions>
