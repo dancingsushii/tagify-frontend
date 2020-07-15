@@ -47,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
 export function Settings() {
   const [password, setPassword] = useState({ password1: "", password2: "" });
   const [nick, setNick] = useState("");
-  const [error, setError] = useState({ displayerror: false, errorText: "" });
   const [showPassword, setShowPassword] = useState(false);
 
   function handleNickChange(e) {
@@ -55,12 +54,6 @@ export function Settings() {
   }
   function handlePasChange(e) {
     setPassword({ ...password, [e.target.name]: e.target.value });
-    if (
-      password.password1 === e.target.value ||
-      password.password2 === e.target.value
-    ) {
-      setError({ displayerror: false, errorText: "" });
-    }
   }
 
   function handlePasSubmit(e) {
@@ -69,12 +62,11 @@ export function Settings() {
       User.updatePassword({ password: password.password1 }).then((response) => {
         if (response.status == Status.Ok) {
           setPassword({ password1: "", password2: "" });
-          setError({ displayerror: false, errorText: "" });
           alert("Password changed!");
         } else alert("Server returned error: " + response.status);
       });
     } else {
-      setError({ displayerror: true, errorText: "Passwords need to match" });
+      alert("Passwords don't match");
     }
   }
 
@@ -133,8 +125,6 @@ export function Settings() {
                 value={password.password1}
                 variant="outlined"
                 onChange={handlePasChange}
-                error={error.displayerror}
-                helperText={error.errorText}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -163,8 +153,6 @@ export function Settings() {
                 value={password.password2}
                 onChange={handlePasChange}
                 variant="outlined"
-                error={error.displayerror}
-                helperText={error.errorText}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
