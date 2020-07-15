@@ -28,6 +28,10 @@ function PictureDialog(props) {
     }
   }
 
+  if (props.pictures.length === 0) {
+    return <div></div>;
+  }
+
   return (
     <Dialog
       open={props.view}
