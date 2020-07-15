@@ -14,11 +14,8 @@ import logo from '../../assets/tagify_icon.svg';
 
 const useStyles = makeStyles({
   root: {
-    // margin: 0,
-    // marginTop: -85,
     height: "100%",
     width: "100%",
-    // overflowX: "hidden", //not a good solution
     opacity: 1,
   },
   // css for first sector with image
@@ -27,7 +24,6 @@ const useStyles = makeStyles({
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no repeat",
-    // margin: 0,
   },
   contactGrid: {
     margin: 0,
@@ -50,18 +46,30 @@ const useStyles = makeStyles({
   },
   formControl: {
     width: "90%",
-    marginLeft: "5%",
+    marginLeft: 10,
     marginRight: "5%",
     alignContent: "center",
-    marginTop: 5,
+    justifyContent: "center",
   },
   textfield: {
     height: 100,
     marginTop: 20,
-    width: "90%",
-    marginLeft: "5%",
+    width: "93%",
+    marginLeft: "2%",
     marginRight: "5%",
     alignContent: "center",
+  },
+  gridSubmit: {
+    alignItems: "center",
+    alignContent: "center",
+    justifyContent: "center",
+    justify: "center",
+  },
+  formControlSubmit: {
+    marginTop: 20,
+  },
+  text: {
+    textAlign: "center",
   },
 });
 
@@ -139,7 +147,7 @@ export const Welcome = () => {
                 variant="outlined"
               />
             </Grid>
-            <Grid item xs={12} className={classes.gridButton}>
+            <Grid container item xs={12} className={classes.gridSubmit}>
               <FormControlLabel
                 control={
                   <a
@@ -152,7 +160,12 @@ export const Welcome = () => {
                 }
                 label={"Submit"}
                 labelPlacement="end"
+                className={classes.formControlSubmit}
               />
+              <Typography variant="subtitle2" className={classes.text}>
+                If you don't have email client, send us email to
+                tagify@gmail.com
+              </Typography>
             </Grid>
           </CardContent>
         </Card>
