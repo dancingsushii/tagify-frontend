@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 
 import { App as GuestApp } from './components/guest/App';
 import { App as UserApp } from './components/user/App';
@@ -65,7 +65,7 @@ function App() {
   }, []);
 
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div>
       {render && (
         <BrowserRouter>
           <ThemeProvider theme={theme}>

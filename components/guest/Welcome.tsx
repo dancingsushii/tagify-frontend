@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 
 import {
-    Box, Card, CardContent, FormControl, Input, InputLabel, TextField
+    Box, Card, CardContent, FormControl, FormControlLabel, IconButton, Input, InputLabel, TextField
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -130,12 +130,6 @@ export const Welcome = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="my-email">Email Address</InputLabel>
-                <Input id="my-email" aria-describedby="my-helper-text" />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
               <TextField
                 className={classes.textfield}
                 id="outlined-textarea"
@@ -143,6 +137,21 @@ export const Welcome = () => {
                 multiline
                 rows={3}
                 variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12} className={classes.gridButton}>
+              <FormControlLabel
+                control={
+                  <a
+                    target="_top"
+                    rel="noopener noreferrer"
+                    href="mailto:tagify@gmail.com?subject=Message to Tagify developers&body=Your Message here"
+                  >
+                    <IconButton color="primary"></IconButton>
+                  </a>
+                }
+                label={"Submit"}
+                labelPlacement="end"
               />
             </Grid>
           </CardContent>
