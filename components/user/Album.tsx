@@ -114,7 +114,6 @@ export function Album(props) {
         left: 0,
         width: "100%",
         height: "100%",
-        // backgroundImage: "linear-gradient(147deg, #fe8a39 0%, #fd3838 74%)",
         borderRadius: theme.spacing(2), // 16
         opacity: 0.5,
       },
@@ -161,6 +160,7 @@ export function Album(props) {
               variant="contained"
               size="small"
               disableElevation
+              color="primary"
               className={classes.button}
             >
               Annotate
@@ -170,6 +170,7 @@ export function Album(props) {
               variant="contained"
               size="small"
               disableElevation
+              color="primary"
               className={classes.button}
               startIcon={<SaveIcon />}
             >
