@@ -18,6 +18,7 @@ import { Impressum } from '../Impressum';
 import { TagifyNavigation } from '../snippets/TagifyNavigation';
 import { AddAlbum } from './AddAlbum';
 import { Album } from './Album';
+import { Annotate } from './Annotate';
 import { DashBoard } from './DashBoard';
 import EditAlbum from './EditAlbum';
 import MyAlbums from './MyAlbums';
@@ -130,6 +131,7 @@ export function App() {
           <Route path="/editalbum/:id" component={EditAlbum} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
+          <Route path="/annotate" component={Annotate} />
           <Route path="/*" component={() => <h1>404 Not Found</h1>} />
         </Switch>
       </TagifyNavigation>
