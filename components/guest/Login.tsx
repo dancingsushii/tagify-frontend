@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import BackendToken, { Default, UserRole } from '../../utils/BackendAPI';
+import BackendToken, { Default, Status, UserRole } from '../../utils/BackendAPI';
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -57,7 +57,7 @@ export function Login(props) {
       username: username,
       password: password,
     }).then((response) => {
-      if (response.responseCode === "Ok") {
+      if (response.status === Status.Ok) {
         BackendToken.login();
         BackendToken.userRole =
           response.data?.role == "user"

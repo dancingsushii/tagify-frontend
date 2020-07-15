@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import BackendToken, { User } from '../../utils/BackendAPI';
+import BackendToken, { Status, User } from '../../utils/BackendAPI';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,15 +66,13 @@ export function Settings() {
   function handlePasSubmit(e) {
     e.preventDefault();
     if (password.password1 === password.password2) {
-      User.updatePassword({ password: password.password1 }).then(
-        (responseCode) => {
-          if (responseCode == "Ok") {
-            setPassword({ password1: "", password2: "" });
-            setError({ displayerror: false, errorText: "" });
-            alert("Password changed!");
-          } else alert("Server returned error: " + responseCode);
-        }
-      );
+      User.updatePassword({ password: password.password1 }).then((response) => {
+        if (response.status == Status.Ok) {
+          setPassword({ password1: "", password2: "" });
+          setError({ displayerror: false, errorText: "" });
+          alert("Password changed!");
+        } else alert("Server returned error: " + response.status);
+      });
     } else {
       setError({ displayerror: true, errorText: "Passwords need to match" });
     }
@@ -82,12 +80,12 @@ export function Settings() {
 
   function handleNickSubmit(e) {
     e.preventDefault();
-    User.updateNick({ nickname: nick }).then((responseCode) => {
-      if (responseCode == "Ok") {
+    User.updateNick({ nickname: nick }).then((response) => {
+      if (response.status == Status.Ok) {
         BackendToken.nickname = nick;
         setNick("");
         alert("Nickname changed!");
-      } else alert("Server returned error: " + responseCode);
+      } else alert("Server returned error: " + response.status);
     });
   }
   const handleClickShowPassword = () => {

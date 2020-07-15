@@ -6,7 +6,7 @@ import {
     makeStyles, Typography
 } from '@material-ui/core';
 
-import { Albums } from '../../utils/BackendAPI';
+import { Albums, Status } from '../../utils/BackendAPI';
 import { DashboardSkeleton } from '../snippets/DashboardSkeleton';
 
 // const loader = () => {
@@ -43,9 +43,9 @@ export const DashBoard = () => {
   useEffect(() => {
     const fetchData = async () => {
       let response = await Albums.getAllAlbums();
-      if (response.responseCode === "Ok") {
-        if (response.albums !== undefined) {
-          setAlbums(response.albums.albums);
+      if (response.status === Status.Ok) {
+        if (response.data.albums !== undefined) {
+          setAlbums(response.data.albums);
           setLoaded(true);
         }
       } else {

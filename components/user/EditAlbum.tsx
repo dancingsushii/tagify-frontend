@@ -17,7 +17,7 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Pagination from '@material-ui/lab/Pagination';
 
-import { Albums, UserAlbum, UserPhoto } from '../../utils/BackendAPI';
+import { Albums, PhotoInformation, Status, UserAlbum, UserPhoto } from '../../utils/BackendAPI';
 import PictureDialog from '../snippets/PictureDialog';
 import PictureEditCard from '../snippets/PictureThumbneil';
 
@@ -38,7 +38,7 @@ function EditAlbum(props) {
     users_id: 0,
     first_photo: "",
   });
-  const [pictures, setPictures] = useState([""]);
+  const [pictures, setPictures] = useState<Array<PhotoInformation>>([]);
   const [isLoaded, setLoaded] = useState(false);
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
@@ -56,17 +56,17 @@ function EditAlbum(props) {
     const fetchData = async () => {
       try {
         let response = await Albums.getAlbum(id);
-        if (response.responseCode === "Ok" && response.album !== undefined) {
-          setAlbum(response.album);
-          setTitle(response.album.title);
-          setDescription(response.album.description);
+        if (response.status === Status.Ok && response.data !== undefined) {
+          setAlbum(response.data);
+          setTitle(response.data.title);
+          setDescription(response.data.description);
 
           let pics = await Albums.getAlbumPhotos(
             id,
             (curentPage - 1).toString()
           );
-          if (pics.responseCode === "Ok" && pics.photos !== undefined) {
-            setPictures(pics.photos);
+          if (pics.status === Status.Ok && pics.data !== undefined) {
+            setPictures(pics.data);
 
             setLoaded(true);
           }
@@ -158,7 +158,7 @@ function EditAlbum(props) {
       try {
         let response = await UserPhoto.deletePhotoFromAlbum(albumId, picId);
 
-        if (response === "Ok") {
+        if (response.status === Status.Ok) {
           setnumDelet(numDelet + 1);
           setOpen(false);
         } else {

@@ -13,7 +13,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Pagination from '@material-ui/lab/Pagination';
 
-import { UserAlbum } from '../../utils/BackendAPI';
+import { Status, UserAlbum } from '../../utils/BackendAPI';
 import Albumthumbneil from '../snippets/Albumthumbneil';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -41,10 +41,8 @@ function MyAlbums(props) {
     const fetchAlbum = async () => {
       try {
         let response = await UserAlbum.getMyAlbums();
-
-        if (response.responseCode === "Ok" && response.albums !== undefined) {
-          setAlbums(response.albums);
-          //setAlbums(Albums1);
+        if (response.status === Status.Ok && response.data !== undefined) {
+          setAlbums(response.data);
         } else {
           alert("Failed to fetch album");
         }
@@ -87,7 +85,18 @@ function MyAlbums(props) {
       try {
         let response = await UserAlbum.deleteOwnAlbum(albumId);
 
-        /* TODO response Handling if backend adds it 
+        /* TODO response Handling if backend adds it
+
+        #########################################################
+        Jacob: @witja use response.status to check response code.
+                      response code is of type Status, an enum in
+                      the BackendAPI. Example (dont forget to
+                      import Status):
+
+        if (response.status === Status.Ok) { delete album from state }
+        else { dont delete album, and console.error / pop up }
+        #########################################################
+        
         if (response === "Ok") {
           
           setOpen(false);
