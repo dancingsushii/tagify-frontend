@@ -6,7 +6,7 @@ import {
 import Typography from '@material-ui/core/Typography';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-import { UserAlbum } from '../../utils/BackendAPI';
+import { Status, UserAlbum } from '../../utils/BackendAPI';
 import { FileSelector, FileUploader } from '../snippets/FileUtils';
 import { ProgressButton } from '../snippets/ProgressButton';
 
@@ -71,18 +71,12 @@ export function AddAlbum() {
         tags: tags,
       })
         .then((response) => {
-          if (response.responseCode !== "Ok" || response.album === undefined) {
+          if (response.status !== Status.Ok || response.data === undefined) {
             alert("Failed to create new album");
-            console.error(
-              `Server answered with error code ${response.responseCode}`
-            );
+            console.error(`Server answered with error code ${response.status}`);
             return;
           }
-          return FileUploader(
-            files,
-            response.album?.id.toString(),
-            setProgress
-          );
+          return FileUploader(files, response.data?.id.toString(), setProgress);
         })
         .then(() => {
           console.log("Finished!");

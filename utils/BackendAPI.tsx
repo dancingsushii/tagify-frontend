@@ -1,3 +1,8 @@
+//=============================================================================
+// ___  ____ ____ _ _  _ _ ___ _ ____ _  _ ____
+// |  \ |___ |___ | |\ | |  |  | |  | |\ | [__
+// |__/ |___ |    | | \| |  |  | |__| | \| ___]
+
 export enum ResponseCode {
   "Ok" = 200,
   "BadRequest" = 400,
@@ -6,10 +11,82 @@ export enum ResponseCode {
   "InternalServerError" = 500,
 }
 
-export enum UserRole {
-  User,
-  Admin,
+export enum Status {
+  Ok = "Ok",
+  BadRequest = "BadRequest",
+  Unauthorized = "Unauthorized",
+  NotFound = "NotFound",
+  InternalServerError = "InternalServerError",
+  Unknown = "Unknown",
 }
+
+function getStatus(code: number): Status {
+  switch (code) {
+    case 200:
+      return Status.Ok;
+    case 400:
+      return Status.BadRequest;
+    case 401:
+      return Status.Unauthorized;
+    case 404:
+      return Status.NotFound;
+    case 500:
+      return Status.InternalServerError;
+    default:
+      return Status.Unknown;
+  }
+}
+
+export enum UserRole {
+  User = "user",
+  Admin = "admin",
+}
+
+interface MinimalResponse {
+  status: Status;
+}
+
+interface Response<T> {
+  status: Status;
+  data: T;
+}
+
+interface UserInformation {
+  id: number;
+  username: string;
+  nickname: string;
+  role: UserRole;
+}
+
+interface AlbumPreview {
+  albums: Array<{
+    id: number;
+    title: string;
+    description: string;
+    first_photo: string;
+  }>;
+}
+
+interface AlbumInformation {
+  id: number;
+  title: string;
+  description: string;
+  tags: string[];
+  image_number: number;
+  tagged_number: number;
+  users_id: number;
+  first_photo: string;
+}
+
+export interface PhotoInformation {
+  id: number;
+  file_path: string;
+}
+
+//=============================================================================
+// ___ ____ _  _ ____ _  _
+//  |  |  | |_/  |___ |\ |
+//  |  |__| | \_ |___ | \|
 
 class BackendToken {
   authenticated: boolean;
@@ -36,441 +113,359 @@ class BackendToken {
 var token = new BackendToken();
 export default token;
 
+//=============================================================================
+// _  _ ____ _    ___  ____ ____
+// |__| |___ |    |__] |___ |__/
+// |  | |___ |___ |    |___ |  \
+
+/**
+ * Basic funtion to extract response code and convert json data of response
+ * to js object literal if expected.
+ *
+ * @param response          response object
+ * @param expectsResponse   response data expected? (default=false)
+ *
+ * @returns Object literal containing:
+ *            * response code
+ *            * object literal of response data, if expected
+ */
+async function handleResponse(
+  response: globalThis.Response,
+  expectsResponse: boolean = false
+): Promise<Response<any>> {
+  let status = getStatus(response.status);
+  let json = undefined;
+  if (expectsResponse && status == Status.Ok) {
+    try {
+      json = await response.json();
+    } catch (error) {
+      console.error(error);
+      console.error(
+        "The API query resulted with an unexpected body: Could not parse JSON: " +
+          "You most probably run the website with 'npm run serve-frontend': " +
+          "Use 'npm run serve-backend' instead."
+      );
+      status = Status.InternalServerError;
+      json = undefined;
+    }
+  }
+  return {
+    status: status,
+    data: json,
+  };
+}
+
+interface INIT_GET {
+  endpoint: string;
+}
+
+async function do_GET(init: INIT_GET): Promise<Response<any>> {
+  const response = await fetch(init.endpoint, {
+    method: "GET",
+    credentials: "same-origin",
+  });
+  return handleResponse(response, true);
+}
+
+interface INIT_DELETE {
+  endpoint: string;
+}
+
+async function do_DELETE(init: INIT_DELETE): Promise<Response<any>> {
+  const response = await fetch(init.endpoint, {
+    method: "DELETE",
+    credentials: "same-origin",
+  });
+  return handleResponse(response);
+}
+
+interface INIT_POST {
+  endpoint: string;
+  body?: any;
+  type?: string;
+  expectsResponse?: boolean;
+}
+
+const INIT_POST_DEFAULT = {
+  expectsResponse: true,
+};
+
+async function do_POST(init: INIT_POST): Promise<Response<any>> {
+  let options = { ...INIT_POST_DEFAULT, ...init };
+  let _init: RequestInit = {
+    method: "POST",
+    credentials: "same-origin",
+  };
+  if (options.type) _init.headers = { "Content-Type": options.type };
+  if (options.body && options.type === "application/json")
+    _init.body = JSON.stringify(options.body);
+  else _init.body = options.body;
+  const response = await fetch(options.endpoint, _init);
+  return handleResponse(response, options.expectsResponse);
+}
+
+interface INIT_PUT {
+  endpoint: string;
+  body?: any;
+  type?: string;
+  expectsResponse?: boolean;
+}
+
+const INIT_PUT_DEFAULT = {
+  expectsResponse: true,
+};
+
+async function do_PUT(init: INIT_PUT): Promise<Response<any>> {
+  let options = { ...INIT_PUT_DEFAULT, ...init };
+  let _init: RequestInit = {
+    method: "PUT",
+    credentials: "same-origin",
+  };
+  if (options.type) _init.headers = { "Content-Type": options.type };
+  if (options.body && options.type === "application/json")
+    _init.body = JSON.stringify(options.body);
+  else _init.body = options.body;
+  const response = await fetch(options.endpoint, _init);
+  return handleResponse(response, options.expectsResponse);
+}
+
+//=============================================================================
+// ___  ____ ____ ____ _  _ _    ___
+// |  \ |___ |___ |__| |  | |     |
+// |__/ |___ |    |  | |__| |___  |
+
 interface DefaultType {
   login(body: {
     username: string;
     password: string;
-  }): Promise<{
-    responseCode: string;
-    data?: {
-      id: number;
-      username: string;
-      nickname: string;
-      role: string;
-    };
-  }>;
-  getUser(): Promise<{
-    responseCode: string;
-    data?: {
-      id: number;
-      username: string;
-      nickname: string;
-      role: string;
-    };
-  }>;
-  status(): Promise<string>;
+  }): Promise<Response<UserInformation>>;
+  getUser(): Promise<Response<UserInformation>>;
+  status(): Promise<MinimalResponse>;
 }
 
 export const Default: DefaultType = {
-  login: async (body) => {
-    const response: Response = await fetch("/api/login", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-    let code = ResponseCode[response.status];
-    let json = undefined;
-    if (code == "Ok") {
-      try {
-        json = await response.json();
-      } catch (error) {
-        console.error(error);
-        console.error(
-          "The API query resulted with an unexpected body: Could not parse JSON: " +
-            "You most probably run the website with 'npm run serve-frontend': " +
-            "Use 'npm run serve-backend' instead."
-        );
-        code = ResponseCode[500];
-        json = undefined;
-      }
-    }
-    return {
-      responseCode: code,
-      data: json,
-    };
-  },
+  login: async (body) =>
+    do_POST({
+      endpoint: "/api/login",
+      body: body,
+      type: "application/json",
+    }),
   getUser: async () => {
-    let request = async (endpoint: string) => {
-      let response = await fetch(endpoint, {
-        method: "GET",
-        credentials: "same-origin",
-      });
-      let code = ResponseCode[response.status];
-      let json = undefined;
-      if (code == "Ok") {
-        try {
-          json = await response.json();
-        } catch (error) {
-          console.error(error);
-          console.error(
-            "The API query resulted with an unexpected body: Could not parse JSON: " +
-              "You most probably run the website with 'npm run serve-frontend': " +
-              "Use 'npm run serve-backend' instead."
-          );
-          code = ResponseCode[500];
-          json = undefined;
-        }
-      }
-      return {
-        responseCode: code,
-        data: json,
-      };
-    };
-    let response = await request("/api/user/me");
-    if (response.responseCode != "Ok" || response.data === undefined) {
-      response = await request("/api/admin/me");
+    let response = await do_GET({ endpoint: "/api/user/me" });
+    if (response.status != Status.Ok || response.data === undefined) {
+      response = await do_GET({ endpoint: "/api/admin/me" });
     }
     return response;
   },
-  status: async () => {
-    const response: Response = await fetch("/api/status", {
-      method: "GET",
-    });
-    return ResponseCode[response.status];
-  },
+  status: async () =>
+    do_GET({
+      endpoint: "/api/status",
+    }),
 };
 
+//=============================================================================
+// _  _ ____ ____ ____
+// |  | [__  |___ |__/
+// |__| ___] |___ |  \
+
 interface UserType {
-  logout(): Promise<string>;
-  getAllData(): Promise<void>; // TODO
-  updateNick(body: { nickname: string }): Promise<string>;
-  updatePassword(body: { password: string }): Promise<string>;
-  deleteAccout(): Promise<string>; // TODO
+  logout(): Promise<MinimalResponse>;
+  getUser(): Promise<Response<UserInformation>>;
+  getAllData(): Promise<MinimalResponse>; // TODO
+  updateNick(body: { nickname: string }): Promise<MinimalResponse>;
+  updatePassword(body: { password: string }): Promise<MinimalResponse>;
+  deleteAccout(): Promise<MinimalResponse>;
 }
 
 export const User: UserType = {
-  logout: async () => {
-    const response = await fetch("/api/user/logout", {
-      method: "POST",
-      credentials: "same-origin",
-    });
-    return ResponseCode[response.status];
-  },
+  logout: async () =>
+    do_POST({
+      endpoint: "/api/user/logout",
+      expectsResponse: false,
+    }),
+  getUser: async () => do_GET({ endpoint: "/api/user/me" }),
   getAllData: async () => {
     console.error("not implemented.");
+    return { status: Status.Unknown };
   },
-  updateNick: async (body) => {
-    const response = await fetch("/api/user/me", {
-      method: "PUT",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    return ResponseCode[response.status];
-  },
-  updatePassword: async (body) => {
-    const response = await fetch("/api/user/me/password", {
-      method: "PUT",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    return ResponseCode[response.status];
-  },
-  deleteAccout: async () => {
-    const response = await fetch("/api/user/me", {
-      method: "DELETE",
-      credentials: "same-origin",
-    });
-    return ResponseCode[response.status];
-  },
+  updateNick: async (body) =>
+    do_PUT({
+      endpoint: "/api/user/me",
+      body: body,
+      type: "application/json",
+      expectsResponse: false,
+    }),
+  updatePassword: async (body) =>
+    do_PUT({
+      endpoint: "/api/user/me/password",
+      body: body,
+      type: "application/json",
+      expectsResponse: false,
+    }),
+  deleteAccout: async () => do_DELETE({ endpoint: "/api/user/me" }),
 };
 
+//=============================================================================
+// ____ _    ___  _  _ _  _
+// |__| |    |__] |  | |\/|
+// |  | |___ |__] |__| |  |
+
 interface AlbumType {
-  getAllAlbums(): Promise<{
-    responseCode: string;
-    albums:
-      | {
-          albums: Array<{
-            id: number;
-            title: string;
-            description: string;
-            first_photo: string;
-          }>;
-        }
-      | undefined;
-  }>;
-  getAlbum(
-    album_id: string
-  ): Promise<{
-    responseCode: string;
-    album:
-      | {
-          id: number;
-          title: string;
-          description: string;
-          tags: string[];
-          image_number: number;
-          tagged_number: number;
-          users_id: number;
-          first_photo: string;
-        }
-      | undefined;
-  }>;
+  getAllAlbums(): Promise<Response<AlbumPreview>>;
+  getAlbum(id: string): Promise<Response<AlbumInformation>>;
   getAlbumPhotos(
-    album_id: string,
-    index: string
-  ): Promise<{
-    responseCode: string;
-    photos: string[] | undefined;
-  }>;
+    albumId: string,
+    rangeIndex: string
+  ): Promise<Response<Array<PhotoInformation>>>;
 }
 
 export const Albums: AlbumType = {
-  getAllAlbums: async () => {
-    const response = await fetch("/api/albums", {
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-    });
-    let code = ResponseCode[response.status];
-    let json = undefined;
-    try {
-      json = await response.json();
-    } catch (error) {
-      console.error(error);
-      console.error(
-        "The API query resulted with an unexpected body: Could not parse JSON"
-      );
-      response.text().then((text) => console.error(text));
-      code = ResponseCode[500];
-      json = undefined;
-    }
-    return {
-      responseCode: code,
-      albums: json,
-    };
-  },
-  getAlbum: async (album_id) => {
-    let url = `/api/albums/${album_id}`;
-    const response = await fetch(url, {
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-    });
-    let code = ResponseCode[response.status];
-    let json = undefined;
-    try {
-      json = await response.json();
-    } catch (error) {
-      console.error(error);
-      console.error(
-        "The API query resulted with an unexpected body: Could not parse JSON"
-      );
-      code = ResponseCode[500];
-      json = undefined;
-    }
-
-    return {
-      responseCode: code,
-      album: json,
-    };
-  },
-  getAlbumPhotos: async (album_id, index) => {
-    let url = `/api/albums/${album_id}/photos/${index}`;
-    const response = await fetch(url, {
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-    });
-    let code = ResponseCode[response.status];
-    let json = undefined;
-    try {
-      json = await response.json();
-    } catch (error) {
-      console.error(error);
-      console.error(
-        "The API query resulted with an unexpected body: Could not parse JSON"
-      );
-      response.text().then((text) => console.error(text));
-      code = ResponseCode[500];
-      json = undefined;
-    }
-    return {
-      responseCode: code,
-      photos: json,
-    };
-  },
+  getAllAlbums: async () => do_GET({ endpoint: "/api/albums" }),
+  getAlbum: async (id) => do_GET({ endpoint: `/api/albums/${id}` }),
+  getAlbumPhotos: async (albumId, rangeIndex) =>
+    do_GET({ endpoint: `/api/albums/${albumId}/photos/${rangeIndex}` }),
 };
 
+//=============================================================================
+// _  _ ____ ____ ____    ____ _    ___  _  _ _  _
+// |  | [__  |___ |__/ __ |__| |    |__] |  | |\/|
+// |__| ___] |___ |  \    |  | |___ |__] |__| |  |
+
 interface UserAlbumType {
-  getMyAlbums(): Promise<{
-    responseCode: string;
-    albums:
-      | [
-          {
-            id: number;
-            title: string;
-            description: string;
-            tags: string[];
-            image_number: number;
-            tagged_number: number;
-            users_id: number;
-            first_photo: string;
-          }
-        ]
-      | undefined;
-  }>;
+  getMyAlbums(): Promise<Response<Array<AlbumInformation>>>;
   createNewAlbum(body: {
     title: string;
     description: string;
     tags: string[];
-  }): Promise<{
-    responseCode: string;
-    album:
-      | {
-          id: number;
-          title: string;
-          description: string;
-          tags: string[];
-          image_number: number;
-          tagged_number: number;
-          users_id: number;
-          first_photo: string;
-        }
-      | undefined;
-  }>;
+  }): Promise<Response<AlbumInformation>>;
   updateAlbum(
-    albumId,
+    albumId: string | number,
     body: {
       title: string;
       description: string;
     }
-  ): Promise<{
-    responseCode: string;
-  }>;
-  deleteOwnAlbum(albumId: string): Promise<string>;
+  ): Promise<MinimalResponse>;
+  deleteOwnAlbum(albumId: string): Promise<MinimalResponse>;
 }
 
 export const UserAlbum: UserAlbumType = {
-  getMyAlbums: async () => {
-    const response = await fetch("/api/user/albums", {
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-    });
-    let code = ResponseCode[response.status];
-    let json = undefined;
-    try {
-      json = await response.json();
-    } catch (error) {
-      console.error(error);
-      console.error(
-        "The API query resulted with an unexpected body: Could not parse JSON"
-      );
-      response.text().then((text) => console.error(text));
-      code = ResponseCode[500];
-      json = undefined;
-    }
-    return {
-      responseCode: code,
-      albums: json,
-    };
-  },
-  createNewAlbum: async (body) => {
-    const response = await fetch("/api/user/albums", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    let code = ResponseCode[response.status];
-    let json = undefined;
-    try {
-      json = await response.json();
-    } catch (error) {
-      console.error(error);
-      console.error(
-        "The API query resulted with an unexpected body: Could not parse JSON"
-      );
-      response.text().then((text) => console.error(text));
-      code = ResponseCode[500];
-      json = undefined;
-    }
-    return {
-      responseCode: code,
-      album: json,
-    };
-  },
-  updateAlbum: async (albumId, body) => {
-    const response = await fetch(`/api/user/albums/${albumId}`, {
-      method: "PUT",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    let code = ResponseCode[response.status];
-
-    return {
-      responseCode: code,
-    };
-  },
-  deleteOwnAlbum: async (albumId) => {
-    const response = await fetch(`/api/user/albums/${albumId}`, {
-      method: "DELETE",
-      credentials: "same-origin",
-    });
-    return ResponseCode[response.status];
-  },
+  getMyAlbums: async () => do_GET({ endpoint: "/api/user/albums" }),
+  createNewAlbum: async (body) =>
+    do_POST({
+      endpoint: "/api/user/albums",
+      body: body,
+      type: "application/json",
+    }),
+  updateAlbum: async (albumId, body) =>
+    do_PUT({
+      endpoint: `/api/user/albums/${albumId}`,
+      body: body,
+      type: "application/json",
+    }),
+  deleteOwnAlbum: async (albumId) =>
+    do_DELETE({ endpoint: `/api/user/albums/${albumId}` }),
 };
 
+//=============================================================================
+// _  _ ____ ____ ____    ___  _  _ ____ ___ ____
+// |  | [__  |___ |__/ __ |__] |__| |  |  |  |  |
+// |__| ___] |___ |  \    |    |  | |__|  |  |__|
+
 interface UserPhotoType {
-  addPhotoToAlbum(albumId: string, body: FormData): Promise<string>;
+  addPhotoToAlbum(albumId: string, body: FormData): Promise<MinimalResponse>;
   replacePhotoInAlbum(
     albumId: string,
     photoId: string,
     body: FormData
-  ): Promise<string>;
-  deletePhotoFromAlbum(albumId: string, photoId: string): Promise<string>;
+  ): Promise<MinimalResponse>;
+  deletePhotoFromAlbum(
+    albumId: string,
+    photoId: string
+  ): Promise<MinimalResponse>;
 }
 
 export const UserPhoto: UserPhotoType = {
-  addPhotoToAlbum: async (albumId, body) => {
-    const response = await fetch(`/api/user/albums/${albumId}/photos`, {
-      method: "POST",
-      credentials: "same-origin",
+  addPhotoToAlbum: async (albumId, body) =>
+    do_POST({
+      endpoint: `/api/user/albums/${albumId}/photos`,
       body: body,
-    });
-    return ResponseCode[response.status];
-  },
-
-  replacePhotoInAlbum: async (albumId, photoId, body) => {
-    const response = await fetch(
-      `/api/user/albums/${albumId}/photos/${photoId}`,
-      {
-        method: "PUT",
-        credentials: "same-origin",
-        body: body,
-      }
-    );
-    return ResponseCode[response.status];
-  },
-
-  deletePhotoFromAlbum: async (albumId, photoId) => {
-    const response = await fetch(
-      `/api/user/albums/${albumId}/photos/${photoId}`,
-      {
-        method: "DELETE",
-        credentials: "same-origin",
-      }
-    );
-    return ResponseCode[response.status];
-  },
+      expectsResponse: false,
+    }),
+  replacePhotoInAlbum: async (albumId, photoId, body) =>
+    do_PUT({
+      endpoint: `/api/user/albums/${albumId}/photos/${photoId}`,
+      body: body,
+      expectsResponse: false,
+    }),
+  deletePhotoFromAlbum: async (albumId, photoId) =>
+    do_DELETE({
+      endpoint: `/api/user/albums/${albumId}/photos/${photoId}`,
+    }),
 };
 
-interface AdminUserType {}
-
-interface AdminAlbumType {}
+//=============================================================================
+// ____ ___  _  _ _ _  _
+// |__| |  \ |\/| | |\ |
+// |  | |__/ |  | | | \|
 
 interface AdminType {
-  logout(): Promise<string>;
+  logout(): Promise<MinimalResponse>;
+  getUser(): Promise<Response<UserInformation>>;
 }
 
 export const Admin: AdminType = {
-  logout: async () => {
-    const response = await fetch("/api/admin/logout", {
-      method: "POST",
-      credentials: "same-origin",
-    });
-    return ResponseCode[response.status];
-  },
+  logout: async () =>
+    do_POST({
+      endpoint: "/api/admin/logout",
+      expectsResponse: false,
+    }),
+  getUser: async () => do_GET({ endpoint: "/api/admin/me" }),
 };
+
+//=============================================================================
+// ____ ___  _  _ _ _  _    _  _ ____ ____ ____
+// |__| |  \ |\/| | |\ | __ |  | [__  |___ |__/
+// |  | |__/ |  | | | \|    |__| ___] |___ |  \
+
+interface AdminUserType {
+  getAllUsers(): Promise<Response<Array<UserInformation>>>;
+  createUser(body: {
+    username: string;
+    nickname: string;
+    password: string;
+    role: UserRole;
+  }): Promise<
+    Response<{
+      id: number;
+      username: string;
+      nickname: string;
+      password: string;
+      role: UserRole;
+    }>
+  >;
+  deleteUser(id: number): Promise<MinimalResponse>;
+}
+
+export const AdminUser: AdminUserType = {
+  getAllUsers: async () =>
+    do_GET({
+      endpoint: "/api/admin/users",
+    }),
+  createUser: async (body) =>
+    do_POST({
+      endpoint: "/api/admin/users",
+      body: body,
+      type: "application/json",
+    }),
+  deleteUser: async (id) =>
+    do_DELETE({
+      endpoint: `/api/admin/user/${id}`,
+    }),
+};
+
+//=============================================================================
+// ____ ___  _  _ _ _  _    ____ _    ___  _  _ _  _
+// |__| |  \ |\/| | |\ | __ |__| |    |__] |  | |\/|
+// |  | |__/ |  | | | \|    |  | |___ |__] |__| |  |
+
+interface AdminAlbumType {}

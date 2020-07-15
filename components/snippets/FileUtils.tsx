@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { UserPhoto } from '../../utils/BackendAPI';
+import { Status, UserPhoto } from '../../utils/BackendAPI';
 
 // TODO maybe a list files component with potential preview
 // tab if files are images.
@@ -19,7 +19,8 @@ export async function FileUploader(
     // fire query
     const response = await UserPhoto.addPhotoToAlbum(id, formData);
     // handle result
-    if (response !== "Ok") console.error(`Upload of file ${file.name} failed!`);
+    if (response.status !== Status.Ok)
+      console.error(`Upload of file ${file.name} failed!`);
     else console.info(`Upload of file ${file.name} succeeded!`);
     // increase progress
     setProgress(Math.floor((i / numberFiles) * 100));

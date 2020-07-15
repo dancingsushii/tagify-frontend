@@ -7,7 +7,7 @@ import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 
-import BackendToken, { Default, UserRole } from '../../utils/BackendAPI';
+import BackendToken, { Default, Status, UserRole } from '../../utils/BackendAPI';
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -51,7 +51,7 @@ export function Login(props) {
       username: username,
       password: password,
     }).then((response) => {
-      if (response.responseCode === "Ok") {
+      if (response.status === Status.Ok) {
         BackendToken.login();
         BackendToken.userRole =
           response.data?.role == "user"

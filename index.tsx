@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 
 import { App as GuestApp } from './components/guest/App';
 import { App as UserApp } from './components/user/App';
 import { raleway200, raleway300 } from './fonts/Fonts';
-import BackendToken, { Default, UserRole } from './utils/BackendAPI';
+import BackendToken, { Default, Status, UserRole } from './utils/BackendAPI';
 
 const theme = createMuiTheme({
   palette: {
@@ -46,15 +46,9 @@ function App() {
   useEffect(() => {
     (async () => {
       let response = await Default.getUser();
-      console.log(response);
-      let code = response.responseCode;
-      let role: UserRole | undefined =
-        response.data?.role == "user"
-          ? UserRole.User
-          : response.data?.role == "admin"
-          ? UserRole.Admin
-          : undefined;
-      BackendToken.authenticated = code == "Ok";
+      let code = response.status;
+      let role: UserRole | undefined = response.data?.role;
+      BackendToken.authenticated = code == Status.Ok;
       BackendToken.userRole = role;
       if (BackendToken.userRole == UserRole.Admin)
         window.location.replace("/admin");

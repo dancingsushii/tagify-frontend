@@ -7,7 +7,7 @@ import {
 import Typography from '@material-ui/core/Typography';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { Albums } from '../../utils/BackendAPI';
+import { Albums, PhotoInformation, Status } from '../../utils/BackendAPI';
 import { AlbumSkeleton } from '../snippets/AlbumSkeleton';
 import PictureDialog from '../snippets/PictureDialog';
 
@@ -23,17 +23,17 @@ export function Album(props) {
     users_id: 0,
     first_photo: "",
   });
-  const [pictures, setPictures] = useState([""]);
+  const [pictures, setPictures] = useState<Array<PhotoInformation>>([]);
   const [isLoaded, setLoaded] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
         let response = await Albums.getAlbum(id);
-        if (response.responseCode === "Ok" && response.album !== undefined) {
-          setAlbum(response.album);
-          let pics = await Albums.getAlbumPhotos(id, "0");
-          if (pics.responseCode === "Ok" && pics.photos !== undefined) {
-            setPictures(pics.photos);
+        if (response.status === Status.Ok && response.data !== undefined) {
+          setAlbum(response.data);
+          let response2 = await Albums.getAlbumPhotos(id, "0");
+          if (response2.status === Status.Ok && response2.data !== undefined) {
+            setPictures(response2.data);
             setLoaded(true);
           }
         } else {
@@ -227,7 +227,6 @@ export function Album(props) {
           style={{ marginTop: "3em" }}
         >
           {pictures.map((pic, i) => {
-            //   console.log(pic);
             return (
               <Grid item key={i}>
                 <Card className={classes.card}>

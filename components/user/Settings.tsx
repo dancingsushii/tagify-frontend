@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
-import { User } from '../../utils/BackendAPI';
+import { Status, User } from '../../utils/BackendAPI';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,12 +51,10 @@ export function Settings() {
   function handlePasSubmit(e) {
     e.preventDefault();
     if (password.password1 === password.password2) {
-      User.updatePassword({ password: password.password1 }).then(
-        (responseCode) => {
-          if (responseCode == "Ok") alert("Password changed!");
-          else alert("Server returned error: " + responseCode);
-        }
-      );
+      User.updatePassword({ password: password.password1 }).then((response) => {
+        if (response.status == Status.Ok) alert("Password changed!");
+        else alert("Server returned error: " + response.status);
+      });
     } else {
       alert("Passwords are different");
     }
@@ -64,9 +62,9 @@ export function Settings() {
 
   function handleNickSubmit(e) {
     e.preventDefault();
-    User.updateNick({ nickname: nick }).then((responseCode) => {
-      if (responseCode == "Ok") alert("Nickname changed!");
-      else alert("Server returned error: " + responseCode);
+    User.updateNick({ nickname: nick }).then((response) => {
+      if (response.status == Status.Ok) alert("Nickname changed!");
+      else alert("Server returned error: " + response.status);
     });
   }
 
