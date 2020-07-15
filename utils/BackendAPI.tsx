@@ -91,10 +91,12 @@ export interface PhotoInformation {
 class BackendToken {
   authenticated: boolean;
   userRole: UserRole | undefined;
+  nickname: string;
 
   constructor() {
     this.authenticated = false;
     this.userRole = undefined;
+    this.nickname = "";
   }
 
   login() {
