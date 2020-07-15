@@ -186,6 +186,7 @@ export function Album(props) {
               <Button
                 variant="contained"
                 size="small"
+                color="primary"
                 disableElevation
                 className={classes.button}
               >
