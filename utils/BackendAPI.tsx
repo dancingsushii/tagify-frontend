@@ -330,6 +330,16 @@ interface UserAlbumType {
         }
       | undefined;
   }>;
+  updateAlbum(
+    albumId,
+    body: {
+      title: string;
+      description: string;
+    }
+  ): Promise<{
+    responseCode: string;
+  }>;
+  deleteOwnAlbum(albumId: string): Promise<string>;
 }
 
 export const UserAlbum: UserAlbumType = {
@@ -380,6 +390,26 @@ export const UserAlbum: UserAlbumType = {
       responseCode: code,
       album: json,
     };
+  },
+  updateAlbum: async (albumId, body) => {
+    const response = await fetch(`/api/user/albums/${albumId}`, {
+      method: "PUT",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    let code = ResponseCode[response.status];
+
+    return {
+      responseCode: code,
+    };
+  },
+  deleteOwnAlbum: async (albumId) => {
+    const response = await fetch(`/api/user/albums/${albumId}`, {
+      method: "DELETE",
+      credentials: "same-origin",
+    });
+    return ResponseCode[response.status];
   },
 };
 

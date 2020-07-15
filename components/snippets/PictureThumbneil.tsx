@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Button, Chip, Grid } from '@material-ui/core';
+import { Box, Button, CardActionArea, Chip, Grid } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     height: "150px",
   },
   chips: {
-    minHeight:"90px",
+    minHeight: "90px",
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
@@ -27,46 +27,68 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(0.3),
     },
   },
-});
+}));
 const handleDelete = () => {};
 
 function PictureEditCard(props) {
   const classes = useStyles();
 
-  const { avatarsrc, titel, tags, date, progres, img, id } = props;
+  const { tags, picture, albumId } = props;
   return (
-    <Card >
+    <Card>
       {/* Pic info */}
       <CardHeader
-        action={
-          <Button>
+        /*  action={
+          <Button onClick={() => props.onEdit(picture)}>
             <EditIcon />
           </Button>
-        }
-        title={titel}
-        subheader={date}
+        } */
+        title={picture.file_path}
+        subheader={"Id: " + picture.id}
       />
-      {/*  Picture */}
-      <CardMedia className={classes.media} image={img} title={titel} />
-      
+      <CardActionArea onClick={() => props.onView(props.index)}>
+        {/*  Picture */}
+        <CardMedia
+          className={classes.media}
+          image={`/api/user/albums/${albumId}/photos/${picture.id}`}
+          title={picture.id}
+        />
+      </CardActionArea>
+
       {/* Tags */}
-      <Grid container justify="center" className={classes.chips}>
-      {tags.map((c) => (
+      <div className={classes.chips}>
+        {tags.map((c, i) => (
           <Chip
+            key={i}
             label={c}
             variant="default"
             color="primary"
             onDelete={handleDelete}
           />
         ))}
-      </Grid>
+      </div>
 
       {/* Buttons */}
-      <Grid style={{ marginTop: "10px", marginBottom: "10px" }} container item justify="space-around">
-        <Button size="small" color="secondary" variant="contained">
+      <Grid
+        style={{ marginTop: "10px", marginBottom: "10px" }}
+        container
+        item
+        justify="space-around"
+      >
+        <Button
+          size="small"
+          color="secondary"
+          variant="contained"
+          onClick={() => props.onView(props.index)}
+        >
           View
         </Button>
-        <Button size="small" color="secondary" variant="contained">
+        <Button
+          size="small"
+          color="secondary"
+          variant="contained"
+          onClick={() => props.onDelete(picture)}
+        >
           Delete
         </Button>
       </Grid>
