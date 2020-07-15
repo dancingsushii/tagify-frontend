@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
 import HomeIcon from '@material-ui/icons/Home';
 import NotesIcon from '@material-ui/icons/Notes';
+import PhotoAlbumIcon from '@material-ui/icons/PhotoAlbum';
 import SearchIcon from '@material-ui/icons/Search';
 
 import Token from '../../utils/BackendAPI';
@@ -55,6 +56,15 @@ export function App() {
                 <ListItemIcon children={<HomeIcon />} />
                 <ListItemText primary={"Dashboard"} />
               </ListItem>
+              <ListItem
+                button
+                key={"Myalbums"}
+                component={Link}
+                to={"/myalbums"}
+              >
+                <ListItemIcon children={<PhotoAlbumIcon />} />
+                <ListItemText primary={"My Albums"} />
+              </ListItem>
             </List>
             <Divider />
             <List>
@@ -82,6 +92,11 @@ export function App() {
             <Route path="/album/:id">
               <Link to="/" style={{ textDecoration: "none" }}>
                 <Button variant="contained">Back</Button>
+              </Link>
+            </Route>
+            <Route path="/editalbum/:id">
+              <Link to="/myalbums" style={{ textDecoration: "none" }}>
+                <Button variant="contained">Back to My Albums</Button>
               </Link>
             </Route>
             <Route exact path="/">
@@ -113,6 +128,7 @@ export function App() {
           </Route>
           <Route path="/album/:id" component={Album} />
           <Route path="/myalbums" component={MyAlbums} />
+          <Route path="/editalbum/:id" component={EditAlbum} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
           <Route path="/annotate" component={Annotate} />
