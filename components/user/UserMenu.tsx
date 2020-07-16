@@ -79,6 +79,13 @@ export function UserMenu(props) {
                   onKeyDown={handleListKeyDown}
                 >
                   <MenuItem
+                    component={Link}
+                    to={"/myalbums"}
+                    style={{ fontWeight: "bold" }}
+                  >
+                    {BackendToken.nickname}
+                  </MenuItem>
+                  <MenuItem
                     onClick={handleClose}
                     component={Link}
                     to={"/settings"}
