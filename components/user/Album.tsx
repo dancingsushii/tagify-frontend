@@ -169,15 +169,20 @@ export function Album(props) {
             >
               {album.description}
             </Typography>
-            <Button
-              variant="contained"
-              size="small"
-              disableElevation
-              color="primary"
-              className={classes.button}
+            <Link
+              to={{ pathname: `/annotate/${album.id}` }}
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              Annotate
-            </Button>
+              <Button
+                variant="contained"
+                size="small"
+                disableElevation
+                color="primary"
+                className={classes.button}
+              >
+                Annotate
+              </Button>
+            </Link>
 
             <Link
               to={{ pathname: `/editalbum/${album.id}` }}

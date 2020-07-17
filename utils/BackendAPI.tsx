@@ -500,7 +500,19 @@ export const AdminAlbum: AdminAlbumType = {
 // |__| ___] |___ |  \     |  |  | |__]
 
 interface UserTagType {
-  getPhotos(albumId: string): Promise<Response<Array<PhotoInformation>>>;
+  getPhotos(
+    albumId: string
+  ): Promise<
+    Response<
+      Array<{
+        id: number;
+        file_path: string;
+        tagged: boolean;
+        tag: string;
+        timestamp: string;
+      }>
+    >
+  >;
   verifyPhoto(
     photoId: string,
     body: { verified: boolean }

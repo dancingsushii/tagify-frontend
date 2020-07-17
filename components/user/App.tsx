@@ -131,7 +131,7 @@ export function App() {
           <Route path="/editalbum/:id" component={EditAlbum} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
-          <Route path="/annotate" component={Annotate} />
+          <Route exact path="/annotate/:id" component={Annotate} />
           <Route path="/*" component={() => <h1>404 Not Found</h1>} />
         </Switch>
       </TagifyNavigation>
