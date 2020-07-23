@@ -46,19 +46,19 @@ interface MinimalResponse {
   status: Status;
 }
 
-interface Response<T> {
+export interface Response<T> {
   status: Status;
   data: T;
 }
 
-interface UserInformation {
+export interface UserInformation {
   id: number;
   username: string;
   nickname: string;
   role: UserRole;
 }
 
-interface AlbumPreview {
+export interface AlbumPreview {
   albums: Array<{
     id: number;
     title: string;
@@ -431,6 +431,7 @@ export const Admin: AdminType = {
 
 interface AdminUserType {
   getAllUsers(): Promise<Response<Array<UserInformation>>>;
+  // getUser(id): Promise<Response<UserInformation>>;
   createUser(body: {
     username: string;
     nickname: string;
