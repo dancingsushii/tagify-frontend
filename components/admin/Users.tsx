@@ -1,29 +1,16 @@
-import * as React from "react";
+import * as React from 'react';
 import {
-  List,
-  Datagrid,
-  TextField,
-  EmailField,
-  EditButton,
-  Create,
-  SimpleForm,
-  ReferenceInput,
-  SelectInput,
-  TextInput,
-  Filter,
-  DeleteButton,
-  Edit,
-} from "react-admin";
+    Create, Datagrid, DeleteButton, Edit, EditButton, Filter, List, ReferenceInput, SelectInput,
+    SimpleForm, TextField, TextInput
+} from 'react-admin';
 
-// TODO: GET lists all users
+// ADMIN->USER getAllUsers
 export const UserList = (props) => (
   <List filters={<UserFilter />} {...props}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
-      <TextField source="name" />
       <TextField source="username" />
-      <EmailField source="email" />
-      <TextField source="password" />
+      <TextField source="nickname" />
       <TextField source="role" />
       <EditButton />
       <DeleteButton />
@@ -31,7 +18,7 @@ export const UserList = (props) => (
   </List>
 );
 
-// TODO: POST create new user
+// ADMIN->USER createUser
 export const UserCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
@@ -54,7 +41,7 @@ export const UserFilter = (props) => (
   </Filter>
 );
 
-// TODO: PUT edit existed used
+// TODO: PUT edit existed used NO EXISTED ENDPOINT FOR IT
 export const UserEdit = (props) => (
   <Edit {...props}>
     <SimpleForm>
