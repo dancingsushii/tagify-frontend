@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import {
-    Box, Card, CardContent, FormControl, FormControlLabel, IconButton, Input, InputLabel, TextField
+    Box, Button, Card, CardContent, FormControl, FormControlLabel, IconButton, Input, InputLabel,
+    TextField
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,11 +14,6 @@ import background from '../../assets/background.jpg';
 import logo from '../../assets/tagify_icon.svg';
 
 const useStyles = makeStyles({
-  root: {
-    height: "100%",
-    width: "100%",
-    opacity: 1,
-  },
   // css for first sector with image
   imageGrid: {
     backgroundImage: `url(${background})`,
@@ -65,11 +61,15 @@ const useStyles = makeStyles({
     justifyContent: "center",
     justify: "center",
   },
-  formControlSubmit: {
+  transSubmit: {
     marginTop: 20,
-  },
-  text: {
-    textAlign: "center",
+    color: "transparent",
+    backgroundRepeat: "no-repeat",
+    border: "none",
+    cursor: "pointer",
+    overflow: "hidden",
+    outline: "none",
+    padding: "unset",
   },
 });
 
@@ -80,6 +80,27 @@ export const Welcome = () => {
       behavior: "smooth",
       block: "nearest",
     });
+
+  // set up for formspree
+  const [state, setState] = useState({ status: "" });
+  const submitForm = (ev) => {
+    ev.preventDefault();
+    const form = ev.target;
+    const data = new FormData(form);
+    const xhr = new XMLHttpRequest();
+    xhr.open(form.method, form.action);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState !== XMLHttpRequest.DONE) return;
+      if (xhr.status === 200) {
+        form.reset();
+        setState({ status: "SUCCESS" });
+      } else {
+        setState({ status: "ERROR" });
+      }
+    };
+    xhr.send(data);
+  };
 
   return (
     <Box>
@@ -115,58 +136,80 @@ export const Welcome = () => {
         spacing={0}
         alignItems="center"
         justify="center"
-        // was 100vh
         style={{ minHeight: "100vh" }}
       >
         <Card className={classes.card}>
           <CardContent className={classes.cardContent}>
-            <Grid item xs={12}>
-              <Typography className={classes.cardText} variant="h4">
-                Contact Us
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="my-name">First Name</InputLabel>
-                <Input id="my-name" aria-describedby="my-helper-text" />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="my-surname">Last Name</InputLabel>
-                <Input id="my-surname" aria-describedby="my-helper-text" />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                className={classes.textfield}
-                id="outlined-textarea"
-                placeholder="Message"
-                multiline
-                rows={3}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid container item xs={12} className={classes.gridSubmit}>
-              <FormControlLabel
-                control={
-                  <a
-                    target="_top"
-                    rel="noopener noreferrer"
-                    href="mailto:tagify@gmail.com?subject=Message to Tagify developers&body=Your Message here"
-                  >
-                    <IconButton color="primary"></IconButton>
-                  </a>
-                }
-                label={"Submit"}
-                labelPlacement="end"
-                className={classes.formControlSubmit}
-              />
-              <Typography variant="subtitle2" className={classes.text}>
-                If you don't have email client, send us email to
-                tagify@gmail.com
-              </Typography>
-            </Grid>
+            <form
+              onSubmit={submitForm}
+              action="https://formspree.io/mdowyzpj"
+              method="POST"
+            >
+              <Grid item xs={12}>
+                <Typography className={classes.cardText} variant="h4">
+                  Contact Us
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="my-name">Name</InputLabel>
+                  <Input
+                    id="my-name"
+                    aria-describedby="my-helper-text"
+                    type="name"
+                    name="name"
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="my-surname">Email</InputLabel>
+                  <Input
+                    id="my-surname"
+                    aria-describedby="my-helper-text"
+                    type="email"
+                    name="email"
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  className={classes.textfield}
+                  id="outlined-textarea"
+                  placeholder="Message"
+                  multiline
+                  rows={3}
+                  variant="outlined"
+                  type="text"
+                  name="message"
+                />
+              </Grid>
+              <Grid container item xs={12} className={classes.gridSubmit}>
+                {state.status === "SUCCESS" ? (
+                  <Typography className={classes.cardText}>
+                    <p>Thanks!</p>
+                  </Typography>
+                ) : (
+                  <button className={classes.transSubmit}>
+                    <Button
+                      size="medium"
+                      color="primary"
+                      variant="contained"
+                      disableElevation
+                    >
+                      Submit
+                    </Button>
+                  </button>
+                )}
+                {state.status === "ERROR" && (
+                  <Grid item xs={12}>
+                    <Typography className={classes.cardText}>
+                      <p>Ooops! There was an error.</p>{" "}
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
+            </form>
           </CardContent>
         </Card>
       </Grid>
