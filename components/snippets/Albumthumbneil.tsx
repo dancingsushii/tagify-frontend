@@ -98,10 +98,10 @@ function Albumthumbneil(props) {
           />
 
           {/* Album Thumbneil */}
-
+            
           <CardMedia
             className={classes.media}
-            image={first_photo}
+            image={`/api/user/albums/${id}/photos/${first_photo}`}
             title={title}
           />
         </Link>

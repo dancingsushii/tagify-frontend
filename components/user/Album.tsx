@@ -147,9 +147,9 @@ export function Album(props) {
             image={(() => {
               if (album.first_photo == "default_path" && pictures.length > 0) {
                 // console.log("here");
-                return `/api/user/albums/${album.id}/photos/${pictures[0].id}`;
+                return `/api/user/albums/${album.id}/photos/${album.first_photo}`;
               }
-              return album.first_photo;
+              return `/api/user/albums/${album.id}/photos/${album.first_photo}`;
             })()}
           />
           <CardContent>

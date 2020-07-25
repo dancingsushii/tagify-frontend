@@ -75,7 +75,7 @@ export const DashBoard = () => {
                       <Link to={{ pathname: `/album/${album.id}` }}>
                         <CardMedia
                           className={classes.media}
-                          image={album.first_photo}
+                          image={`/api/user/albums/${album.id}/photos/${album.first_photo}`}
                         />
                       </Link>
                     </CardActionArea>

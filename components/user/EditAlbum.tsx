@@ -20,6 +20,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { Albums, PhotoInformation, Status, UserAlbum, UserPhoto } from '../../utils/BackendAPI';
 import PictureDialog from '../snippets/PictureDialog';
 import PictureEditCard from '../snippets/PictureThumbneil';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -51,6 +52,24 @@ function EditAlbum(props) {
     setCurentPage(value);
   };
   /* ////////////////// */
+  /* AlertBox controll */
+  const [alertTitle, setAlertTitle] = useState("ddd");
+  const [alertDescrpition, setAlertDescrpition] = useState(
+    "asdfdafdasfffffffffffffffffffffffffffffffffff"
+  );
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+  const [alertCancelTxt, setAlertCancelTxt] = useState("Cancel");
+  const [alertHandleCancel, setAlertHandleCancel] = useState(() => () => {
+    setAlertOpen(false);
+  });
+  const [alertHandleConfirm, setAlertHandleConfirm] = useState(() => () => {
+    setAlertOpen(false);
+  });
+  const [alertHandleClose, setAlertHandleClose] = useState(() => () => {
+    setAlertOpen(false);
+  });
+  /* ////////////////////// */
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,10 +80,7 @@ function EditAlbum(props) {
           setTitle(response.data.title);
           setDescription(response.data.description);
 
-          let pics = await Albums.getAlbumPhotos(
-            id,
-            (curentPage - 1).toString()
-          );
+          let pics = await Albums.getAlbumPhotos(id, curentPage - 1);
           if (pics.status === Status.Ok && pics.data !== undefined) {
             setPictures(pics.data);
 
@@ -444,23 +460,25 @@ function EditAlbum(props) {
 
         {/* Picture Thumbneils */}
 
-        {pictures.map((pic, j) => {
-          if (pic.id !== undefined && pic !== undefined) {
-            return (
-              <Grid key={j} item xs={12} sm={6} md={4} lg={3}>
-                <PictureEditCard
-                  index={j}
-                  key={j}
-                  picture={pic}
-                  albumId={album.id}
-                  tags={["example"]}
-                  onDelete={handleDelete}
-                  onView={toggelView}
-                />
-              </Grid>
-            );
-          }
-        })}
+        {isLoaded
+          ? pictures.map((pic, j) => {
+              if (pic.id !== undefined && pic !== undefined) {
+                return (
+                  <Grid key={j} item xs={12} sm={6} md={4} lg={3}>
+                    <PictureEditCard
+                      index={j}
+                      key={j}
+                      picture={pic}
+                      albumId={album.id}
+                      tags={["example"]}
+                      onDelete={handleDelete}
+                      onView={toggelView}
+                    />
+                  </Grid>
+                );
+              }
+            })
+          : ""}
         <Grid item xs={12}>
           <Pagination
             style={{ float: "left" }}
@@ -617,6 +635,7 @@ function EditAlbum(props) {
           </Button>
         </DialogActions>
       </Dialog> */}
+
       <PictureDialog
         pictures={pictures}
         view={view}
@@ -624,6 +643,16 @@ function EditAlbum(props) {
         changeView={changeView}
         albumID={id}
         toView={index}
+      />
+      <TagifyAlertDialog
+        Title={alertTitle}
+        Descrpition={alertDescrpition}
+        isOpen={alertOpen}
+        ConfirmTxt={alertConfirmTxt}
+        CancelTxt={alertCancelTxt}
+        handleClose={alertHandleClose}
+        handleConfirm={alertHandleConfirm}
+        handleCancel={alertHandleCancel}
       />
     </Grid>
   );

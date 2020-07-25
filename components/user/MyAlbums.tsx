@@ -31,11 +31,12 @@ function MyAlbums(props) {
       image_number: 0,
       tagged_number: 0,
       users_id: 0,
-      first_photo: "https://picsum.photos/id/33/300/300",
+      first_photo: "",
     },
   ]);
 
   const [numDelete, setNumDelete] = useState(0);
+  const [isLoaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const fetchAlbum = async () => {
@@ -43,6 +44,7 @@ function MyAlbums(props) {
         let response = await UserAlbum.getMyAlbums();
         if (response.status === Status.Ok && response.data !== undefined) {
           setAlbums(response.data);
+          setLoaded(true);
         } else {
           alert("Failed to fetch album");
         }
@@ -64,7 +66,7 @@ function MyAlbums(props) {
     image_number: 0,
     tagged_number: 0,
     users_id: 2,
-    first_photo: "https://picsum.photos/id/33/300/300",
+    first_photo: "",
   });
 
   const [open, setOpen] = useState(false);
@@ -199,10 +201,10 @@ function MyAlbums(props) {
     },
     media: {
       maxHeight: "200px",
-      maxWidth: "100px",
+      //width: "200px",
       margin: 0,
       paddingTop: "56.25%",
-      height: "150px",
+      //height: "150px",
     },
   }));
   const classes = useStyles();
@@ -308,7 +310,7 @@ function MyAlbums(props) {
           </Card>
         </Grid>{" "}
         {/* end of upper part */}
-        {renderThumbneils()}
+        {isLoaded ? renderThumbneils() : ""}
       </Grid>
 
       <Grid item xs={1} sm={1} md={1}></Grid>
@@ -328,6 +330,8 @@ function MyAlbums(props) {
         <Dialog
           open={open}
           TransitionComponent={Transition}
+          fullWidth={true}
+          maxWidth={"sm"}
           keepMounted
           onClose={handleClose}
           aria-labelledby="alert-dialog-slide-title"
@@ -349,16 +353,29 @@ function MyAlbums(props) {
                 >
                   <CardHeader
                     action={
-                      <CircularProgressWithLabel variant="static" value={0} />
+                      <CircularProgressWithLabel
+                        variant="static"
+                        value={
+                          toDelete.image_number > 0
+                            ? (100 * toDelete.tagged_number) /
+                              toDelete.image_number
+                            : 0
+                        }
+                      />
                     }
                     title={toDelete.title}
                     subheader={toDelete.users_id}
                   />
-                  <CardMedia
-                    className={classes.media}
-                    image={toDelete.first_photo}
-                    title={toDelete.title}
-                  />
+
+                  {toDelete.first_photo ? (
+                    <CardMedia
+                      className={classes.media}
+                      image={`/api/user/albums/${toDelete.id}/photos/${toDelete.first_photo}`}
+                      title={toDelete.title}
+                    />
+                  ) : (
+                    ""
+                  )}
                   <CardContent>
                     <Typography variant={"body2"}>
                       AlbumID: {toDelete.id}
