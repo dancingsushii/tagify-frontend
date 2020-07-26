@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
-    Create, Datagrid, DeleteButton, Edit, EditButton, Filter, List, ReferenceInput, SelectInput,
-    SimpleForm, TextField, TextInput
+    Create, Datagrid, DeleteButton, Edit, EditButton, Filter, List, ReferenceInput, required,
+    SelectInput, SimpleForm, TextField, TextInput
 } from 'react-admin';
 
 // ADMIN->USER getAllUsers
@@ -18,15 +18,17 @@ export const UserList = (props) => (
   </List>
 );
 
-// ADMIN->USER createUser
+// ADMIN->USER createUser WORKS
 export const UserCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <ReferenceInput source="userId" reference="users">
+      {/* <ReferenceInput source="userId" reference="users">
         <SelectInput optionText="name" />
-      </ReferenceInput>
-      <TextInput source="title" />
-      <TextInput multiline source="body" />
+      </ReferenceInput> */}
+      <TextInput source="username" validate={[required()]} />
+      <TextInput multiline source="nickname" validate={[required()]} />
+      <TextInput multiline source="password" validate={[required()]} />
+      <TextInput multiline source="role" validate={[required()]} />
     </SimpleForm>
   </Create>
 );
@@ -35,7 +37,7 @@ export const UserCreate = (props) => (
 export const UserFilter = (props) => (
   <Filter {...props}>
     <TextInput label="Search" source="q" alwaysOn />
-    <ReferenceInput label="User" source="userId" reference="users" allowEmpty>
+    <ReferenceInput label="User" source="id" reference="users" allowEmpty>
       <SelectInput optionText="name" />
     </ReferenceInput>
   </Filter>
@@ -46,9 +48,10 @@ export const UserEdit = (props) => (
   <Edit {...props}>
     <SimpleForm>
       <TextInput disabled source="id" />
-      <TextInput source="name" />
-      <TextInput source="username" />
-      <TextInput source="email" />
+      <TextInput source="username" validate={[required()]} />
+      <TextInput source="nickname" validate={[required()]} />
+      <TextInput multiline source="password" validate={[required()]} />
+      <TextInput source="role" validate={[required()]} />
     </SimpleForm>
   </Edit>
 );

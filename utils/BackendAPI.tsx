@@ -42,7 +42,7 @@ export enum UserRole {
   Admin = "admin",
 }
 
-interface MinimalResponse {
+export interface MinimalResponse {
   status: Status;
 }
 
@@ -52,10 +52,10 @@ export interface Response<T> {
 }
 
 export interface UserInformation {
-  id: number;
+  id: number; 
   username: string;
   nickname: string;
-  role: UserRole;
+  role: string;
 }
 
 export interface AlbumPreview {
@@ -436,14 +436,14 @@ interface AdminUserType {
     username: string;
     nickname: string;
     password: string;
-    role: UserRole;
+    role: String;
   }): Promise<
     Response<{
       id: number;
       username: string;
       nickname: string;
       password: string;
-      role: UserRole;
+      role: string;
     }>
   >;
   deleteUser(id: number): Promise<MinimalResponse>;
