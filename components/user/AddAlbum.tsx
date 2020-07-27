@@ -9,6 +9,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Status, UserAlbum } from '../../utils/BackendAPI';
 import { FileSelector, FileUploader } from '../snippets/FileUtils';
 import { ProgressButton } from '../snippets/ProgressButton';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 export function AddAlbum() {
   const theme = useTheme();
@@ -23,6 +24,15 @@ export function AddAlbum() {
     description: "",
     tags: "",
   };
+
+  //AlertBox controll //////////
+
+  const [alertTitle, setAlertTitle] = React.useState("");
+  const [alertDescrpition, setAlertDescrpition] = React.useState("");
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = React.useState("");
+
+  ///////////////////////////////
   const [errors, setErrors] = React.useState(initalErrors);
   function handleInputChange(e) {
     setInput(e.target.value);
@@ -72,10 +82,14 @@ export function AddAlbum() {
       })
         .then((response) => {
           if (response.status !== Status.Ok || response.data === undefined) {
-            alert("Failed to create new album");
+            setAlertConfirmTxt("ok");
+            setAlertDescrpition("Failed to create new album");
+            setAlertOpen(true);
+            //alert("Failed to create new album");
             console.error(`Server answered with error code ${response.status}`);
             return;
           }
+
           return FileUploader(files, response.data?.id.toString(), setProgress);
         })
         .then(() => {
@@ -224,6 +238,16 @@ export function AddAlbum() {
           </CardActions>
         </form>
       </Card>
+      <TagifyAlertDialog
+        Title={alertTitle}
+        Descrpition={alertDescrpition}
+        isOpen={alertOpen}
+        ConfirmTxt={alertConfirmTxt}
+        CancelTxt={""}
+        handleClose={() => setAlertOpen(false)}
+        handleConfirm={() => setAlertOpen(false)}
+        handleCancel={() => setAlertOpen(false)}
+      />
     </Container>
   );
 }

@@ -32,9 +32,12 @@ function TagifyAlertDialog(props) {
         {Title}
       </DialogTitle>
       <DialogContent>
-        <Typography variant={"body1"}>{Descrpition}</Typography>
+        {/* 
+        <Typography variant={"body1"}>{Descrpition}</Typography> */}
 
-        <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
+        <DialogContentText id="alert-dialog-slide-description">
+          {Descrpition}
+        </DialogContentText>
       </DialogContent>
 
       <DialogActions style={{ justifyContent: "space-around" }}>

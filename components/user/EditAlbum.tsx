@@ -52,24 +52,12 @@ function EditAlbum(props) {
     setCurentPage(value);
   };
   /* ////////////////// */
-  /* AlertBox controll */
-  const [alertTitle, setAlertTitle] = useState("ddd");
-  const [alertDescrpition, setAlertDescrpition] = useState(
-    "asdfdafdasfffffffffffffffffffffffffffffffffff"
-  );
+  /*////// AlertBox controll////// */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
-  const [alertCancelTxt, setAlertCancelTxt] = useState("Cancel");
-  const [alertHandleCancel, setAlertHandleCancel] = useState(() => () => {
-    setAlertOpen(false);
-  });
-  const [alertHandleConfirm, setAlertHandleConfirm] = useState(() => () => {
-    setAlertOpen(false);
-  });
-  const [alertHandleClose, setAlertHandleClose] = useState(() => () => {
-    setAlertOpen(false);
-  });
-  /* ////////////////////// */
+  /* ////////////////////////////// */
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,7 +75,11 @@ function EditAlbum(props) {
             setLoaded(true);
           }
         } else {
-          alert("Failed to fetch album");
+          setAlertConfirmTxt("ok");
+          setAlertDescrpition("Failed to fetch album");
+          setAlertOpen(true);
+
+          // alert("Failed to fetch album");
         }
       } catch (error) {
         console.log(error);
@@ -176,10 +168,16 @@ function EditAlbum(props) {
 
         if (response.status === Status.Ok) {
           setnumDelet(numDelet + 1);
+
           setOpen(false);
         } else {
           setOpen(false);
-          alert("Failed to Delete Picture");
+
+          setAlertConfirmTxt("ok");
+          setAlertDescrpition("Failed to Delete Picture");
+          setAlertOpen(true);
+
+          //  alert("Failed to Delete Picture");
         }
       } catch (error) {
         console.log(error);
@@ -420,7 +418,7 @@ function EditAlbum(props) {
                   count={
                     album.image_number / elementsProPage >= 1
                       ? Math.ceil((album.image_number - 1) / elementsProPage)
-                      : 3
+                      : 1
                   }
                   color="primary"
                   page={curentPage}
@@ -485,7 +483,7 @@ function EditAlbum(props) {
             count={
               album.image_number / elementsProPage >= 1
                 ? Math.ceil((album.image_number - 1) / elementsProPage)
-                : 3
+                : 1
             }
             color="primary"
             page={curentPage}
@@ -649,10 +647,10 @@ function EditAlbum(props) {
         Descrpition={alertDescrpition}
         isOpen={alertOpen}
         ConfirmTxt={alertConfirmTxt}
-        CancelTxt={alertCancelTxt}
-        handleClose={alertHandleClose}
-        handleConfirm={alertHandleConfirm}
-        handleCancel={alertHandleCancel}
+        CancelTxt={""}
+        handleClose={() => setAlertOpen(false)}
+        handleConfirm={() => setAlertOpen(false)}
+        handleCancel={() => setAlertOpen(false)}
       />
     </Grid>
   );

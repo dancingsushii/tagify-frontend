@@ -10,6 +10,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import { Albums, PhotoInformation, Status } from '../../utils/BackendAPI';
 import { AlbumSkeleton } from '../snippets/AlbumSkeleton';
 import PictureDialog from '../snippets/PictureDialog';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 export function Album(props) {
   let id = props.match.params.id;
@@ -23,6 +24,15 @@ export function Album(props) {
     users_id: 0,
     first_photo: "",
   });
+  //AlertBox controll //////////
+
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+
+  ///////////////////////////////
+
   const [pictures, setPictures] = useState<Array<PhotoInformation>>([]);
   const [isLoaded, setLoaded] = useState(false);
   useEffect(() => {
@@ -37,7 +47,10 @@ export function Album(props) {
             setLoaded(true);
           }
         } else {
-          alert("Failed to fetch album");
+          setAlertConfirmTxt("ok");
+          setAlertDescrpition("Failed to fetch album");
+          setAlertOpen(true);
+          //alert("Failed to fetch album");
         }
       } catch (error) {
         console.log(error);
@@ -259,6 +272,16 @@ export function Album(props) {
           changeView={changeView}
           albumID={album.id}
           toView={index}
+        />
+        <TagifyAlertDialog
+          Title={alertTitle}
+          Descrpition={alertDescrpition}
+          isOpen={alertOpen}
+          ConfirmTxt={alertConfirmTxt}
+          CancelTxt={""}
+          handleClose={() => setAlertOpen(false)}
+          handleConfirm={() => setAlertOpen(false)}
+          handleCancel={() => setAlertOpen(false)}
         />
       </Container>
     );

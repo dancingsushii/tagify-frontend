@@ -15,6 +15,7 @@ import Pagination from '@material-ui/lab/Pagination';
 
 import { Status, UserAlbum } from '../../utils/BackendAPI';
 import Albumthumbneil from '../snippets/Albumthumbneil';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -36,7 +37,12 @@ function MyAlbums(props) {
   ]);
 
   const [numDelete, setNumDelete] = useState(0);
-  const [isLoaded, setLoaded] = useState(false);
+  /*////// AlertBox controll////// */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+  /* ////////////////////////////// */
 
   useEffect(() => {
     const fetchAlbum = async () => {
@@ -46,7 +52,10 @@ function MyAlbums(props) {
           setAlbums(response.data);
           setLoaded(true);
         } else {
-          alert("Failed to fetch album");
+          setAlertConfirmTxt("ok");
+          setAlertDescrpition("Failed to fetch albums");
+          setAlertOpen(true);
+          // alert("Failed to fetch albums");
         }
       } catch (error) {
         console.log(error);
@@ -415,6 +424,17 @@ function MyAlbums(props) {
           </DialogActions>
         </Dialog>
       </div>
+
+      <TagifyAlertDialog
+        Title={alertTitle}
+        Descrpition={alertDescrpition}
+        isOpen={alertOpen}
+        ConfirmTxt={alertConfirmTxt}
+        CancelTxt={""}
+        handleClose={() => setAlertOpen(false)}
+        handleConfirm={() => setAlertOpen(false)}
+        handleCancel={() => setAlertOpen(false)}
+      />
     </Grid>
   );
 }
