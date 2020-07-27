@@ -1,0 +1,6 @@
+[submodule "lib/react-region-select"]
+	path = lib/react-region-select
+	url = https://github.com/casavi/react-region-select
+[submodule "lib/react-zoom-pan-pinch"]
+	path = lib/react-zoom-pan-pinch
+	url = https://github.com/prc5/react-zoom-pan-pinch
