@@ -399,12 +399,7 @@ function EditAlbum(props) {
                     <Typography variant={"h6"}>Tags</Typography>
                     <div className={classes.chips}>
                       {album.tags.map((c, i) => (
-                        <Chip
-                          key={i}
-                          label={c}
-                          variant="default"
-                          color="primary"
-                        />
+                        <Chip key={i} label={c} variant="default" />
                       ))}
                     </div>
                   </Card>
@@ -431,7 +426,7 @@ function EditAlbum(props) {
                   <Button
                     style={{ float: "right", margin: "5px" }}
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                   >
                     Add Pictures
                   </Button>
@@ -443,7 +438,7 @@ function EditAlbum(props) {
                   <Button
                     style={{ float: "right", margin: "5px" }}
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                   >
                     Back to Album
                   </Button>

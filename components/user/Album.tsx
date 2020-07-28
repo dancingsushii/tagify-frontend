@@ -8,12 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { Albums, PhotoInformation, Status } from '../../utils/BackendAPI';
-import { AlbumSkeleton } from '../snippets/AlbumSkeleton';
 import PictureDialog from '../snippets/PictureDialog';
 import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 export function Album(props) {
-  let id = props.match.params.id;
   const [album, setAlbum] = useState({
     id: 1,
     title: "",
@@ -22,7 +20,7 @@ export function Album(props) {
     image_number: 0,
     tagged_number: 0,
     users_id: 0,
-    first_photo: "",
+    first_photo: 0,
   });
   //AlertBox controll //////////
 
@@ -38,6 +36,7 @@ export function Album(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        let id = props.match.params.id;
         let response = await Albums.getAlbum(id);
         if (response.status === Status.Ok && response.data !== undefined) {
           setAlbum(response.data);
@@ -158,9 +157,9 @@ export function Album(props) {
           <CardMedia
             className={classes.media}
             image={(() => {
-              if (album.first_photo == "default_path" && pictures.length > 0) {
+              if (album.first_photo == null) {
                 // console.log("here");
-                return `/api/user/albums/${album.id}/photos/${album.first_photo}`;
+                return `https://generative-placeholders.glitch.me/image?width=400&height=300&style=cubic-disarray`;
               }
               return `/api/user/albums/${album.id}/photos/${album.first_photo}`;
             })()}
@@ -286,6 +285,6 @@ export function Album(props) {
       </Container>
     );
   } else {
-    return <AlbumSkeleton></AlbumSkeleton>;
+    return <div></div>;
   }
 }

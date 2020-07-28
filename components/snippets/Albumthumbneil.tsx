@@ -101,7 +101,12 @@ function Albumthumbneil(props) {
             
           <CardMedia
             className={classes.media}
-            image={`/api/user/albums/${id}/photos/${first_photo}`}
+            image={(() => {
+              if (first_photo == null) {
+                return `https://generative-placeholders.glitch.me/image?width=300&height=300&img=${id}`;
+              }
+              return `/api/user/albums/${id}/photos/${first_photo}`;
+            })()}
             title={title}
           />
         </Link>

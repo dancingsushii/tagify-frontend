@@ -73,7 +73,7 @@ function PictureEditCard(props) {
       >
         <Button
           size="small"
-          color="secondary"
+          color="primary"
           variant="contained"
           onClick={() => props.onView(props.index)}
         >
@@ -81,7 +81,7 @@ function PictureEditCard(props) {
         </Button>
         <Button
           size="small"
-          color="secondary"
+          color="primary"
           variant="contained"
           onClick={() => props.onDelete(picture)}
         >
