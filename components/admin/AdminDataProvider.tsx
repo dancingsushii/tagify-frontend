@@ -1,4 +1,4 @@
-import { AdminUser, Albums } from '../../utils/BackendAPI';
+import { AdminUser, Albums } from "../../utils/BackendAPI";
 
 /* React-Admin calls the Data Provider with each of methods and expects a Promise in return */
 
@@ -113,7 +113,7 @@ export default {
 
   // DELETE USER WORKS
   delete: (resource, params) => {
-    if (resource == "admin") {
+    if (resource == "users") {
       var id = params.id;
       return AdminUser.deleteUser(id);
     } else if (resource == "albums") {

@@ -1,10 +1,18 @@
-import React from 'react';
+import React from "react";
 
 import {
-    AppBar, Drawer, Hidden, IconButton, makeStyles, Slide, SwipeableDrawer, Toolbar,
-    useScrollTrigger, useTheme
-} from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+  AppBar,
+  Drawer,
+  Hidden,
+  IconButton,
+  makeStyles,
+  Slide,
+  SwipeableDrawer,
+  Toolbar,
+  useScrollTrigger,
+  useTheme,
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
 
 const drawerWidth = 240;
 
@@ -37,6 +45,14 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
+  },
+  // footer css
+  footer: {
+    backgroundColor: "#dcedc8",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: "100px",
   },
 }));
 
@@ -156,6 +172,28 @@ function TagifyDrawer(props: TagifyDrawerProps) {
 }
 
 //
+// ########  #######   #######  ######## ######## ########
+// ##       ##     ## ##     ##    ##    ##       ##     ##
+// ##       ##     ## ##     ##    ##    ##       ##     ##
+// ######   ##     ## ##     ##    ##    ######   ########
+// ##       ##     ## ##     ##    ##    ##       ##   ##
+// ##       ##     ## ##     ##    ##    ##       ##    ##
+// ##        #######   #######     ##    ######## ##     ##
+//
+
+// TODO FOOTER PROPS
+interface TagifyFooterProps {
+  children: React.ReactElement;
+}
+
+function TagifyFooter(props: TagifyFooterProps) {
+  const { children } = props;
+  // CSS
+  const classes = useStyles();
+  return <footer className={classes.footer}>{children}</footer>;
+}
+
+//
 //  ######   #######  ##     ## ########   #######   ######   #######  ########
 // ##    ## ##     ## ###   ### ##     ## ##     ## ##    ## ##     ## ##     ##
 // ##       ##     ## #### #### ##     ## ##     ## ##       ##     ## ##     ##
@@ -169,11 +207,12 @@ interface TagifyNavigationProps {
   children: React.ReactElement;
   drawer?: React.ReactElement;
   appbar?: React.ReactElement;
+  footer?: React.ReactElement;
   transparent?: boolean;
 }
 
 export function TagifyNavigation(props: TagifyNavigationProps) {
-  const { children, drawer, appbar, transparent } = props;
+  const { children, drawer, appbar, footer, transparent } = props;
   const classes = useStyles();
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -204,6 +243,8 @@ export function TagifyNavigation(props: TagifyNavigationProps) {
         {appbar && !transparent && <div className={classes.toolbar} />}
         {children}
       </main>
+
+      {footer && <TagifyFooter>{footer}</TagifyFooter>}
     </div>
   );
 }

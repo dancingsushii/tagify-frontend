@@ -1,8 +1,19 @@
-import * as React from 'react';
+import * as React from "react";
 import {
-    Create, Datagrid, DeleteButton, Edit, EditButton, Filter, List, ReferenceInput, required,
-    SelectInput, SimpleForm, TextField, TextInput
-} from 'react-admin';
+  Create,
+  Datagrid,
+  DeleteButton,
+  Edit,
+  EditButton,
+  Filter,
+  List,
+  ReferenceInput,
+  required,
+  SelectInput,
+  SimpleForm,
+  TextField,
+  TextInput,
+} from "react-admin";
 
 // ADMIN->USER getAllUsers
 export const UserList = (props) => (
@@ -50,7 +61,7 @@ export const UserEdit = (props) => (
       <TextInput disabled source="id" />
       <TextInput source="username" validate={[required()]} />
       <TextInput source="nickname" validate={[required()]} />
-      <TextInput multiline source="password" validate={[required()]} />
+      <TextInput disabled source="password" />
       <TextInput source="role" validate={[required()]} />
     </SimpleForm>
   </Edit>

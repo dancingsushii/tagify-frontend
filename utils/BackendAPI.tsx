@@ -52,10 +52,10 @@ export interface Response<T> {
 }
 
 export interface UserInformation {
-  id: number; 
+  id: number;
   username: string;
   nickname: string;
-  role: string;
+  role: UserRole;
 }
 
 export interface AlbumPreview {
