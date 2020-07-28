@@ -46,7 +46,7 @@ function PictureEditCard(props) {
         subheader={"Id: " + picture.id}
         action={
           picture.verified ? (
-            <p style={{ color: "green" }}>verified</p>
+            <p style={{ color: "green" }}>Verified</p>
           ) : (
             <p style={{ color: "red" }}>Unverified</p>
           )

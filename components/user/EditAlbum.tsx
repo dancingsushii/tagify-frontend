@@ -286,8 +286,17 @@ function EditAlbum(props) {
       },
     },
     button: {
-      marginTop: theme.spacing(2),
-      marginRight: theme.spacing(2),
+      float: "right",
+      [theme.breakpoints.down("md")]: {
+        width: "31%",
+        float: "none",
+        height: "70px",
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: "98%",
+      },
+
+      margin: "5px",
     },
     media: {
       width: "100%",
@@ -303,7 +312,7 @@ function EditAlbum(props) {
   const classes = useStyles();
 
   return (
-    <Grid container justify="center" className={classes.root} spacing={1}>
+    <Grid container className={classes.root} spacing={1}>
       {/* Left columnt */}
 
       <Grid item sm={1}></Grid>
@@ -311,7 +320,7 @@ function EditAlbum(props) {
       {/* Middle column */}
       <Grid
         container
-        justify="center"
+        justify="flex-start"
         item
         xs={12}
         sm={10}
@@ -408,6 +417,46 @@ function EditAlbum(props) {
 
               {/* Pagination and add  Pic button */}
               <Grid item xs={12}>
+                <div
+                  style={{
+                    float: "right",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="secondary"
+                  >
+                    Download Album
+                  </Button>
+
+                  <Link
+                    to={{ pathname: `/addalbum` }}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <Button
+                      className={classes.button}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Add Pictures
+                    </Button>
+                  </Link>
+                  <Link
+                    to={{ pathname: `/album/${album.id}` }}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <Button
+                      className={classes.button}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Back to Album
+                    </Button>
+                  </Link>
+                </div>
                 <Pagination
                   style={{ float: "left" }}
                   count={
@@ -419,38 +468,6 @@ function EditAlbum(props) {
                   page={curentPage}
                   onChange={handlePageChange}
                 />
-                <Button
-                  style={{ float: "right", margin: "5px" }}
-                  variant="contained"
-                  color="secondary"
-                >
-                  Download Album
-                </Button>
-
-                <Link
-                  to={{ pathname: `/addalbum` }}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <Button
-                    style={{ float: "right", margin: "5px" }}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Add Pictures
-                  </Button>
-                </Link>
-                <Link
-                  to={{ pathname: `/album/${album.id}` }}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <Button
-                    style={{ float: "right", margin: "5px" }}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Back to Album
-                  </Button>
-                </Link>
               </Grid>
             </Grid>
             {/* End of Backround Card */}
