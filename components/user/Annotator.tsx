@@ -8,6 +8,13 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 // |  \ |___ |___ | |\ | |  |  | |  | |\ | [__
 // |__/ |___ |    | | \| |  |  | |__| | \| ___]
 
+const DEV_MODE = false;
+
+interface ParentSize {
+  height: number;
+  width: number;
+}
+
 interface RegionGeometry {
   top: number;
   bottom: number;
@@ -15,6 +22,10 @@ interface RegionGeometry {
   right: number;
   width: number;
   height: number;
+  topPercent: number;
+  leftPercent: number;
+  widthPercent: number;
+  heightPercent: number;
 }
 
 enum Pole {
@@ -24,10 +35,19 @@ enum Pole {
   SW = "sw",
 }
 
+enum ImageRatio {
+  PORTRAIT = "Portrait",
+  LANDSCAPE = "Landscape",
+}
+
 //=============================================================================
 // _  _ ____ _    ___  ____ ____
 // |__| |___ |    |__] |___ |__/
 // |  | |___ |___ |    |___ |  \
+
+async function sleep(millis: number) {
+  return await new Promise((r) => setTimeout(r, millis));
+}
 
 /**
  * This function extracts the pointer position relative
@@ -66,6 +86,34 @@ function getElementOffset(
   let top = rect.top + window.pageYOffset - doc.clientTop;
   let left = rect.left + window.pageXOffset - doc.clientLeft;
   return { top, left };
+}
+
+function getElementRatio(element: React.RefObject<HTMLElement>): number {
+  if (!element.current) return NaN;
+  let { top, left } = getElementOffset(element);
+  return (window.innerWidth - left) / (window.innerHeight - top);
+}
+
+function getHTMLImageRatio(element: React.RefObject<HTMLImageElement>): number {
+  if (!element.current) return NaN;
+  let img = element.current;
+  return img.naturalWidth / img.naturalHeight;
+}
+
+function calcRegionPercentage(geo: RegionGeometry, parent: ParentSize) {
+  geo.topPercent = geo.top / parent.height;
+  geo.leftPercent = geo.left / parent.width;
+  geo.widthPercent = (geo.right - geo.left) / parent.width;
+  geo.heightPercent = (geo.bottom - geo.top) / parent.height;
+}
+
+function calcRegionGeoPoints(geo: RegionGeometry, parent: ParentSize) {
+  geo.top = Math.floor(parent.height * geo.topPercent);
+  geo.left = Math.floor(parent.width * geo.leftPercent);
+  geo.height = Math.floor(parent.height * geo.heightPercent);
+  geo.width = Math.floor(parent.width * geo.widthPercent);
+  geo.bottom = geo.top + geo.height;
+  geo.right = geo.left + geo.width;
 }
 
 /**
@@ -124,6 +172,7 @@ class Region extends Component {
   props: {
     container: React.RefObject<HTMLElement>;
     geometry: RegionGeometry;
+    parent: { height: number; width: number };
     labels: Array<string>;
     selectedLabel: string;
     onRemove: () => void;
@@ -208,6 +257,7 @@ class Region extends Component {
     let { top, left } = getElementOffset(this.props.container);
 
     let geo = this.props.geometry;
+    calcRegionGeoPoints(geo, this.props.parent);
     let newX = x - left;
     let newY = y - top;
     if (this.panningOffset) {
@@ -246,6 +296,8 @@ class Region extends Component {
       geo.height = geo.bottom - geo.top;
     }
 
+    calcRegionPercentage(geo, this.props.parent);
+
     this.props.onUpdate(geo);
   }
 
@@ -273,10 +325,10 @@ class Region extends Component {
           border: "1px dashed rgba(0,0,0,0.5)",
           outline: "1px dashed rgba(255,255,255,0.5)",
           cursor: "move",
-          width: this.props.geometry.width,
-          height: this.props.geometry.height,
-          top: this.props.geometry.top,
-          left: this.props.geometry.left,
+          width: `${this.props.geometry.widthPercent * 100}%`,
+          height: `${this.props.geometry.heightPercent * 100}%`,
+          top: `${this.props.geometry.topPercent * 100}%`,
+          left: `${this.props.geometry.leftPercent * 100}%`,
         }}
       >
         {/* ======================== Tag Selector ======================== */}
@@ -330,12 +382,17 @@ class Region extends Component {
           onTouchStart={this.onMouseTouchDown}
           onMouseDown={this.onMouseTouchDown}
           style={{
-            width: this.props.geometry.width,
-            height: this.props.geometry.height,
-            top: this.props.geometry.top,
-            left: this.props.geometry.left,
+            width: `100%`,
+            height: `100%`,
+            top: `0%`,
+            left: `0%`,
           }}
         />
+        {DEV_MODE && (
+          <div style={{ position: "absolute", bottom: -30, left: 0 }}>
+            {JSON.stringify(this.props.geometry)}
+          </div>
+        )}
       </div>
     );
   }
@@ -348,36 +405,52 @@ class Region extends Component {
 
 export default class Annotator extends Component {
   container: React.RefObject<HTMLDivElement>;
+  image: React.RefObject<HTMLImageElement>;
   isDown: boolean;
   state: {
+    root: {
+      width: number;
+      height: number;
+    };
     regions: Array<{
       geometry: RegionGeometry;
       xGrow: boolean;
       yGrow: boolean;
       selectedLabel: string;
     }>;
+    imageRatio: ImageRatio;
+    imageRatioFactor: number;
     rest?: any;
   };
 
   constructor(props) {
     super(props);
+    this.componentDidMount = this.componentDidMount.bind(this);
     this.onMouseTouchDown = this.onMouseTouchDown.bind(this);
     this.onMouseTouchMove = this.onMouseTouchMove.bind(this);
     this.onMouseTouchUp = this.onMouseTouchUp.bind(this);
     this.onRemoveRegion = this.onRemoveRegion.bind(this);
     this.onUpdateRegion = this.onUpdateRegion.bind(this);
     this.onSelectLabel = this.onSelectLabel.bind(this);
+    this.onResize = this.onResize.bind(this);
     this.container = React.createRef();
+    this.image = React.createRef();
     this.isDown = false;
-    this.state = { regions: [] };
+    this.state = {
+      root: { width: 0, height: 0 },
+      regions: [],
+      imageRatio: ImageRatio.LANDSCAPE,
+      imageRatioFactor: 1,
+    };
   }
 
-  componentDidMount() {
-    // document.body.style.overflow = "hidden";
+  async componentDidMount() {
+    window.addEventListener("resize", this.onResize);
+    await this.onResize();
   }
 
   componentWillUnmount() {
-    // document.body.style.overflow = "visible";
+    window.removeEventListener("resize", this.onResize);
   }
 
   onMouseTouchDown(event: any) {
@@ -397,6 +470,10 @@ export default class Annotator extends Component {
         right: x - left,
         width: 0,
         height: 0,
+        heightPercent: 0,
+        leftPercent: 0,
+        topPercent: 0,
+        widthPercent: 0,
       },
       xGrow: true,
       yGrow: true,
@@ -435,6 +512,8 @@ export default class Annotator extends Component {
     if (isYGrow) geo.bottom = newY;
     geo.height = geo.bottom - geo.top;
 
+    calcRegionPercentage(geo, this.state.root);
+
     this.setState(this.state);
   }
 
@@ -468,6 +547,46 @@ export default class Annotator extends Component {
     this.setState(this.state);
   }
 
+  /**
+   * This method calculates the ratios of the
+   * container and the image to figure out if
+   * the image should use height or width 100%.
+   * As height is not working due to auto grow
+   * of container the window height is also
+   * calculated.
+   */
+  async onResize() {
+    // wait till reference is reachable to get ratio
+    let rf = getHTMLImageRatio(this.image);
+    while (!(0 <= rf && rf < Infinity)) {
+      await sleep(100);
+      rf = getHTMLImageRatio(this.image);
+    }
+    let conRatio = getElementRatio(this.container);
+    let ratio = rf > conRatio ? ImageRatio.LANDSCAPE : ImageRatio.PORTRAIT;
+    let height = window.innerHeight - getElementOffset(this.container).top;
+    let width = window.innerWidth - getElementOffset(this.container).left;
+    this.state.root = this.getImageSize(height, width, ratio, rf);
+    this.state.imageRatio = ratio;
+    this.state.imageRatioFactor = rf;
+    // this.state.regions.forEach((region) => {
+    //   calcRegionGeoPoints(region.geometry, this.state.root);
+    // });
+    this.setState(this.state);
+  }
+
+  getImageSize(
+    height: number,
+    width: number,
+    ratio: ImageRatio,
+    ratioFactor: number
+  ): { height: number; width: number } {
+    return {
+      height: ratio === ImageRatio.PORTRAIT ? height : width / ratioFactor,
+      width: ratio === ImageRatio.LANDSCAPE ? width : height * ratioFactor,
+    };
+  }
+
   render() {
     return (
       <div
@@ -489,6 +608,7 @@ export default class Annotator extends Component {
             key={i}
             container={this.container}
             geometry={val.geometry}
+            parent={this.state.root}
             selectedLabel={val.selectedLabel}
             labels={["1", "2", "3"]}
             onRemove={this.onRemoveRegion.bind(null, i)}
@@ -500,7 +620,15 @@ export default class Annotator extends Component {
           onTouchStart={this.onMouseTouchDown}
           onMouseDown={this.onMouseTouchDown}
         >
-          <img src="/api/user/albums/4/photos/35" height={350} width={350} />
+          <img
+            ref={this.image}
+            style={
+              this.state.imageRatio === ImageRatio.PORTRAIT
+                ? { height: this.state.root.height }
+                : { width: this.state.root.width }
+            }
+            src="/api/user/albums/4/photos/35"
+          />
         </div>
       </div>
     );
