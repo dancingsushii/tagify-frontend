@@ -98,7 +98,7 @@ function Albumthumbneil(props) {
           />
 
           {/* Album Thumbneil */}
-
+            
           <CardMedia
             className={classes.media}
             image={(() => {

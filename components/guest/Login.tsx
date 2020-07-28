@@ -10,6 +10,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import BackendToken, { Default, Status, UserRole } from '../../utils/BackendAPI';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -34,6 +35,13 @@ export function Login(props) {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
+
+  /*////// AlertBox controll////// */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+  /* ////////////////////////////// */
 
   function handleChangeInput(event: React.ChangeEvent<HTMLInputElement>) {
     const target = event.target;
@@ -72,13 +80,19 @@ export function Login(props) {
         } else if (BackendToken.userRole == UserRole.User) {
           props.history.push("/");
         } else {
-          alert("Oops, broken");
+          setAlertConfirmTxt("ok");
+          setAlertDescrpition("Oops, broken");
+          setAlertOpen(true);
+          // alert("Oops, broken");
           console.error(
             "Reached unexpected case: Server returned 200, but role is undefined"
           );
         }
       } else {
-        alert("Failed to login");
+        setAlertConfirmTxt("ok");
+        setAlertDescrpition("Failed to login");
+        setAlertOpen(true);
+        //alert("Failed to login");
       }
     });
     event.preventDefault();
@@ -151,6 +165,16 @@ export function Login(props) {
           </Button>
         </form>
       </Card>
+      <TagifyAlertDialog
+        Title={alertTitle}
+        Descrpition={alertDescrpition}
+        isOpen={alertOpen}
+        ConfirmTxt={alertConfirmTxt}
+        CancelTxt={""}
+        handleClose={() => setAlertOpen(false)}
+        handleConfirm={() => setAlertOpen(false)}
+        handleCancel={() => setAlertOpen(false)}
+      />
     </Container>
   );
 }

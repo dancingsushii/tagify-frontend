@@ -7,7 +7,8 @@ import {
 } from '@material-ui/core';
 
 import { Albums, Status } from '../../utils/BackendAPI';
-
+import { DashboardSkeleton } from '../snippets/DashboardSkeleton';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 export const DashBoard = (props: { search: any; value: any }) => {
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,6 +25,13 @@ export const DashBoard = (props: { search: any; value: any }) => {
       height: 0,
     },
   }));
+  /* AlertBox controll */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+
+  /* ////////////////////// */
 
   type Album = {
     id: number;
@@ -58,7 +66,10 @@ export const DashBoard = (props: { search: any; value: any }) => {
           setAlbumsBackup(response.data.albums);
         }
       } else {
-        alert("Failed to load album");
+        setAlertConfirmTxt("ok");
+        setAlertDescrpition("Failed to load albums");
+        setAlertOpen(true);
+        // alert("Failed to load album");
       }
     };
     fetchData();
@@ -128,6 +139,16 @@ export const DashBoard = (props: { search: any; value: any }) => {
             <Grid item className={classes.filler}></Grid>
             <Grid item className={classes.filler}></Grid>
           </Grid>
+          <TagifyAlertDialog
+            Title={alertTitle}
+            Descrpition={alertDescrpition}
+            isOpen={alertOpen}
+            ConfirmTxt={alertConfirmTxt}
+            CancelTxt={""}
+            handleClose={() => setAlertOpen(false)}
+            handleConfirm={() => setAlertOpen(false)}
+            handleCancel={() => setAlertOpen(false)}
+          />
         </Container>
       </>
     );

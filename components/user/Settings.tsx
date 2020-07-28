@@ -10,6 +10,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import BackendToken, { Status, User } from '../../utils/BackendAPI';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,6 +56,12 @@ export function Settings() {
   function handlePasChange(e) {
     setPassword({ ...password, [e.target.name]: e.target.value });
   }
+  /*////// AlertBox controll////// */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+  /* ////////////////////////////// */
 
   function handlePasSubmit(e) {
     e.preventDefault();
@@ -62,11 +69,18 @@ export function Settings() {
       User.updatePassword({ password: password.password1 }).then((response) => {
         if (response.status == Status.Ok) {
           setPassword({ password1: "", password2: "" });
-          alert("Password changed!");
-        } else alert("Server returned error: " + response.status);
+          setAlertDescrpition("Password changed!");
+          //alert("Password changed!");
+        } else setAlertDescrpition("Server returned error: " + response.status);
+        //alert("Server returned error: " + response.status);
+        setAlertConfirmTxt("ok");
+        setAlertOpen(true);
       });
     } else {
-      alert("Passwords don't match");
+      setAlertConfirmTxt("ok");
+      setAlertDescrpition("Passwords don't match");
+      setAlertOpen(true);
+      //alert("Passwords don't match");
     }
   }
 
@@ -76,8 +90,14 @@ export function Settings() {
       if (response.status == Status.Ok) {
         BackendToken.nickname = nick;
         setNick("");
-        alert("Nickname changed!");
-      } else alert("Server returned error: " + response.status);
+        setAlertDescrpition("Nickname changed!");
+        //alert("Nickname changed!");
+      } else {
+        setAlertDescrpition("Server returned error: " + response.status);
+        //alert("Server returned error: " + response.status);
+      }
+      setAlertConfirmTxt("ok");
+      setAlertOpen(true);
     });
   }
   const handleClickShowPassword = () => {
@@ -229,6 +249,16 @@ export function Settings() {
           </form>
         </Card>
       </Grid>
+      <TagifyAlertDialog
+        Title={alertTitle}
+        Descrpition={alertDescrpition}
+        isOpen={alertOpen}
+        ConfirmTxt={alertConfirmTxt}
+        CancelTxt={""}
+        handleClose={() => setAlertOpen(false)}
+        handleConfirm={() => setAlertOpen(false)}
+        handleCancel={() => setAlertOpen(false)}
+      />
     </Grid>
   );
 }

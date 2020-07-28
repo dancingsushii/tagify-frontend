@@ -12,9 +12,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function PictureDialog(props) {
-  const [pictures] = useState(props.pictures);
   function handleNext() {
-    if (props.toView === pictures.length - 1) {
+    if (props.toView === props.pictures.length - 1) {
       console.log("An die grenze");
     } else {
       props.changeView(props.toView + 1);
