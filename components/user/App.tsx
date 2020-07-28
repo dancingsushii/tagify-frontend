@@ -7,20 +7,19 @@ import {
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
-import { Repeat } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
 import HomeIcon from '@material-ui/icons/Home';
 import NotesIcon from '@material-ui/icons/Notes';
 import PhotoAlbumIcon from '@material-ui/icons/PhotoAlbum';
 import SearchIcon from '@material-ui/icons/Search';
 
-import Token, { Albums, Status } from '../../utils/BackendAPI';
+import Token from '../../utils/BackendAPI';
 import { Impressum } from '../Impressum';
+import Annotator from '../snippets/Annotator';
 import { TagifyNavigation } from '../snippets/TagifyNavigation';
 import { AddAlbum } from './AddAlbum';
 import { Album } from './Album';
-import { Annotate } from './Annotate';
-import Annotator from './Annotator';
+import Annotate from './Annotate';
 import { DashBoard } from './DashBoard';
 import EditAlbum from './EditAlbum';
 import MyAlbums from './MyAlbums';
@@ -148,15 +147,17 @@ export function App() {
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
           <Route exact path="/album">
-            <Redirect to="/"></Redirect>
+            <Redirect to="/" />
           </Route>
           <Route path="/album/:id" component={Album} />
           <Route path="/myalbums" component={MyAlbums} />
           <Route path="/editalbum/:id" component={EditAlbum} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
-          <Route path="/annotate" component={Annotate} />
-          <Route path="/annotator" component={Annotator} />
+          <Route exact path="/annotate">
+            <Redirect to="/" />
+          </Route>
+          <Route path="/annotate/:id" component={Annotate} />
           <Route path="/*" component={() => <h1>404 Not Found</h1>} />
         </Switch>
       </TagifyNavigation>

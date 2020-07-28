@@ -9,6 +9,7 @@ import {
 import { Albums, Status } from '../../utils/BackendAPI';
 import { DashboardSkeleton } from '../snippets/DashboardSkeleton';
 import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
+
 export const DashBoard = (props: { search: any; value: any }) => {
   const useStyles = makeStyles((theme) => ({
     root: {

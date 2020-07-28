@@ -11,11 +11,16 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 const DEV_MODE = false;
 
 interface ParentSize {
-  height: number;
   width: number;
+  height: number;
 }
 
-interface RegionGeometry {
+export interface ImageSize {
+  width: number;
+  height: number;
+}
+
+export interface RegionGeometry {
   top: number;
   bottom: number;
   left: number;
@@ -100,6 +105,14 @@ function getHTMLImageRatio(element: React.RefObject<HTMLImageElement>): number {
   return img.naturalWidth / img.naturalHeight;
 }
 
+function getHTMLImageSize(
+  element: React.RefObject<HTMLImageElement>
+): ImageSize {
+  if (!element.current) return { width: 0, height: 0 };
+  let img = element.current;
+  return { width: img.naturalWidth, height: img.naturalHeight };
+}
+
 function calcRegionPercentage(geo: RegionGeometry, parent: ParentSize) {
   geo.topPercent = geo.top / parent.height;
   geo.leftPercent = geo.left / parent.width;
@@ -178,6 +191,7 @@ class Region extends Component {
     onRemove: () => void;
     onUpdate: (geometry: RegionGeometry) => void;
     onSelectLabel: (label: string) => void;
+    immutable: boolean;
     rest?: any;
   };
   panningOffset:
@@ -206,6 +220,7 @@ class Region extends Component {
   }
 
   componentDidMount() {
+    if (this.props.immutable) return;
     document.addEventListener("mousemove", this.onMouseTouchMove);
     document.addEventListener("touchmove", this.onMouseTouchMove);
     document.addEventListener("mouseup", this.onMouseTouchUp);
@@ -214,6 +229,7 @@ class Region extends Component {
   }
 
   componentWillUnmount() {
+    if (this.props.immutable) return;
     document.removeEventListener("mousemove", this.onMouseTouchMove);
     document.removeEventListener("touchmove", this.onMouseTouchMove);
     document.removeEventListener("mouseup", this.onMouseTouchUp);
@@ -222,6 +238,7 @@ class Region extends Component {
   }
 
   onMouseTouchDown(event: any) {
+    if (this.props.immutable) return;
     event.preventDefault();
     // if is middle click -> remove region; return;
     if (event.button && event.button === 1) {
@@ -241,6 +258,7 @@ class Region extends Component {
   }
 
   onMouseTouchDownHandle(pole: Pole, event: any) {
+    if (this.props.immutable) return;
     // if is middle click -> remove region; return;
     if (event.button && event.button === 1) {
       this.props.onRemove();
@@ -307,11 +325,13 @@ class Region extends Component {
   }
 
   handleClick(event) {
+    if (this.props.immutable) return;
     this.state.anchorEl = event.currentTarget;
     this.setState(this.state);
   }
 
   handleClose(label: any) {
+    if (this.props.immutable) return;
     this.state.anchorEl = undefined;
     if (typeof label === "string") this.props.onSelectLabel(label);
     this.setState(this.state);
@@ -404,6 +424,27 @@ class Region extends Component {
 // |  | | \| | \| |__|  |  |  |  |  |__| |  \
 
 export default class Annotator extends Component {
+  props: {
+    regions: Array<{
+      geometry: RegionGeometry;
+      xGrow: boolean;
+      yGrow: boolean;
+      selectedLabel: string;
+    }>;
+    image: string;
+    onChange: (
+      regions: Array<{
+        geometry: RegionGeometry;
+        xGrow: boolean;
+        yGrow: boolean;
+        selectedLabel: string;
+      }>
+    ) => void;
+    onImageLoaded: (imageSize: ImageSize) => void;
+    labels: Array<string>;
+    currentLabel: string;
+    immutable: boolean;
+  };
   container: React.RefObject<HTMLDivElement>;
   image: React.RefObject<HTMLImageElement>;
   isDown: boolean;
@@ -412,12 +453,6 @@ export default class Annotator extends Component {
       width: number;
       height: number;
     };
-    regions: Array<{
-      geometry: RegionGeometry;
-      xGrow: boolean;
-      yGrow: boolean;
-      selectedLabel: string;
-    }>;
     imageRatio: ImageRatio;
     imageRatioFactor: number;
     rest?: any;
@@ -425,6 +460,7 @@ export default class Annotator extends Component {
 
   constructor(props) {
     super(props);
+    this.props = props;
     this.componentDidMount = this.componentDidMount.bind(this);
     this.onMouseTouchDown = this.onMouseTouchDown.bind(this);
     this.onMouseTouchMove = this.onMouseTouchMove.bind(this);
@@ -438,7 +474,6 @@ export default class Annotator extends Component {
     this.isDown = false;
     this.state = {
       root: { width: 0, height: 0 },
-      regions: [],
       imageRatio: ImageRatio.LANDSCAPE,
       imageRatioFactor: 1,
     };
@@ -447,6 +482,7 @@ export default class Annotator extends Component {
   async componentDidMount() {
     window.addEventListener("resize", this.onResize);
     await this.onResize();
+    this.props.onImageLoaded(getHTMLImageSize(this.image));
   }
 
   componentWillUnmount() {
@@ -454,6 +490,7 @@ export default class Annotator extends Component {
   }
 
   onMouseTouchDown(event: any) {
+    if (this.props.immutable) return;
     // if not touch or leftclick -> return;
     if (event.button && event.button !== 0) return;
     // if pinch -> return;
@@ -462,7 +499,7 @@ export default class Annotator extends Component {
     let { x, y } = getMouseTouchPosition(event);
     let { top, left } = getElementOffset(this.container);
 
-    this.state.regions.push({
+    this.props.regions.push({
       geometry: {
         top: y - top,
         bottom: y - top,
@@ -477,25 +514,27 @@ export default class Annotator extends Component {
       },
       xGrow: true,
       yGrow: true,
-      selectedLabel: "Default",
+      selectedLabel: this.props.currentLabel,
     });
 
     this.setState(this.state);
+    this.props.onChange(this.props.regions);
     this.isDown = true;
   }
 
   onMouseTouchMove(event: any) {
+    if (this.props.immutable) return;
     if (!this.isDown) return;
     if (event.touches && event.touches.length > 1) {
       this.isDown = false;
-      this.state.regions.splice(this.state.regions.length - 1, 1);
+      this.props.regions.splice(this.props.regions.length - 1, 1);
       this.setState(this.state);
       return;
     }
     let { x, y } = getMouseTouchPosition(event);
     let { top, left } = getElementOffset(this.container);
 
-    let region = this.state.regions[this.state.regions.length - 1];
+    let region = this.props.regions[this.props.regions.length - 1];
     let geo = region.geometry;
     let newX = x - left;
     let newY = y - top;
@@ -515,6 +554,7 @@ export default class Annotator extends Component {
     calcRegionPercentage(geo, this.state.root);
 
     this.setState(this.state);
+    this.props.onChange(this.props.regions);
   }
 
   onMouseTouchUp(
@@ -528,8 +568,9 @@ export default class Annotator extends Component {
    * @param index Index to be removed
    */
   onRemoveRegion(index: number) {
-    this.state.regions.splice(index, 1);
-    this.setState(this.state);
+    if (this.props.immutable) return;
+    this.props.regions.splice(index, 1);
+    this.props.onChange(this.props.regions);
   }
 
   /**
@@ -538,13 +579,15 @@ export default class Annotator extends Component {
    * @param geometry New geometry
    */
   onUpdateRegion(index: number, geometry: RegionGeometry) {
-    this.state.regions[index].geometry = geometry;
-    this.setState(this.state);
+    if (this.props.immutable) return;
+    this.props.regions[index].geometry = geometry;
+    this.props.onChange(this.props.regions);
   }
 
   onSelectLabel(index: number, label: string) {
-    this.state.regions[index].selectedLabel = label;
-    this.setState(this.state);
+    if (this.props.immutable) return;
+    this.props.regions[index].selectedLabel = label;
+    this.props.onChange(this.props.regions);
   }
 
   /**
@@ -603,17 +646,18 @@ export default class Annotator extends Component {
         onMouseUp={this.onMouseTouchUp}
         onMouseLeave={this.onMouseTouchUp}
       >
-        {this.state.regions.map((val, i) => (
+        {this.props.regions.map((val, i) => (
           <Region
             key={i}
             container={this.container}
             geometry={val.geometry}
             parent={this.state.root}
             selectedLabel={val.selectedLabel}
-            labels={["1", "2", "3"]}
+            labels={this.props.labels}
             onRemove={this.onRemoveRegion.bind(null, i)}
             onUpdate={this.onUpdateRegion.bind(null, i)}
             onSelectLabel={this.onSelectLabel.bind(null, i)}
+            immutable={this.props.immutable}
           />
         ))}
         <div
@@ -627,7 +671,7 @@ export default class Annotator extends Component {
                 ? { height: this.state.root.height }
                 : { width: this.state.root.width }
             }
-            src="/api/user/albums/4/photos/35"
+            src={this.props.image}
           />
         </div>
       </div>
