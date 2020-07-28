@@ -224,15 +224,6 @@ export function Album(props) {
             >
               Save
             </Button>
-            <Button
-              variant="contained"
-              size="small"
-              disableElevation
-              color="secondary"
-              className={classes.button}
-            >
-              Download Album
-            </Button>
           </CardContent>
         </Card>
 
