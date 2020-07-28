@@ -19,12 +19,12 @@ const useStyles = makeStyles((theme) => ({
     height: "150px",
   },
   chips: {
-    minHeight: "90px",
+    minHeight: "40px",
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
 
-    margin: "5px",
+    margin: "10px",
   },
 }));
 //const handleDelete = () => {};
@@ -44,6 +44,13 @@ function PictureEditCard(props) {
         } */
         title={picture.file_path}
         subheader={"Id: " + picture.id}
+        action={
+          picture.verified ? (
+            <p style={{ color: "green" }}>verified</p>
+          ) : (
+            <p style={{ color: "red" }}>Unverified</p>
+          )
+        }
       />
       <CardActionArea onClick={() => props.onView(props.index)}>
         {/*  Picture */}

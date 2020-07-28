@@ -419,6 +419,14 @@ function EditAlbum(props) {
                   page={curentPage}
                   onChange={handlePageChange}
                 />
+                <Button
+                  style={{ float: "right", margin: "5px" }}
+                  variant="contained"
+                  color="secondary"
+                >
+                  Download Album
+                </Button>
+
                 <Link
                   to={{ pathname: `/addalbum` }}
                   style={{ textDecoration: "none", color: "inherit" }}
