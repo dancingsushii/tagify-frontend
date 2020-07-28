@@ -1,23 +1,12 @@
-import * as React from "react";
+import * as React from 'react';
 import {
-  Create,
-  Datagrid,
-  DeleteButton,
-  Edit,
-  EditButton,
-  Filter,
-  List,
-  ReferenceInput,
-  required,
-  SelectInput,
-  SimpleForm,
-  TextField,
-  TextInput,
-} from "react-admin";
+    CardActions, Create, CreateButton, Datagrid, DeleteButton, Edit, EditButton, Filter, List,
+    NullableBooleanInput, ReferenceInput, required, SelectInput, SimpleForm, TextField, TextInput
+} from 'react-admin';
 
 // ADMIN->USER getAllUsers
 export const UserList = (props) => (
-  <List filters={<UserFilter />} {...props}>
+  <List title="Users List" {...props} exporter={false}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="username" />
@@ -39,19 +28,16 @@ export const UserCreate = (props) => (
       <TextInput source="username" validate={[required()]} />
       <TextInput multiline source="nickname" validate={[required()]} />
       <TextInput multiline source="password" validate={[required()]} />
-      <TextInput multiline source="role" validate={[required()]} />
+      {/* <TextInput multiline source="role" validate={[required()]} /> */}
+      <SelectInput
+        source="role"
+        choices={[
+          { id: "user", name: "user" },
+          { id: "admin", name: "admin" },
+        ]}
+      />
     </SimpleForm>
   </Create>
-);
-
-// filter for user table
-export const UserFilter = (props) => (
-  <Filter {...props}>
-    <TextInput label="Search" source="q" alwaysOn />
-    <ReferenceInput label="User" source="id" reference="users" allowEmpty>
-      <SelectInput optionText="name" />
-    </ReferenceInput>
-  </Filter>
 );
 
 // TODO: PUT edit existed used NO EXISTED ENDPOINT FOR IT
@@ -59,10 +45,16 @@ export const UserEdit = (props) => (
   <Edit {...props}>
     <SimpleForm>
       <TextInput disabled source="id" />
-      <TextInput source="username" validate={[required()]} />
-      <TextInput source="nickname" validate={[required()]} />
-      <TextInput disabled source="password" />
-      <TextInput source="role" validate={[required()]} />
+      <TextInput source="username" />
+      <TextInput source="nickname" />
+      <TextInput source="password" />
+      <SelectInput
+        source="role"
+        choices={[
+          { id: "user", name: "user" },
+          { id: "admin", name: "admin" },
+        ]}
+      />
     </SimpleForm>
   </Edit>
 );

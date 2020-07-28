@@ -1,4 +1,4 @@
-import { AdminUser, Albums } from "../../utils/BackendAPI";
+import { AdminAlbum, AdminUser, Albums } from '../../utils/BackendAPI';
 
 /* React-Admin calls the Data Provider with each of methods and expects a Promise in return */
 
@@ -14,7 +14,7 @@ export default {
     } else if (resource == "albums") {
       return Albums.getAllAlbums().then((response) => {
         return {
-          data: response.data,
+          data: response.data.albums,
           total: response.data.albums.length,
         };
       });
@@ -33,11 +33,7 @@ export default {
       // });
       return AdminUser.getAllUsers();
     } else if (resource == "albums") {
-      return Albums.getAllAlbums().then((response) => {
-        return {
-          data: response.data.albums[params.id],
-        };
-      });
+      return Albums.getAlbum(params.id);
     } else {
       console.error("There is no such resource");
     }
@@ -83,7 +79,11 @@ export default {
           });
         });
     } else if (resource == "albums") {
-      return Albums.getAllAlbums();
+      var body = {
+        title: params.data["title"],
+        description: params.data["description"],
+      };
+      return AdminAlbum.updateAlbum(params.id, body);
     }
   },
 
@@ -117,7 +117,7 @@ export default {
       var id = params.id;
       return AdminUser.deleteUser(id);
     } else if (resource == "albums") {
-      // TODO delete albums
+      return AdminAlbum.deleteAlbum(params.id);
     }
   },
 

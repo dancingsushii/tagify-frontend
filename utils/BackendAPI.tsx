@@ -67,7 +67,7 @@ export interface AlbumPreview {
   }>;
 }
 
-interface AlbumInformation {
+export interface AlbumInformation {
   id: number;
   title: string;
   description: string;

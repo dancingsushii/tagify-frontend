@@ -1,18 +1,10 @@
-import React from "react";
+import React from 'react';
 
 import {
-  AppBar,
-  Drawer,
-  Hidden,
-  IconButton,
-  makeStyles,
-  Slide,
-  SwipeableDrawer,
-  Toolbar,
-  useScrollTrigger,
-  useTheme,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+    AppBar, Drawer, Hidden, IconButton, makeStyles, Slide, SwipeableDrawer, Toolbar,
+    useScrollTrigger, useTheme
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
 
 const drawerWidth = 240;
 
@@ -52,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: "100px",
+    height: "auto",
   },
 }));
 
