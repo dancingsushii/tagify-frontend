@@ -42,23 +42,23 @@ export enum UserRole {
   Admin = "admin",
 }
 
-interface MinimalResponse {
+export interface MinimalResponse {
   status: Status;
 }
 
-interface Response<T> {
+export interface Response<T> {
   status: Status;
   data: T;
 }
 
-interface UserInformation {
+export interface UserInformation {
   id: number;
   username: string;
   nickname: string;
   role: UserRole;
 }
 
-interface AlbumPreview {
+export interface AlbumPreview {
   albums: Array<{
     id: number;
     title: string;
@@ -492,18 +492,19 @@ export const Admin: AdminType = {
 
 interface AdminUserType {
   getAllUsers(): Promise<Response<Array<UserInformation>>>;
+  // getUser(id): Promise<Response<UserInformation>>;
   createUser(body: {
     username: string;
     nickname: string;
     password: string;
-    role: UserRole;
+    role: String;
   }): Promise<
     Response<{
       id: number;
       username: string;
       nickname: string;
       password: string;
-      role: UserRole;
+      role: string;
     }>
   >;
   deleteUser(id: number): Promise<MinimalResponse>;
@@ -531,4 +532,74 @@ export const AdminUser: AdminUserType = {
 // |__| |  \ |\/| | |\ | __ |__| |    |__] |  | |\/|
 // |  | |__/ |  | | | \|    |  | |___ |__] |__| |  |
 
-interface AdminAlbumType {}
+interface AdminAlbumType {
+  updateAlbum(
+    albumId: string,
+    body: {
+      title: string;
+      description: string;
+    }
+  ): Promise<Response<MinimalResponse>>;
+  deleteAlbum(albumId: string): Promise<Response<MinimalResponse>>;
+}
+
+export const AdminAlbum: AdminAlbumType = {
+  updateAlbum: async (albumId, body) =>
+    do_PUT({
+      endpoint: `/api/admin/albums/${albumId}`,
+      body: body,
+      expectsResponse: false,
+    }),
+  deleteAlbum: async (albumId) =>
+    do_DELETE({
+      endpoint: `/api/admin/albums/${albumId}`,
+    }),
+};
+
+//=============================================================================
+// _  _ ____ ____ ____    ___ ____ ____
+// |  | [__  |___ |__/ __  |  |__| | __
+// |__| ___] |___ |  \     |  |  | |__]
+
+interface UserTagType {
+  getPhotos(
+    albumId: string
+  ): Promise<
+    Response<
+      Array<{
+        id: number;
+        file_path: string;
+        tagged: boolean;
+        tag: string;
+        timestamp: string;
+      }>
+    >
+  >;
+  verifyPhoto(
+    photoId: string,
+    body: { verified: boolean }
+  ): Promise<Response<MinimalResponse>>;
+  tagPhoto(
+    photoId: string,
+    body: { tag: string; coordinates: string }
+  ): Promise<Response<MinimalResponse>>;
+}
+
+export const UserTag: UserTagType = {
+  getPhotos: async (albumId) =>
+    do_GET({
+      endpoint: `/api/user/tag/${albumId}`,
+    }),
+  verifyPhoto: async (photoId, body) =>
+    do_PUT({
+      endpoint: `/api/user/tag/verify/${photoId}`,
+      body: body,
+      expectsResponse: false,
+    }),
+  tagPhoto: async (photoId, body) =>
+    do_PUT({
+      endpoint: `/api/user/tag/verify/${photoId}`,
+      body: body,
+      expectsResponse: false,
+    }),
+};
