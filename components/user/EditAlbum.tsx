@@ -20,6 +20,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { Albums, PhotoInformation, Status, UserAlbum, UserPhoto } from '../../utils/BackendAPI';
 import PictureDialog from '../snippets/PictureDialog';
 import PictureEditCard from '../snippets/PictureThumbneil';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -51,6 +52,12 @@ function EditAlbum(props) {
     setCurentPage(value);
   };
   /* ////////////////// */
+  /*////// AlertBox controll////// */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+  /* ////////////////////////////// */
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,17 +68,18 @@ function EditAlbum(props) {
           setTitle(response.data.title);
           setDescription(response.data.description);
 
-          let pics = await Albums.getAlbumPhotos(
-            id,
-            (curentPage - 1).toString()
-          );
+          let pics = await Albums.getAlbumPhotos(id, curentPage - 1);
           if (pics.status === Status.Ok && pics.data !== undefined) {
             setPictures(pics.data);
 
             setLoaded(true);
           }
         } else {
-          alert("Failed to fetch album");
+          setAlertConfirmTxt("ok");
+          setAlertDescrpition("Failed to fetch album");
+          setAlertOpen(true);
+
+          // alert("Failed to fetch album");
         }
       } catch (error) {
         console.log(error);
@@ -160,10 +168,16 @@ function EditAlbum(props) {
 
         if (response.status === Status.Ok) {
           setnumDelet(numDelet + 1);
+
           setOpen(false);
         } else {
           setOpen(false);
-          alert("Failed to Delete Picture");
+
+          setAlertConfirmTxt("ok");
+          setAlertDescrpition("Failed to Delete Picture");
+          setAlertOpen(true);
+
+          //  alert("Failed to Delete Picture");
         }
       } catch (error) {
         console.log(error);
@@ -385,12 +399,7 @@ function EditAlbum(props) {
                     <Typography variant={"h6"}>Tags</Typography>
                     <div className={classes.chips}>
                       {album.tags.map((c, i) => (
-                        <Chip
-                          key={i}
-                          label={c}
-                          variant="default"
-                          color="primary"
-                        />
+                        <Chip key={i} label={c} variant="default" />
                       ))}
                     </div>
                   </Card>
@@ -404,7 +413,7 @@ function EditAlbum(props) {
                   count={
                     album.image_number / elementsProPage >= 1
                       ? Math.ceil((album.image_number - 1) / elementsProPage)
-                      : 3
+                      : 1
                   }
                   color="primary"
                   page={curentPage}
@@ -417,7 +426,7 @@ function EditAlbum(props) {
                   <Button
                     style={{ float: "right", margin: "5px" }}
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                   >
                     Add Pictures
                   </Button>
@@ -429,7 +438,7 @@ function EditAlbum(props) {
                   <Button
                     style={{ float: "right", margin: "5px" }}
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                   >
                     Back to Album
                   </Button>
@@ -444,30 +453,32 @@ function EditAlbum(props) {
 
         {/* Picture Thumbneils */}
 
-        {pictures.map((pic, j) => {
-          if (pic.id !== undefined && pic !== undefined) {
-            return (
-              <Grid key={j} item xs={12} sm={6} md={4} lg={3}>
-                <PictureEditCard
-                  index={j}
-                  key={j}
-                  picture={pic}
-                  albumId={album.id}
-                  tags={["example"]}
-                  onDelete={handleDelete}
-                  onView={toggelView}
-                />
-              </Grid>
-            );
-          }
-        })}
+        {isLoaded
+          ? pictures.map((pic, j) => {
+              if (pic.id !== undefined && pic !== undefined) {
+                return (
+                  <Grid key={j} item xs={12} sm={6} md={4} lg={3}>
+                    <PictureEditCard
+                      index={j}
+                      key={j}
+                      picture={pic}
+                      albumId={album.id}
+                      tags={["example"]}
+                      onDelete={handleDelete}
+                      onView={toggelView}
+                    />
+                  </Grid>
+                );
+              }
+            })
+          : ""}
         <Grid item xs={12}>
           <Pagination
             style={{ float: "left" }}
             count={
               album.image_number / elementsProPage >= 1
                 ? Math.ceil((album.image_number - 1) / elementsProPage)
-                : 3
+                : 1
             }
             color="primary"
             page={curentPage}
@@ -617,6 +628,7 @@ function EditAlbum(props) {
           </Button>
         </DialogActions>
       </Dialog> */}
+
       <PictureDialog
         pictures={pictures}
         view={view}
@@ -624,6 +636,16 @@ function EditAlbum(props) {
         changeView={changeView}
         albumID={id}
         toView={index}
+      />
+      <TagifyAlertDialog
+        Title={alertTitle}
+        Descrpition={alertDescrpition}
+        isOpen={alertOpen}
+        ConfirmTxt={alertConfirmTxt}
+        CancelTxt={""}
+        handleClose={() => setAlertOpen(false)}
+        handleConfirm={() => setAlertOpen(false)}
+        handleCancel={() => setAlertOpen(false)}
       />
     </Grid>
   );

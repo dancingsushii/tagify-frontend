@@ -63,7 +63,7 @@ export interface AlbumPreview {
     id: number;
     title: string;
     description: string;
-    first_photo: string;
+    first_photo: number;
   }>;
 }
 
@@ -75,7 +75,7 @@ interface AlbumInformation {
   image_number: number;
   tagged_number: number;
   users_id: number;
-  first_photo: string;
+  first_photo: number;
 }
 
 export interface PhotoInformation {
@@ -319,6 +319,7 @@ interface AlbumType {
     albumId: string,
     rangeIndex: string
   ): Promise<Response<Array<PhotoInformation>>>;
+  searchAlbums(query: string): Promise<Response<AlbumPreview>>;
 }
 
 export const Albums: AlbumType = {
@@ -326,6 +327,8 @@ export const Albums: AlbumType = {
   getAlbum: async (id) => do_GET({ endpoint: `/api/albums/${id}` }),
   getAlbumPhotos: async (albumId, rangeIndex) =>
     do_GET({ endpoint: `/api/albums/${albumId}/photos/${rangeIndex}` }),
+  searchAlbums: async (query) =>
+    do_GET({ endpoint: `/api/albums/search/${query}` }),
 };
 
 //=============================================================================

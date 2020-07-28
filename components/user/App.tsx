@@ -7,18 +7,20 @@ import {
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
+import { Repeat } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
 import HomeIcon from '@material-ui/icons/Home';
 import NotesIcon from '@material-ui/icons/Notes';
 import PhotoAlbumIcon from '@material-ui/icons/PhotoAlbum';
 import SearchIcon from '@material-ui/icons/Search';
 
-import Token from '../../utils/BackendAPI';
+import Token, { Albums, Status } from '../../utils/BackendAPI';
 import { Impressum } from '../Impressum';
 import { TagifyNavigation } from '../snippets/TagifyNavigation';
 import { AddAlbum } from './AddAlbum';
 import { Album } from './Album';
 import { Annotate } from './Annotate';
+import Annotator from './Annotator';
 import { DashBoard } from './DashBoard';
 import EditAlbum from './EditAlbum';
 import MyAlbums from './MyAlbums';
@@ -42,7 +44,17 @@ export function App() {
     },
   }));
   const classes = useStyles();
+  const [useSearch, setUseSearch] = React.useState(false);
+  const [search, setSearch] = React.useState("");
 
+  function handleSearchSubmit(event) {
+    event.preventDefault();
+    setUseSearch(!useSearch);
+  }
+
+  function handleSearchBarChange(event) {
+    setSearch(event.target.value);
+  }
   return (
     <>
       {!Token.isAuthenticated() && <Redirect to={{ pathname: "/welcome" }} />}
@@ -100,13 +112,23 @@ export function App() {
               </Link>
             </Route>
             <Route exact path="/">
-              <Paper component="form" className={classes.root}>
+              <Paper
+                component="form"
+                className={classes.root}
+                onSubmit={handleSearchSubmit}
+              >
                 <InputBase
                   className={classes.input}
                   placeholder="Search Albums"
                   inputProps={{ "aria-label": "search albums" }}
+                  value={search}
+                  onChange={handleSearchBarChange}
                 />
-                <IconButton className={classes.iconButton} aria-label="search">
+                <IconButton
+                  className={classes.iconButton}
+                  aria-label="search"
+                  onClick={handleSearchSubmit}
+                >
                   <SearchIcon />
                 </IconButton>
               </Paper>
@@ -120,7 +142,9 @@ export function App() {
         }
       >
         <Switch>
-          <Route exact path="/" component={DashBoard} />
+          <Route exact path="/">
+            <DashBoard search={useSearch} value={search} />
+          </Route>
           <Route path="/impressum" component={Impressum} />
           <Route path="/settings" component={Settings} />
           <Route exact path="/album">
@@ -131,7 +155,8 @@ export function App() {
           <Route path="/editalbum/:id" component={EditAlbum} />
           <Route path="/editalbum" component={EditAlbum} />
           <Route path="/addalbum" component={AddAlbum} />
-          <Route exact path="/annotate/:id" component={Annotate} />
+          <Route path="/annotate" component={Annotate} />
+          <Route path="/annotator" component={Annotator} />
           <Route path="/*" component={() => <h1>404 Not Found</h1>} />
         </Switch>
       </TagifyNavigation>

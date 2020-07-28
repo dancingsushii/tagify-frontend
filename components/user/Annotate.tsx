@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/styles';
 
-import { Albums, Status, UserTag } from '../../utils/BackendAPI';
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 export function Annotate(props) {
   const [isLoaded, setLoaded] = useState(false);
@@ -108,7 +108,15 @@ export function Annotate(props) {
   // state for next and previous photo
   const [index, setIndex] = useState(0);
 
-  // function for rendering next photo ocClick() next button
+  /* AlertBox controll */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+
+  /* ////////////////////// */
+
+  // TODO function for rendering next photo ocClick() next button
   const onClickNext = () => {
     if (index + 1 === photos.length) {
       setIndex(0);
@@ -202,57 +210,62 @@ export function Annotate(props) {
                     </Card>
                   </Grid>
 
-                  {/* TODO buttons section with links*/}
-                  <Grid item xs={12}>
-                    <Card>
-                      <CardActions className={classes.buttonsCard}>
-                        <Button
-                          size="large"
-                          color="primary"
-                          variant="contained"
-                          disableElevation
-                          onClick={onclickBack}
-                        >
-                          Back
-                        </Button>
-                        <Button
-                          size="large"
-                          color="primary"
-                          variant="contained"
-                          disableElevation
-                          onClick={() => {
-                            alert("submit tags");
-                          }}
-                        >
-                          Submit
-                        </Button>
-                        <Button
-                          size="large"
-                          color="primary"
-                          variant="contained"
-                          disableElevation
-                          onClick={onClickNext}
-                        >
-                          Next
-                        </Button>
-                      </CardActions>
+                {/* TODO buttons section with links*/}
+                <Grid item xs={12}>
+                  <Card>
+                    <CardActions className={classes.buttonsCard}>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        disableElevation
+                        onClick={onclickBack}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        disableElevation
+                        onClick={() => {
+                          setAlertConfirmTxt("ok");
+                          setAlertDescrpition("submit tags");
+                          setAlertOpen(true);
+                          //  alert("submit tags");
+                        }}
+                      >
+                        Submit
+                      </Button>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        disableElevation
+                        onClick={onClickNext}
+                      >
+                        Next
+                      </Button>
+                    </CardActions>
 
-                      {/* TODO verify button with link*/}
-                      <CardActions className={classes.buttonsCard}>
-                        <Button
-                          size="large"
-                          color="primary"
-                          variant="contained"
-                          disableElevation
-                          onClick={() => {
-                            alert("VERIFY");
-                          }}
-                        >
-                          Verify
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
+                    {/* TODO verify button with link*/}
+                    <CardActions className={classes.buttonsCard}>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        disableElevation
+                        onClick={() => {
+                          setAlertConfirmTxt("ok");
+                          setAlertDescrpition("VERIFY");
+                          setAlertOpen(true);
+                          // alert("VERIFY");
+                        }}
+                      >
+                        Verify
+                      </Button>
+                    </CardActions>
+                  </Card>
                 </Grid>
 
                 {/* end of Backround Card */}
@@ -267,11 +280,18 @@ export function Annotate(props) {
           <Grid item sm={1}></Grid>
         </Grid>
       </Grid>
-    );
-  } else {
-    // TODO skeleton for loading page
-    return <Typography> Something went wrong</Typography>;
-  }
+      <TagifyAlertDialog
+        Title={alertTitle}
+        Descrpition={alertDescrpition}
+        isOpen={alertOpen}
+        ConfirmTxt={alertConfirmTxt}
+        CancelTxt={""}
+        handleClose={() => setAlertOpen(false)}
+        handleConfirm={() => setAlertOpen(false)}
+        handleCancel={() => setAlertOpen(false)}
+      />
+    </Grid>
+  );
 }
 
 // override existing linear progress bar with custom height

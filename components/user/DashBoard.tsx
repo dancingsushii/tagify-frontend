@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
@@ -8,14 +8,8 @@ import {
 
 import { Albums, Status } from '../../utils/BackendAPI';
 import { DashboardSkeleton } from '../snippets/DashboardSkeleton';
-
-// const loader = () => {
-//   const [loading, setLoading] = useState(true);
-//   return ({loading ? (<div><p> Loading...</p></div>) : (<Dashboard/>)}
-//     );
-
-// }
-export const DashBoard = () => {
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
+export const DashBoard = (props: { search: any; value: any }) => {
   const useStyles = makeStyles((theme) => ({
     root: {
       marginTop: theme.spacing(8),
@@ -31,15 +25,37 @@ export const DashBoard = () => {
       height: 0,
     },
   }));
+  /* AlertBox controll */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+
+  /* ////////////////////// */
 
   type Album = {
     id: number;
     title: string;
     description: string;
-    first_photo: string;
+    first_photo: number;
   };
   const [isLoaded, setLoaded] = useState(false);
   const [albums, setAlbums] = useState<Album[]>([]);
+  const [albumsBackup, setAlbumsBackup] = useState<Album[]>([]);
+  const didMountRef = useRef(false);
+
+  useEffect(() => {
+    if (didMountRef.current && props.value !== "") {
+      Albums.searchAlbums(props.value).then((response) => {
+        if (response.status == "Ok") {
+          setAlbums(response.data.albums);
+        } else alert("Server returned error: " + response.status);
+      });
+    } else if (props.value == "" && albumsBackup.length) {
+      setAlbums(albumsBackup);
+    } else didMountRef.current = true;
+  }, [props.search]);
+
   useEffect(() => {
     const fetchData = async () => {
       let response = await Albums.getAllAlbums();
@@ -47,9 +63,13 @@ export const DashBoard = () => {
         if (response.data.albums !== undefined) {
           setAlbums(response.data.albums);
           setLoaded(true);
+          setAlbumsBackup(response.data.albums);
         }
       } else {
-        alert("Failed to load album");
+        setAlertConfirmTxt("ok");
+        setAlertDescrpition("Failed to load albums");
+        setAlertOpen(true);
+        // alert("Failed to load album");
       }
     };
     fetchData();
@@ -75,7 +95,12 @@ export const DashBoard = () => {
                       <Link to={{ pathname: `/album/${album.id}` }}>
                         <CardMedia
                           className={classes.media}
-                          image={album.first_photo}
+                          image={(() => {
+                            if (album.first_photo == null) {
+                              return `https://generative-placeholders.glitch.me/image?width=300&height=300&img=${album.id}`;
+                            }
+                            return `/api/user/albums/${album.id}/photos/${album.first_photo}`;
+                          })()}
                         />
                       </Link>
                     </CardActionArea>
@@ -114,6 +139,16 @@ export const DashBoard = () => {
             <Grid item className={classes.filler}></Grid>
             <Grid item className={classes.filler}></Grid>
           </Grid>
+          <TagifyAlertDialog
+            Title={alertTitle}
+            Descrpition={alertDescrpition}
+            isOpen={alertOpen}
+            ConfirmTxt={alertConfirmTxt}
+            CancelTxt={""}
+            handleClose={() => setAlertOpen(false)}
+            handleConfirm={() => setAlertOpen(false)}
+            handleCancel={() => setAlertOpen(false)}
+          />
         </Container>
       </>
     );
@@ -123,8 +158,8 @@ export const DashBoard = () => {
       <Container style={{ textAlign: "center", marginTop: "6em" }}>
         <Typography variant="h2">Oops</Typography>
         <Box component="div" style={{ marginTop: "1em" }}>
-          It looks like right now there are no albums that you can contribute to
-          :(
+          It looks like we couldn't find your album or we don't have any albums
+          at all :(
         </Box>
         <Box component="div">
           Please help us make Tagify a better platform and create a new album.
@@ -139,6 +174,6 @@ export const DashBoard = () => {
       </Container>
     );
   } else {
-    return <DashboardSkeleton></DashboardSkeleton>;
+    return <div></div>;
   }
 };
