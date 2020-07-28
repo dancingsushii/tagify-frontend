@@ -445,7 +445,7 @@ interface UserTagType {
   ): Promise<MinimalResponse>;
 }
 
-export const UserTag = {
+export const UserTag: UserTagType = {
   getLockPhotos: async (albumId) =>
     do_GET({
       endpoint: `/api/user/tag/${albumId}`,
@@ -553,53 +553,5 @@ export const AdminAlbum: AdminAlbumType = {
   deleteAlbum: async (albumId) =>
     do_DELETE({
       endpoint: `/api/admin/albums/${albumId}`,
-    }),
-};
-
-//=============================================================================
-// _  _ ____ ____ ____    ___ ____ ____
-// |  | [__  |___ |__/ __  |  |__| | __
-// |__| ___] |___ |  \     |  |  | |__]
-
-interface UserTagType {
-  getPhotos(
-    albumId: string
-  ): Promise<
-    Response<
-      Array<{
-        id: number;
-        file_path: string;
-        tagged: boolean;
-        tag: string;
-        timestamp: string;
-      }>
-    >
-  >;
-  verifyPhoto(
-    photoId: string,
-    body: { verified: boolean }
-  ): Promise<Response<MinimalResponse>>;
-  tagPhoto(
-    photoId: string,
-    body: { tag: string; coordinates: string }
-  ): Promise<Response<MinimalResponse>>;
-}
-
-export const UserTag: UserTagType = {
-  getPhotos: async (albumId) =>
-    do_GET({
-      endpoint: `/api/user/tag/${albumId}`,
-    }),
-  verifyPhoto: async (photoId, body) =>
-    do_PUT({
-      endpoint: `/api/user/tag/verify/${photoId}`,
-      body: body,
-      expectsResponse: false,
-    }),
-  tagPhoto: async (photoId, body) =>
-    do_PUT({
-      endpoint: `/api/user/tag/verify/${photoId}`,
-      body: body,
-      expectsResponse: false,
     }),
 };
