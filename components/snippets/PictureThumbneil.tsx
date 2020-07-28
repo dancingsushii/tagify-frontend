@@ -23,12 +23,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.3),
-    },
+
+    margin: "5px",
   },
 }));
-const handleDelete = () => {};
+//const handleDelete = () => {};
 
 function PictureEditCard(props) {
   const classes = useStyles();
@@ -57,9 +56,12 @@ function PictureEditCard(props) {
 
       {/* Tags */}
       <div className={classes.chips}>
-        {tags.map((c, i) => (
-          <Chip key={i} label={c} variant="default" onDelete={handleDelete} />
-        ))}
+        <Chip
+          key={picture.id}
+          label={picture.tagged ? picture.tag : "untaged"}
+          variant="default"
+          color={picture.tagged ? "primary" : "default"}
+        />
       </div>
 
       {/* Buttons */}

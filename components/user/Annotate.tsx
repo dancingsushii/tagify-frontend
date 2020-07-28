@@ -1,20 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+
 import {
-  makeStyles,
-  Grid,
-  Card,
-  CardHeader,
-  Typography,
-  Chip,
-  CardMedia,
-  Box,
-  LinearProgress,
-  LinearProgressProps,
-  Theme,
-  Button,
-  CardActions,
-} from "@material-ui/core";
-import { withStyles, createStyles } from "@material-ui/styles";
+    Box, Button, Card, CardActions, CardHeader, CardMedia, Chip, Grid, LinearProgress,
+    LinearProgressProps, makeStyles, Theme, Typography
+} from '@material-ui/core';
+import { createStyles, withStyles } from '@material-ui/styles';
+
+import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
 export function Annotate(props) {
   const useStyles = makeStyles((theme) => ({
@@ -65,6 +57,14 @@ export function Annotate(props) {
   const classes = useStyles();
 
   const [index, setIndex] = useState(0);
+
+  /* AlertBox controll */
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescrpition, setAlertDescrpition] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
+
+  /* ////////////////////// */
 
   // TODO function for rendering next photo ocClick() next button
   const onClickNext = () => {
@@ -183,7 +183,10 @@ export function Annotate(props) {
                         variant="contained"
                         disableElevation
                         onClick={() => {
-                          alert("submit tags");
+                          setAlertConfirmTxt("ok");
+                          setAlertDescrpition("submit tags");
+                          setAlertOpen(true);
+                          //  alert("submit tags");
                         }}
                       >
                         Submit
@@ -207,7 +210,10 @@ export function Annotate(props) {
                         variant="contained"
                         disableElevation
                         onClick={() => {
-                          alert("VERIFY");
+                          setAlertConfirmTxt("ok");
+                          setAlertDescrpition("VERIFY");
+                          setAlertOpen(true);
+                          // alert("VERIFY");
                         }}
                       >
                         Verify
@@ -228,6 +234,16 @@ export function Annotate(props) {
         {/* right empty column */}
         <Grid item sm={1}></Grid>
       </Grid>
+      <TagifyAlertDialog
+        Title={alertTitle}
+        Descrpition={alertDescrpition}
+        isOpen={alertOpen}
+        ConfirmTxt={alertConfirmTxt}
+        CancelTxt={""}
+        handleClose={() => setAlertOpen(false)}
+        handleConfirm={() => setAlertOpen(false)}
+        handleCancel={() => setAlertOpen(false)}
+      />
     </Grid>
   );
 }
