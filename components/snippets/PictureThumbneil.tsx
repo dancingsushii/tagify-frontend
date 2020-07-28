@@ -58,13 +58,7 @@ function PictureEditCard(props) {
       {/* Tags */}
       <div className={classes.chips}>
         {tags.map((c, i) => (
-          <Chip
-            key={i}
-            label={c}
-            variant="default"
-            color="primary"
-            onDelete={handleDelete}
-          />
+          <Chip key={i} label={c} variant="default" onDelete={handleDelete} />
         ))}
       </div>
 
@@ -77,7 +71,7 @@ function PictureEditCard(props) {
       >
         <Button
           size="small"
-          color="secondary"
+          color="primary"
           variant="contained"
           onClick={() => props.onView(props.index)}
         >
@@ -85,7 +79,7 @@ function PictureEditCard(props) {
         </Button>
         <Button
           size="small"
-          color="secondary"
+          color="primary"
           variant="contained"
           onClick={() => props.onDelete(picture)}
         >

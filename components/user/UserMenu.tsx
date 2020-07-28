@@ -81,7 +81,7 @@ export function UserMenu(props) {
                   <MenuItem
                     component={Link}
                     to={"/myalbums"}
-                    style={{ fontWeight: "bold" }}
+                    style={{ fontWeight: "bold", fontSize: 21 }}
                   >
                     {BackendToken.nickname}
                   </MenuItem>
