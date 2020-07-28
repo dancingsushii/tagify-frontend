@@ -78,9 +78,29 @@ export interface AlbumInformation {
   first_photo: number;
 }
 
+export const EmptyAlbumInformation: AlbumInformation = {
+  id: 0,
+  title: "",
+  description: "",
+  tags: [],
+  image_number: 0,
+  tagged_number: 0,
+  users_id: 0,
+  first_photo: 0,
+};
+
 export interface PhotoInformation {
   id: number;
   file_path: string;
+}
+
+export interface TagPhotoInformation {
+  id: number;
+  file_path: string;
+  tagged: boolean;
+  tag: string;
+  timestamp: string;
+  coordinates: string;
 }
 
 //=============================================================================
@@ -405,6 +425,44 @@ export const UserPhoto: UserPhotoType = {
   deletePhotoFromAlbum: async (albumId, photoId) =>
     do_DELETE({
       endpoint: `/api/user/albums/${albumId}/photos/${photoId}`,
+    }),
+};
+
+//=============================================================================
+// _  _ ____ ____ ____    ___ ____ ____
+// |  | [__  |___ |__/ __  |  |__| | __
+// |__| ___] |___ |  \     |  |  | |__]
+
+interface UserTagType {
+  getLockPhotos(albumId: string): Promise<Response<TagPhotoInformation>>;
+  verifyPhoto(
+    photoId: string,
+    body: { verified: boolean }
+  ): Promise<MinimalResponse>;
+  tagPhoto(
+    photoId: string,
+    body: { tag: string; coordinates: string }
+  ): Promise<MinimalResponse>;
+}
+
+export const UserTag = {
+  getLockPhotos: async (albumId) =>
+    do_GET({
+      endpoint: `/api/user/tag/${albumId}`,
+    }),
+  verifyPhoto: async (photoId, body) =>
+    do_PUT({
+      endpoint: `/api/user/tag/verify/${photoId}`,
+      body: body,
+      type: "application/json",
+      expectsResponse: false,
+    }),
+  tagPhoto: async (photoId, body) =>
+    do_PUT({
+      endpoint: `/api/user/tag/action/${photoId}`,
+      body: body,
+      type: "application/json",
+      expectsResponse: false,
     }),
 };
 
