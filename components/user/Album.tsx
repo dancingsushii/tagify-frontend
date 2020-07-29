@@ -250,7 +250,7 @@ export function Album(props) {
           style={{ float: "left" }}
           count={
             album.image_number / elementsProPage >= 1
-              ? Math.ceil((album.image_number - 1) / elementsProPage)
+              ? Math.ceil(album.image_number / elementsProPage)
               : 1
           }
           color="primary"
@@ -289,17 +289,21 @@ export function Album(props) {
           <Grid item className={classes.filler}></Grid>
           <Grid item className={classes.filler}></Grid>
         </Grid>
-        <Pagination
-          style={{ float: "left" }}
-          count={
-            album.image_number / elementsProPage >= 1
-              ? Math.ceil((album.image_number - 1) / elementsProPage)
-              : 1
-          }
-          color="primary"
-          page={curentPage}
-          onChange={handlePageChange}
-        />
+        {album.image_number > 20 ? (
+          <Pagination
+            style={{ float: "left" }}
+            count={
+              album.image_number / elementsProPage >= 1
+                ? Math.ceil(album.image_number / elementsProPage)
+                : 1
+            }
+            color="primary"
+            page={curentPage}
+            onChange={handlePageChange}
+          />
+        ) : (
+          ""
+        )}
         <PictureDialog
           pictures={pictures}
           view={view}

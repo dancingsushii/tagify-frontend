@@ -105,7 +105,13 @@ export const DashBoard = (props: { search: any; value: any }) => {
                         />
                       </Link>
                     </CardActionArea>
-                    <CardContent>
+                    <CardContent
+                      style={{
+                        width: "230px",
+                        overflow: "auto",
+                        height: "100px",
+                      }}
+                    >
                       <Typography
                         gutterBottom
                         variant="h5"

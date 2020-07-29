@@ -80,7 +80,7 @@ function MyAlbums(props) {
 
   const [open, setOpen] = useState(false);
 
-  const elementsProPage = 8;
+  const elementsProPage = 20;
 
   /* openes Delete confirmation dialog */
   function handleDelete(titel) {
@@ -224,7 +224,15 @@ function MyAlbums(props) {
       <Grid item xs={1} sm={1} md={1}></Grid>
 
       {/* Central Column */}
-      <Grid item container xs={12} sm={10} md={10} spacing={2} justify="center">
+      <Grid
+        item
+        container
+        xs={12}
+        sm={10}
+        md={10}
+        spacing={2}
+        justify="flex-start"
+      >
         <Grid
           item
           container
@@ -296,7 +304,7 @@ function MyAlbums(props) {
               style={{ float: "left" }}
               count={
                 AlbumList.length / elementsProPage >= 1
-                  ? Math.ceil((AlbumList.length - 1) / elementsProPage)
+                  ? Math.ceil(AlbumList.length / elementsProPage)
                   : 1
               }
               color="primary"
@@ -318,22 +326,26 @@ function MyAlbums(props) {
             </Link>
           </Card>
         </Grid>{" "}
-        {/* end of upper part */}
         {isLoaded ? renderThumbneils() : ""}
+        {AlbumList.length > 20 ? (
+          <Pagination
+            style={{ marginTop: "20px", width: "100%" }}
+            count={
+              AlbumList.length / elementsProPage >= 1
+                ? Math.ceil(AlbumList.length / elementsProPage)
+                : 1
+            }
+            color="primary"
+            page={curentPage}
+            onChange={handlePageChange}
+          />
+        ) : (
+          ""
+        )}
       </Grid>
 
       <Grid item xs={1} sm={1} md={1}></Grid>
-      <Pagination
-        style={{ marginTop: "20px" }}
-        count={
-          AlbumList.length / elementsProPage >= 1
-            ? Math.ceil((AlbumList.length - 1) / elementsProPage)
-            : 1
-        }
-        color="primary"
-        page={curentPage}
-        onChange={handlePageChange}
-      />
+
       <div>
         {/* Dialog box for delete confirmation */}
         <Dialog
