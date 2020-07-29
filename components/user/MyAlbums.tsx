@@ -260,7 +260,8 @@ function MyAlbums(props) {
                       subheader={
                         <Grid item>
                           <Typography variant={"h6"}>
-                            Last edit: 12/06/2020
+                            {/* Last edit: 12/06/2020 */}
+                            <br></br>
                           </Typography>
                           <Typography variant={"h6"}>
                             Number of Albums: {AlbumList.length}
