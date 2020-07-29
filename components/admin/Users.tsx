@@ -1,29 +1,16 @@
-import * as React from "react";
+import * as React from 'react';
 import {
-  List,
-  Datagrid,
-  TextField,
-  EmailField,
-  EditButton,
-  Create,
-  SimpleForm,
-  ReferenceInput,
-  SelectInput,
-  TextInput,
-  Filter,
-  DeleteButton,
-  Edit,
-} from "react-admin";
+    CardActions, Create, CreateButton, Datagrid, DeleteButton, Edit, EditButton, Filter, List,
+    NullableBooleanInput, ReferenceInput, required, SelectInput, SimpleForm, TextField, TextInput
+} from 'react-admin';
 
-// TODO: GET lists all users
+// ADMIN->USER getAllUsers
 export const UserList = (props) => (
-  <List filters={<UserFilter />} {...props}>
+  <List title="Users List" {...props} exporter={false}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
-      <TextField source="name" />
       <TextField source="username" />
-      <EmailField source="email" />
-      <TextField source="password" />
+      <TextField source="nickname" />
       <TextField source="role" />
       <EditButton />
       <DeleteButton />
@@ -31,37 +18,43 @@ export const UserList = (props) => (
   </List>
 );
 
-// TODO: POST create new user
+// ADMIN->USER createUser WORKS
 export const UserCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <ReferenceInput source="userId" reference="users">
+      {/* <ReferenceInput source="userId" reference="users">
         <SelectInput optionText="name" />
-      </ReferenceInput>
-      <TextInput source="title" />
-      <TextInput multiline source="body" />
+      </ReferenceInput> */}
+      <TextInput source="username" validate={[required()]} />
+      <TextInput multiline source="nickname" validate={[required()]} />
+      <TextInput multiline source="password" validate={[required()]} />
+      {/* <TextInput multiline source="role" validate={[required()]} /> */}
+      <SelectInput
+        source="role"
+        choices={[
+          { id: "user", name: "user" },
+          { id: "admin", name: "admin" },
+        ]}
+      />
     </SimpleForm>
   </Create>
 );
 
-// filter for user table
-export const UserFilter = (props) => (
-  <Filter {...props}>
-    <TextInput label="Search" source="q" alwaysOn />
-    <ReferenceInput label="User" source="userId" reference="users" allowEmpty>
-      <SelectInput optionText="name" />
-    </ReferenceInput>
-  </Filter>
-);
-
-// TODO: PUT edit existed used
+// TODO: PUT edit existed used NO EXISTED ENDPOINT FOR IT
 export const UserEdit = (props) => (
   <Edit {...props}>
     <SimpleForm>
       <TextInput disabled source="id" />
-      <TextInput source="name" />
       <TextInput source="username" />
-      <TextInput source="email" />
+      <TextInput source="nickname" />
+      <TextInput source="password" />
+      <SelectInput
+        source="role"
+        choices={[
+          { id: "user", name: "user" },
+          { id: "admin", name: "admin" },
+        ]}
+      />
     </SimpleForm>
   </Edit>
 );

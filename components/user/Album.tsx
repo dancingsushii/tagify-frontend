@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import SaveIcon from '@material-ui/icons/Save';
+import Pagination from '@material-ui/lab/Pagination';
 
 import { Albums, PhotoInformation, Status } from '../../utils/BackendAPI';
 import { SimpleDialog } from '../snippets/DownloadDialog';
@@ -31,6 +32,13 @@ export function Album(props) {
   const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
 
   ///////////////////////////////
+  /* Pagination Controls */
+  const [curentPage, setCurentPage] = useState(1);
+  const elementsProPage = 20;
+  const handlePageChange = (event, value) => {
+    setCurentPage(value);
+  };
+  /* ////////////////// */
 
   const [pictures, setPictures] = useState<Array<PhotoInformation>>([]);
   const [isLoaded, setLoaded] = useState(false);
@@ -41,7 +49,7 @@ export function Album(props) {
         let response = await Albums.getAlbum(id);
         if (response.status === Status.Ok && response.data !== undefined) {
           setAlbum(response.data);
-          let response2 = await Albums.getAlbumPhotos(id, "0");
+          let response2 = await Albums.getAlbumPhotos(id, curentPage - 1);
           if (response2.status === Status.Ok && response2.data !== undefined) {
             setPictures(response2.data);
             setLoaded(true);
@@ -57,7 +65,7 @@ export function Album(props) {
       }
     };
     fetchData();
-  }, []);
+  }, [curentPage]);
   /* Picture Dialog Controls */
   const [view, setViewOpen] = useState(false);
   const [index, setPicIndex] = useState(0);
@@ -194,15 +202,20 @@ export function Album(props) {
             >
               {album.description}
             </Typography>
-            <Button
-              variant="contained"
-              size="small"
-              disableElevation
-              color="primary"
-              className={classes.button}
+            <Link
+              to={{ pathname: `/annotate/${album.id}` }}
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              Annotate
-            </Button>
+              <Button
+                variant="contained"
+                size="small"
+                disableElevation
+                color="primary"
+                className={classes.button}
+              >
+                Annotate
+              </Button>
+            </Link>
 
             <Link
               to={{ pathname: `/editalbum/${album.id}` }}
@@ -252,6 +265,17 @@ export function Album(props) {
             );
           })}
         </Box>
+        <Pagination
+          style={{ float: "left" }}
+          count={
+            album.image_number / elementsProPage >= 1
+              ? Math.ceil((album.image_number - 1) / elementsProPage)
+              : 1
+          }
+          color="primary"
+          page={curentPage}
+          onChange={handlePageChange}
+        />
         <Grid
           container
           direction="row"
@@ -266,8 +290,8 @@ export function Album(props) {
                   <CardActionArea onClick={() => toggelView(i)}>
                     <CardMedia
                       component="img"
-                      height="150"
-                      width="150"
+                      height="150px"
+                      width="150px"
                       image={`/api/user/albums/${album.id}/photos/${pic.id}`}
                     ></CardMedia>
                   </CardActionArea>
@@ -276,6 +300,7 @@ export function Album(props) {
             );
           })}
           <Grid item className={classes.filler}></Grid>
+
           <Grid item className={classes.filler}></Grid>
           <Grid item className={classes.filler}></Grid>
           <Grid item className={classes.filler}></Grid>
@@ -283,6 +308,17 @@ export function Album(props) {
           <Grid item className={classes.filler}></Grid>
           <Grid item className={classes.filler}></Grid>
         </Grid>
+        <Pagination
+          style={{ float: "left" }}
+          count={
+            album.image_number / elementsProPage >= 1
+              ? Math.ceil((album.image_number - 1) / elementsProPage)
+              : 1
+          }
+          color="primary"
+          page={curentPage}
+          onChange={handlePageChange}
+        />
         <PictureDialog
           pictures={pictures}
           view={view}

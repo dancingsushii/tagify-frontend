@@ -1,386 +1,229 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
+import { Box, Button, Chip, Container, Typography } from '@material-ui/core';
 
 import {
-    Box, Button, Card, CardActions, CardHeader, CardMedia, Chip, Grid, LinearProgress,
-    LinearProgressProps, makeStyles, Theme, Typography
-} from '@material-ui/core';
-import { createStyles, withStyles } from '@material-ui/styles';
+    AlbumInformation, Albums, EmptyAlbumInformation, Status, TagPhotoInformation, UserTag
+} from '../../utils/BackendAPI';
+import Annotator, { ImageSize, RegionGeometry } from '../snippets/Annotator';
 
-import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
+function Separator(props: { size?: number }) {
+  let DEFAULT = { size: 10 };
+  let { size } = { ...DEFAULT, ...props };
+  return <div style={{ marginRight: size }} />;
+}
 
-export function Annotate(props) {
-  const useStyles = makeStyles((theme) => ({
-    // root styling for main container
-    root: {
-      width: "100%",
-      marginTop: theme.spacing(4),
-      marginBottom: theme.spacing(8),
-      paddingBottom: theme.spacing(10),
-      justify: "center",
-    },
-    // text styling
-    title: {
-      justifyContent: "center",
-      alignItems: "center",
-      alignSelf: "center",
-      justifySelf: "center",
-      textAlign: "center",
-    },
-    // tags grid styling
-    chips: {
-      display: "flex",
-      justifyContent: "left",
-      flexWrap: "wrap",
-      "& > *": {
-        margin: theme.spacing(0.3),
-      },
-    },
-    media: {
-      width: "100%",
-      margin: 0,
-      paddingTop: "56.25%",
-      height: "150px",
-    },
-    progressBar: {
-      marginLeft: "10px",
-      width: "100%",
-      marginRight: "10px",
-    },
-    buttonsCard: {
-      justifyItems: "center",
-      alignItems: "center",
-      alignContent: "center",
-      justifyContent: "center",
-      borderSpacing: 5,
-    },
-  }));
-  const classes = useStyles();
+export default class AnnotationPage extends Component {
+  albumId: string;
+  imageSize: ImageSize;
+  album: AlbumInformation;
+  images: Array<TagPhotoInformation>;
+  state: {
+    regions: Array<{
+      geometry: RegionGeometry;
+      xGrow: boolean;
+      yGrow: boolean;
+      selectedLabel: string;
+    }>;
+    render: boolean;
+    error?: string;
+    currentImage: number;
+    currentLabel: string;
+  };
 
-  const [index, setIndex] = useState(0);
+  constructor(props) {
+    super(props);
+    this.onLabelSelect = this.onLabelSelect.bind(this);
+    this.onRegionChange = this.onRegionChange.bind(this);
+    this.onNext = this.onNext.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onReject = this.onReject.bind(this);
+    this.loadCurrentRegions = this.loadCurrentRegions.bind(this);
+    this.albumId = props.match.params.id;
+    this.imageSize = { width: 0, height: 0 };
+    this.album = EmptyAlbumInformation;
+    this.images = [];
+    this.state = {
+      render: false,
+      currentImage: 0,
+      currentLabel: "",
+      regions: [],
+    };
+  }
 
-  /* AlertBox controll */
-  const [alertTitle, setAlertTitle] = useState("");
-  const [alertDescrpition, setAlertDescrpition] = useState("");
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertConfirmTxt, setAlertConfirmTxt] = useState("");
-
-  /* ////////////////////// */
-
-  // TODO function for rendering next photo ocClick() next button
-  const onClickNext = () => {
-    if (index + 1 === album.length) {
-      setIndex(0);
+  async componentWillMount() {
+    let response1 = await Albums.getAlbum(this.albumId);
+    if (response1.status === Status.Ok || response1.data) {
+      this.album = response1.data;
+      this.state.currentLabel = this.album.tags[0];
     } else {
-      setIndex(index + 1);
+      this.state.error = "Failed to fetch album data. We are working on it ...";
     }
-  };
+    let response2 = await UserTag.getLockPhotos(this.albumId);
+    if (response2.status === Status.Ok || response2.data) {
+      this.images = response2.data;
+      if (!this.state.error && this.images.length === 0) {
+        this.state.error =
+          "Album is already completely tagged. Or some other user(s) are " +
+          "currently tagging the last few photos. :)";
+      }
+    } else if (!this.state.error) {
+      this.state.error =
+        "Failed to fetch pictures for tagging/validation. We are working on it ...";
+    }
+    this.state.render = true;
+    if (!this.state.error) this.loadCurrentRegions();
+    this.setState(this.state);
+  }
 
-  const onclickBack = () => {
-    if (index - 1 === -1) {
-      setIndex(album.length - 1);
+  onLabelSelect(label: string) {
+    this.state.currentLabel = label;
+    this.setState(this.state);
+  }
+
+  loadCurrentRegions() {
+    let img = this.images[this.state.currentImage];
+    if (img.tagged) {
+      this.state.regions = JSON.parse(img.coordinates);
     } else {
-      setIndex(index - 1);
+      this.state.regions = [];
     }
-  };
+    this.setState(this.state);
+  }
 
-  // static data for page
-  var { titel, image_number, tagged_number, tags } = {
-    titel: "Animals",
-    image_number: 20,
-    tagged_number: 11,
-    tags: 3,
-  };
+  onSubmit() {
+    let img = this.images[this.state.currentImage];
+    if (img.tagged) {
+      UserTag.verifyPhoto(img.id, { verified: true });
+    } else {
+      UserTag.tagPhoto(img.id, {
+        tag: "",
+        coordinates: JSON.stringify(this.state.regions),
+      });
+    }
+    this.onNext();
+  }
 
-  return (
-    <Grid className={classes.root}>
-      {/* container for grid */}
-      <Grid item container>
-        {/* left empty column */}
-        <Grid item sm={1}></Grid>
-        {/* middle MAIN column */}
-        <Grid
-          item
-          container
-          xs={12}
-          sm={10}
-          md={10}
-          spacing={2}
-          justify="center"
-          style={{ margin: 0 }}
-        >
-          {/*Card wrapper */}
-          <Grid
-            item
-            container
-            xs={12}
-            spacing={2}
-            justify="space-around"
-            style={{ margin: 0 }}
-          >
-            {/* Backround Card */}
-            <Card>
-              <Grid
-                item
-                container
-                xs={12}
-                spacing={2}
-                justify="space-around"
-                style={{ margin: 0 }}
+  onReject() {
+    let img = this.images[this.state.currentImage];
+    UserTag.verifyPhoto(img.id, { verified: false });
+    this.onNext();
+  }
+
+  onNext() {
+    this.state.currentImage++;
+    if (this.state.currentImage == this.images.length) {
+      this.state.error = "You are done! :)";
+    } else {
+      this.loadCurrentRegions();
+    }
+    this.setState(this.state);
+  }
+
+  onRegionChange(
+    regions: Array<{
+      geometry: RegionGeometry;
+      xGrow: boolean;
+      yGrow: boolean;
+      selectedLabel: string;
+    }>
+  ) {
+    this.state.regions = regions;
+    this.setState(this.state);
+  }
+
+  render() {
+    return (
+      <>
+        {!this.state.error && this.state.render && (
+          <>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: 10,
+              }}
+            >
+              <Typography variant="h5">{this.album?.title}</Typography>
+              <Separator />
+              {this.album?.tags.map((tag) => (
+                <Chip
+                  key={tag}
+                  style={{ marginRight: 5 }}
+                  label={tag}
+                  onClick={this.onLabelSelect.bind(null, tag)}
+                />
+              ))}
+              <div style={{ flexGrow: 1 }} />
+              <Button
+                variant="contained"
+                color="primary"
+                disableElevation
+                onClick={this.onNext}
               >
-                {/* album title section */}
-                <Grid item sm={6} spacing={2}>
-                  <Card>
-                    <CardHeader title={titel} className={classes.title} />
-                  </Card>
-                </Grid>
-
-                {/* tags section */}
-                <Grid item xs={12}>
-                  <Card>
-                    <Typography variant={"h6"}>Tags</Typography>
-                    <div className={classes.chips}>
-                      {albumtags.map((c) => (
-                        <Chip label={c} variant="default" color="primary" />
-                      ))}
-                    </div>
-                  </Card>
-                </Grid>
-
-                {/* TODO progress bar section with current tagged photos in album percentage */}
-                <div className={classes.progressBar}>
-                  <LinearProgressWithLabel value={30} />
-                </div>
-
-                {/* TODO with mapping picture section */}
-
-                {/* no need if mapping DONE */}
-                <Grid item xs={12}>
-                  <Card>
-                    <CardHeader title={album[index].titel}></CardHeader>
-                    <CardMedia
-                      className={classes.media}
-                      image={album[index].img}
-                    />
-                  </Card>
-                </Grid>
-
-                {/* TODO buttons section with links*/}
-                <Grid item xs={12}>
-                  <Card>
-                    <CardActions className={classes.buttonsCard}>
-                      <Button
-                        size="large"
-                        color="primary"
-                        variant="contained"
-                        disableElevation
-                        onClick={onclickBack}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        size="large"
-                        color="primary"
-                        variant="contained"
-                        disableElevation
-                        onClick={() => {
-                          setAlertConfirmTxt("ok");
-                          setAlertDescrpition("submit tags");
-                          setAlertOpen(true);
-                          //  alert("submit tags");
-                        }}
-                      >
-                        Submit
-                      </Button>
-                      <Button
-                        size="large"
-                        color="primary"
-                        variant="contained"
-                        disableElevation
-                        onClick={onClickNext}
-                      >
-                        Next
-                      </Button>
-                    </CardActions>
-
-                    {/* TODO verify button with link*/}
-                    <CardActions className={classes.buttonsCard}>
-                      <Button
-                        size="large"
-                        color="primary"
-                        variant="contained"
-                        disableElevation
-                        onClick={() => {
-                          setAlertConfirmTxt("ok");
-                          setAlertDescrpition("VERIFY");
-                          setAlertOpen(true);
-                          // alert("VERIFY");
-                        }}
-                      >
-                        Verify
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              </Grid>
-
-              {/* end of Backround Card */}
-            </Card>
-            {/* card Wrapper end */}
-          </Grid>
-          {/* end of middle Column */}
-        </Grid>
-        {/* progress bar  */}
-
-        {/* right empty column */}
-        <Grid item sm={1}></Grid>
-      </Grid>
-      <TagifyAlertDialog
-        Title={alertTitle}
-        Descrpition={alertDescrpition}
-        isOpen={alertOpen}
-        ConfirmTxt={alertConfirmTxt}
-        CancelTxt={""}
-        handleClose={() => setAlertOpen(false)}
-        handleConfirm={() => setAlertOpen(false)}
-        handleCancel={() => setAlertOpen(false)}
-      />
-    </Grid>
-  );
+                Skip
+              </Button>
+              <Separator />
+              {this.images[this.state.currentImage].tagged && (
+                <>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    onClick={this.onReject}
+                  >
+                    Reject
+                  </Button>
+                  <Separator />
+                </>
+              )}
+              <Button
+                variant="contained"
+                color="primary"
+                disableElevation
+                onClick={this.onSubmit}
+              >
+                {this.images[this.state.currentImage].tagged
+                  ? "Verify"
+                  : "Next"}
+              </Button>
+            </div>
+            <Annotator
+              image={`/api/user/albums/${this.albumId}/photos/${
+                this.images[this.state.currentImage].id
+              }`}
+              regions={this.state.regions}
+              currentLabel={this.state.currentLabel}
+              labels={this.album.tags}
+              onImageLoaded={(imageSize) => {
+                this.imageSize = imageSize;
+              }}
+              onChange={this.onRegionChange}
+              immutable={this.images[this.state.currentImage].tagged}
+            />
+          </>
+        )}
+        {this.state.error && (
+          <Container style={{ textAlign: "center", marginTop: "6em" }}>
+            <Typography variant="h2">Oops</Typography>
+            <Box component="div" style={{ marginTop: "1em" }}>
+              {this.state.error}
+            </Box>
+            <Button
+              style={{ marginTop: "1em" }}
+              variant="contained"
+              color="primary"
+              disableElevation
+              component={Link}
+              to="/"
+            >
+              Back to Dashboard
+            </Button>
+          </Container>
+        )}
+      </>
+    );
+  }
 }
-
-// override existing linear progress bar with custom height
-const CustomLinearProgress = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      height: 25,
-    },
-  })
-)(LinearProgress);
-
-// progress bar
-function LinearProgressWithLabel(
-  props: LinearProgressProps & { value: number }
-) {
-  return (
-    <Box display="flex" alignItems="center">
-      <Box width="100%" marginTop="10px" height="40px" mr={1}>
-        <CustomLinearProgress variant="determinate" {...props} />
-      </Box>
-      <Box minWidth={35}>
-        <Typography variant="body2" color="textSecondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
-      </Box>
-    </Box>
-  );
-}
-
-//static data
-const albumtags = [
-  "#dog",
-  "#lion",
-  "#dachshund",
-  "#elephant",
-  "#bird",
-  "#vulture",
-  "#roe",
-];
-
-const album = [
-  {
-    titel: "pic1.jpg",
-    date: "12/07/2020",
-    img: "https://picsum.photos/id/237/300/300",
-    tags: ["#dog"],
-    progres: 11,
-  },
-  {
-    titel: "pic2.jpg",
-    date: "12/07/2020",
-    img:
-      "https://i.picsum.photos/id/1003/1181/1772.jpg?hmac=oN9fHMXiqe9Zq2RM6XT-RVZkojgPnECWwyEF1RvvTZk",
-    tags: ["roe"],
-    progres: 33,
-  },
-  {
-    titel: "pic3.jpg",
-    date: "12/07/2020",
-    img:
-      "https://i.picsum.photos/id/1024/1920/1280.jpg?hmac=-PIpG7j_fRwN8Qtfnsc3M8-kC3yb0XYOBfVzlPSuVII",
-    tags: ["vulture"],
-    progres: 66,
-  },
-  {
-    titel: "pic4.jpg ",
-    date: "10/11/2020",
-    img:
-      "https://i.picsum.photos/id/1025/4951/3301.jpg?hmac=_aGh5AtoOChip_iaMo8ZvvytfEojcgqbCH7dzaz-H8Y",
-    tags: ["dog"],
-    progres: 19,
-  },
-  {
-    titel: "pic5.jpg",
-    date: "12/08/2020",
-    img: "https://picsum.photos/id/1074/5472/3648",
-    tags: ["lion"],
-    progres: 22,
-  },
-  {
-    titel: "bird88.jpg",
-    date: "29/07/2020",
-    img:
-      "https://i.picsum.photos/id/244/4288/2848.jpg?hmac=R6j9PBP4aBk2vcEIoOPU4R_nuknizryn2Vq8GGtWTrM",
-    tags: ["bird"],
-    progres: 66,
-  },
-  {
-    titel: "pic7.jpg ",
-    date: "12/07/2020",
-    img:
-      "https://i.picsum.photos/id/1025/4951/3301.jpg?hmac=_aGh5AtoOChip_iaMo8ZvvytfEojcgqbCH7dzaz-H8Y",
-    tags: ["animal"],
-    progres: 19,
-  },
-  {
-    titel: "pic8jpg",
-    date: "12/07/2020",
-    img:
-      "https://i.picsum.photos/id/130/3807/2538.jpg?hmac=Kl_ZLgNPUBhsKnffomgQvxWA17JhdNLYBnwlPHBEias",
-    tags: ["bird"],
-    progres: 22,
-  },
-  {
-    titel: "cow2.jpg",
-    date: "12/01/2020",
-    img:
-      "https://i.picsum.photos/id/200/1920/1280.jpg?hmac=-eKjMC8-UrbLMpy1A4OWrK0feVPB3Ka5KNOGibQzpRU",
-    tags: ["cow"],
-    progres: 66,
-  },
-  {
-    titel: "tiger1.jpg ",
-    date: "12/07/2020",
-    img:
-      "https://i.picsum.photos/id/219/5184/3456.jpg?hmac=2LU7i3c6fykd_J0T6rZm1aBoBmK4ivkH1Oc459aRUU0",
-    tags: ["tiger"],
-    progres: 19,
-  },
-
-  {
-    titel: "pic11.jpg ",
-    date: "12/07/2020",
-    img:
-      "https://i.picsum.photos/id/169/2500/1662.jpg?hmac=3DBeyQbiPxO88hBdhIuFPbvy2ff7cm9vmnq8lPIL9Ug",
-    tags: ["#dog", "#dachshund"],
-    progres: 11,
-  },
-
-  {
-    titel: "pic4.jpg",
-    date: "12/07/2020",
-    img:
-      "https://i.picsum.photos/id/1024/1920/1280.jpg?hmac=-PIpG7j_fRwN8Qtfnsc3M8-kC3yb0XYOBfVzlPSuVII",
-    tags: [],
-    progres: 66,
-  },
-];

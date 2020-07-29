@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 
-import { App as GuestApp } from './components/guest/App';
-import { App as UserApp } from './components/user/App';
-import { raleway200, raleway300 } from './fonts/Fonts';
-import BackendToken, { Default, Status, UserRole } from './utils/BackendAPI';
+import { App as GuestApp } from "./components/guest/App";
+import { Impressum } from "./components/Impressum";
+import { App as UserApp } from "./components/user/App";
+import { raleway200, raleway300 } from "./fonts/Fonts";
+import BackendToken, { Default, Status, UserRole } from "./utils/BackendAPI";
 
 const theme = createMuiTheme({
   palette: {
@@ -67,6 +68,7 @@ function App() {
             <Switch>
               <Route path="/welcome" component={GuestApp} />
               <Route path="/login" component={GuestApp} />
+              <Route path="/impressum" component={Impressum} />
               <Route path="/*" component={UserApp} />
               <Route path="*" component={() => "404 NOT FOUND"} />
             </Switch>

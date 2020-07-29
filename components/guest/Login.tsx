@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { createStyles, IconButton, InputAdornment, makeStyles, Theme } from '@material-ui/core';
+import {
+    createStyles, Grid, IconButton, InputAdornment, makeStyles, Theme
+} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
@@ -9,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
+import background from '../../assets/background.jpg';
 import BackendToken, { Default, Status, UserRole } from '../../utils/BackendAPI';
 import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
@@ -21,6 +24,12 @@ const useStyles = makeStyles((_theme: Theme) =>
     },
     adornedEnd: {
       paddingRight: 0,
+    },
+    imageGrid: {
+      backgroundImage: `url(${background})`,
+      backgroundPosition: "center",
+      backgroundSize: "cover",
+      backgroundRepeat: "no repeat",
     },
   })
 );
@@ -107,74 +116,80 @@ export function Login(props) {
   };
 
   return (
-    <Container component="main" maxWidth="xs" style={{}}>
-      <Helmet>
-        <style>{"body { background-color: #e7dabe;  }"}</style>
-      </Helmet>
-      <Card style={{ marginTop: 200, width: "100%", paddingTop: 0 }}>
-        <form
-          onSubmit={handleSubmit}
-          style={{ margin: 8, alignItems: "stretch" }}
-        >
-          <TextField
-            className={classes.textField}
-            label="User name"
-            variant="outlined"
-            type="text"
-            name={LoginForm.username}
-            placeholder="User name"
-            value={username}
-            onChange={handleChangeInput}
-            required
-          />
-          <TextField
-            className={classes.textField}
-            label="Password"
-            variant="outlined"
-            type={showPassword ? "text" : "password"}
-            name={LoginForm.password}
-            placeholder="Password"
-            value={password}
-            onChange={handleChangeInput}
-            required
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-              classes: {
-                adornedEnd: classes.adornedEnd,
-              },
-            }}
-          />
-
-          <Button
-            className={classes.textField}
-            variant="contained"
-            color="primary"
-            type="submit"
+    <Grid
+      container
+      className={classes.imageGrid}
+      style={{ minHeight: "100vh", width: "100vw" }}
+    >
+      <Container component="main" maxWidth="xs" style={{}}>
+        <Helmet>
+          <style>{"body { background-color: #e7dabe;  }"}</style>
+        </Helmet>
+        <Card style={{ marginTop: 200, width: "100%", paddingTop: 0 }}>
+          <form
+            onSubmit={handleSubmit}
+            style={{ margin: 8, alignItems: "stretch" }}
           >
-            Login
-          </Button>
-        </form>
-      </Card>
-      <TagifyAlertDialog
-        Title={alertTitle}
-        Descrpition={alertDescrpition}
-        isOpen={alertOpen}
-        ConfirmTxt={alertConfirmTxt}
-        CancelTxt={""}
-        handleClose={() => setAlertOpen(false)}
-        handleConfirm={() => setAlertOpen(false)}
-        handleCancel={() => setAlertOpen(false)}
-      />
-    </Container>
+            <TextField
+              className={classes.textField}
+              label="User name"
+              variant="outlined"
+              type="text"
+              name={LoginForm.username}
+              placeholder="User name"
+              value={username}
+              onChange={handleChangeInput}
+              required
+            />
+            <TextField
+              className={classes.textField}
+              label="Password"
+              variant="outlined"
+              type={showPassword ? "text" : "password"}
+              name={LoginForm.password}
+              placeholder="Password"
+              value={password}
+              onChange={handleChangeInput}
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+                classes: {
+                  adornedEnd: classes.adornedEnd,
+                },
+              }}
+            />
+
+            <Button
+              className={classes.textField}
+              variant="contained"
+              color="primary"
+              type="submit"
+            >
+              Login
+            </Button>
+          </form>
+        </Card>
+        <TagifyAlertDialog
+          Title={alertTitle}
+          Descrpition={alertDescrpition}
+          isOpen={alertOpen}
+          ConfirmTxt={alertConfirmTxt}
+          CancelTxt={""}
+          handleClose={() => setAlertOpen(false)}
+          handleConfirm={() => setAlertOpen(false)}
+          handleCancel={() => setAlertOpen(false)}
+        />
+      </Container>
+    </Grid>
   );
 }
