@@ -168,6 +168,13 @@ export function Album(props) {
       marginTop: theme.spacing(2),
       marginRight: theme.spacing(2),
     },
+    content: {
+      wordBreak: "break-word",
+      maxWidth: "100%",
+      [theme.breakpoints.up("md")]: {
+        maxWidth: "50%",
+      },
+    },
   }));
   const classes = useStyles();
 
@@ -185,7 +192,7 @@ export function Album(props) {
               return `/api/user/albums/${album.id}/photos/${album.first_photo}`;
             })()}
           />
-          <CardContent>
+          <CardContent className={classes.content}>
             <Typography
               gutterBottom
               variant="h5"
