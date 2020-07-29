@@ -18,6 +18,7 @@ import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Pagination from '@material-ui/lab/Pagination';
 
 import { Albums, PhotoInformation, Status, UserAlbum, UserPhoto } from '../../utils/BackendAPI';
+import { SimpleDialog } from '../snippets/DownloadDialog';
 import PictureDialog from '../snippets/PictureDialog';
 import PictureEditCard from '../snippets/PictureThumbneil';
 import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
@@ -253,6 +254,21 @@ function EditAlbum(props) {
   }
   /* ////////////////////////////////////////////////////// */
 
+  // Download dialog
+
+  const [openD, setOpenD] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState("");
+
+  const handleClickOpen = () => {
+    setOpenD(true);
+  };
+
+  const handleClose = (value: string) => {
+    setOpenD(false);
+    setSelectedValue(value);
+  };
+
+  // End dialog
   const useStyles = makeStyles((theme) => ({
     root: {
       maxWidth: "100%",
@@ -428,10 +444,16 @@ function EditAlbum(props) {
                     className={classes.button}
                     variant="contained"
                     color="secondary"
+                    onClick={handleClickOpen}
                   >
                     Download Album
                   </Button>
-
+                  <SimpleDialog
+                    selectedValue={selectedValue}
+                    open={openD}
+                    onClose={handleClose}
+                    id={album.id}
+                  />
                   <Link
                     to={{ pathname: `/addalbum` }}
                     style={{ textDecoration: "none", color: "inherit" }}
