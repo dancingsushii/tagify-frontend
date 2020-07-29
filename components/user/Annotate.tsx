@@ -95,10 +95,12 @@ export default class AnnotationPage extends Component {
   onSubmit() {
     let img = this.images[this.state.currentImage];
     if (img.tagged) {
-      UserTag.verifyPhoto(img.id, { verified: true });
+      UserTag.verifyPhoto(img.id.toString(), { verified: true });
     } else {
-      UserTag.tagPhoto(img.id, {
-        tag: "",
+      let tags = this.state.regions.map((region) => region.selectedLabel);
+      tags = tags.filter((v, i) => tags.indexOf(v) === i);
+      UserTag.tagPhoto(img.id.toString(), {
+        tag: tags.join(","),
         coordinates: JSON.stringify(this.state.regions),
       });
     }
@@ -107,7 +109,7 @@ export default class AnnotationPage extends Component {
 
   onReject() {
     let img = this.images[this.state.currentImage];
-    UserTag.verifyPhoto(img.id, { verified: false });
+    UserTag.verifyPhoto(img.id.toString(), { verified: false });
     this.onNext();
   }
 

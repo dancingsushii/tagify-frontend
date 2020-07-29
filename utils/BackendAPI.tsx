@@ -434,7 +434,7 @@ export const UserPhoto: UserPhotoType = {
 // |__| ___] |___ |  \     |  |  | |__]
 
 interface UserTagType {
-  getLockPhotos(albumId: string): Promise<Response<TagPhotoInformation>>;
+  getLockPhotos(albumId: string): Promise<Response<Array<TagPhotoInformation>>>;
   verifyPhoto(
     photoId: string,
     body: { verified: boolean }
