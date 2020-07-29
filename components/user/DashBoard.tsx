@@ -114,6 +114,7 @@ export const DashBoard = (props: { search: any; value: any }) => {
                     >
                       <Typography
                         gutterBottom
+                        noWrap
                         variant="h5"
                         component="h2"
                         style={{ fontWeight: 400 }}
