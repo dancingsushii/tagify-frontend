@@ -320,6 +320,7 @@ interface AlbumType {
     rangeIndex: string
   ): Promise<Response<Array<PhotoInformation>>>;
   searchAlbums(query: string): Promise<Response<AlbumPreview>>;
+  getJsonData(id: string): Promise<Response<any>>;
 }
 
 export const Albums: AlbumType = {
@@ -329,6 +330,8 @@ export const Albums: AlbumType = {
     do_GET({ endpoint: `/api/albums/${albumId}/photos/${rangeIndex}` }),
   searchAlbums: async (query) =>
     do_GET({ endpoint: `/api/albums/search/${query}` }),
+  getJsonData: async (id) =>
+    do_GET({ endpoint: `/api/user/albums/json/${id}` }),
 };
 
 //=============================================================================

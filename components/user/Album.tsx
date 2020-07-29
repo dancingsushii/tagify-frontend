@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { Albums, PhotoInformation, Status } from '../../utils/BackendAPI';
+import { SimpleDialog } from '../snippets/DownloadDialog';
 import PictureDialog from '../snippets/PictureDialog';
 import TagifyAlertDialog from '../snippets/TagifyAlertDialog';
 
@@ -68,6 +69,18 @@ export function Album(props) {
     setViewOpen(!view);
   }
   /* ////////////////////// */
+
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState("");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value: string) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -212,10 +225,16 @@ export function Album(props) {
               disableElevation
               color="primary"
               className={classes.button}
-              startIcon={<SaveIcon />}
+              onClick={handleClickOpen}
             >
-              Save
+              Download
             </Button>
+            <SimpleDialog
+              selectedValue={selectedValue}
+              open={open}
+              onClose={handleClose}
+              id={album.id}
+            />
           </CardContent>
         </Card>
 
