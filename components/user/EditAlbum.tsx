@@ -461,7 +461,7 @@ function EditAlbum(props) {
                   style={{ float: "left" }}
                   count={
                     album.image_number / elementsProPage >= 1
-                      ? Math.ceil((album.image_number - 1) / elementsProPage)
+                      ? Math.ceil(album.image_number / elementsProPage)
                       : 1
                   }
                   color="primary"
@@ -498,17 +498,21 @@ function EditAlbum(props) {
             })
           : ""}
         <Grid item xs={12}>
-          <Pagination
-            style={{ float: "left" }}
-            count={
-              album.image_number / elementsProPage >= 1
-                ? Math.ceil((album.image_number - 1) / elementsProPage)
-                : 1
-            }
-            color="primary"
-            page={curentPage}
-            onChange={handlePageChange}
-          />
+          {album.image_number > 20 ? (
+            <Pagination
+              style={{ float: "left" }}
+              count={
+                album.image_number / elementsProPage >= 1
+                  ? Math.ceil(album.image_number / elementsProPage)
+                  : 1
+              }
+              color="primary"
+              page={curentPage}
+              onChange={handlePageChange}
+            />
+          ) : (
+            ""
+          )}
         </Grid>
         {/* End of midle Column */}
       </Grid>

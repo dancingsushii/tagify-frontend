@@ -89,8 +89,8 @@ function Albumthumbneil(props) {
           to={{ pathname: `/album/${id}` }
           style={{ textDecoration: "none", color: "inherit" }}
         >
-          <CardHeader
-            action={
+          <CardHeader style={{height:"140px", overflow:"auto"}}
+            action={ 
               <CircularProgressWithLabel variant="static" value={progress()} />
             }
             title={title}
